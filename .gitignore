@@ -6,6 +6,7 @@ build/
 
 # Machine-specific
 local.properties
+.claude/
 .idea/
 *.iml
 .DS_Store

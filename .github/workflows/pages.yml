@@ -1,0 +1,38 @@
+name: Web app
+
+# Publishes the iPhone / web version to GitHub Pages on every push to main,
+# so content.json changes reach the web app automatically.
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    name: Build and deploy
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python scripts/validate_content.py
+      - run: python scripts/build_web.py --build-id "${GITHUB_SHA::7}"
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: build/site
+      - id: deployment
+        uses: actions/deploy-pages@v4

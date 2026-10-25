@@ -65,7 +65,10 @@ android {
     }
     testOptions {
         unitTests.isIncludeAndroidResources = true
-        unitTests.all { it.systemProperty("screenshotDir", rootProject.file("docs/screenshots").absolutePath) }
+        unitTests.all {
+            it.systemProperty("screenshotDir", rootProject.file("docs/screenshots").absolutePath)
+            it.systemProperty("webIconDir", rootProject.file("web/icons").absolutePath)
+        }
     }
     packaging {
         resources.excludes += "/META-INF/{AL2.0,LGPL2.1}"

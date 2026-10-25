@@ -20,7 +20,9 @@ works offline, and gets new content over the air.
 
 ## 📥 डाउनलोड / Download
 
-**[नवीनतम APK डाउनलोड करा → Releases](https://github.com/nilkanth01/aarti-sangrah/releases/latest)**
+**[नवीनतम APK डाउनलोड करा → Releases](https://github.com/nilkanth01/aarti-sangrah/releases/latest)** (Android)
+
+🍎 iPhone / iPad वापरता? → **[वेब ॲप उघडा](https://nilkanth01.github.io/aarti-sangrah/)** ([installation steps below](#-iphone--ipad--वेब-ॲप))
 
 फोनवर इंस्टॉल कसे करायचे:
 1. वरील लिंकवरून `AartiSangrah-vX.Y.Z.apk` फाइल फोनवर डाउनलोड करा.
@@ -29,6 +31,27 @@ works offline, and gets new content over the air.
 4. **Install** दाबा. झाले! 🙏
 
 > Android 8.0 (Oreo) किंवा नवीन फोन लागतो. ॲपचा आकार सुमारे 2.5 MB आहे.
+
+## 🍎 iPhone / iPad — वेब ॲप
+
+**👉 [nilkanth01.github.io/aarti-sangrah](https://nilkanth01.github.io/aarti-sangrah/)**
+
+iPhone वर APK चालत नाही, म्हणून त्याच आरत्या, तेच डिझाइन आणि तीच भाषा सुविधा असलेले वेब ॲप आहे.
+ते होम स्क्रीनवर ॲपसारखे ठेवता येते आणि एकदा उघडल्यावर इंटरनेटशिवायही चालते.
+
+iPhone वर ॲप म्हणून ठेवण्यासाठी:
+1. **Safari** मध्ये वरील लिंक उघडा.
+2. खालील **Share** बटण (⬆️ असलेला चौकोन) दाबा.
+3. खाली सरकवून **Add to Home Screen / होम स्क्रीनवर जोडा** निवडा, मग **Add** दाबा.
+4. होम स्क्रीनवर 🪔 **आरती संग्रह** आयकॉन दिसेल — तिथून उघडा. झाले! 🙏
+
+*English:* iPhones can't install APKs, so there is a web version with the same aartis, design and language
+switch. Open the link in **Safari**, tap **Share**, then **Add to Home Screen**. It then opens full-screen like
+an app and works offline. It also works on Android phones and computers, in any modern browser.
+
+> The web app has no App Store listing and needs no Apple account. New aartis appear automatically,
+> because it reads the same `content/content.json`. "Keep screen on" depends on the browser
+> (it works on recent iPhones). Favourites and settings are saved in that phone's browser.
 
 ## ✨ सुविधा / Features
 
@@ -154,16 +177,34 @@ content/content.json        all aartis & shlokas (bundled in the APK + fetched f
 app/src/main/java/.../data  content loading, OTA updates, release check, settings
 app/src/main/java/.../ui    Jetpack Compose screens and theme
 app/src/main/res/font       Tiro Devanagari Marathi + Mukta (SIL Open Font License)
+web/                        iPhone / web app: index.html, app.css, app.js, sw.js (offline), icons
+scripts/build_web.py        assembles web/ + content.json + fonts into build/site
 scripts/release.ps1         one-command signed release to GitHub
 scripts/validate_content.py content checker (also runs on every push via .github/workflows/check.yml)
 ```
 
 Tech: Kotlin, Jetpack Compose (Material 3), no third-party runtime libraries besides AndroidX.
+The web app is plain HTML/CSS/JavaScript with no libraries or build tools.
+
+### Web app
+
+`.github/workflows/pages.yml` rebuilds and publishes the web app to GitHub Pages on every push to `main`,
+so a `content.json` change updates the APK users (over the air) and the web users at the same time.
+Each deploy stamps a new build id into `sw.js`, so installed copies update themselves the next time
+they are opened. To try it locally:
+
+```powershell
+python scripts\build_web.py
+python -m http.server 8765 -d build\site    # then open http://localhost:8765
+```
+
+`web/icons/*.png` are rendered from the Android launcher icon by `gradlew testDebugUnitTest`.
 
 ## 🔒 Privacy
 
 The app has no account, no ads, no analytics. It talks to only two addresses, both on GitHub:
 `raw.githubusercontent.com` (new content) and `api.github.com` (is there a newer version?).
+The web app only loads its own files from `nilkanth01.github.io`.
 Favourites and settings never leave the phone.
 
 ## 📄 License
@@ -171,5 +212,6 @@ Favourites and settings never leave the phone.
 - Code: [MIT](LICENSE)
 - Texts: traditional devotional works in the public domain
 - Fonts: [Tiro Devanagari Marathi](fonts-license/OFL-TiroDevanagariMarathi.txt) and [Mukta](fonts-license/OFL-Mukta.txt), SIL Open Font License 1.1
+- Icons: Material Icons by Google, Apache License 2.0
 
 ॥ सर्वे भवन्तु सुखिनः ॥

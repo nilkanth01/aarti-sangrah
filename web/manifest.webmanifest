@@ -1,0 +1,17 @@
+{
+  "name": "आरती संग्रह — Aarti Sangrah",
+  "short_name": "आरती संग्रह",
+  "description": "मराठी आरत्या, श्लोक, स्तोत्रे व अभंग — Marathi aartis, shlokas, stotras and abhangs in Devanagari",
+  "lang": "mr",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#FFF8F1",
+  "theme_color": "#C8471A",
+  "icons": [
+    { "src": "icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "any" },
+    { "src": "icons/icon-512.png", "sizes": "512x512", "type": "image/png", "purpose": "maskable" }
+  ]
+}

@@ -117,6 +117,21 @@ class ContentAndScreensTest {
         }
     }
 
+    /** The web app (web/) reuses the launcher icon; iPhones need it as PNG. */
+    @Test
+    fun renderWebIcons() {
+        val context = ApplicationProvider.getApplicationContext<Context>()
+        val dir = File(System.getProperty("webIconDir") ?: "build/web-icons").apply { mkdirs() }
+        mapOf("apple-touch-icon.png" to 180, "icon-192.png" to 192, "icon-512.png" to 512).forEach { (name, size) ->
+            val bitmap = Bitmap.createBitmap(size, size, Bitmap.Config.ARGB_8888)
+            val canvas = Canvas(bitmap)
+            listOf(R.drawable.ic_launcher_background, R.drawable.ic_launcher_foreground).forEach { id ->
+                context.getDrawable(id)!!.apply { setBounds(0, 0, size, size) }.draw(canvas)
+            }
+            File(dir, name).outputStream().use { bitmap.compress(Bitmap.CompressFormat.PNG, 100, it) }
+        }
+    }
+
     private fun shot(
         name: String,
         theme: ThemeMode = ThemeMode.LIGHT,

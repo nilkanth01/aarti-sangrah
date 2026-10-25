@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 108 108">
+  <!-- Same artwork as app/src/main/res/drawable/ic_launcher_foreground.xml -->
+  <defs>
+    <linearGradient id="flame" x1="0" y1="22" x2="0" y2="56" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFF4B8"/><stop offset="1" stop-color="#FFB300"/>
+    </linearGradient>
+    <linearGradient id="bowl" x1="0" y1="58" x2="0" y2="80" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFE38A"/><stop offset="1" stop-color="#E29A12"/>
+    </linearGradient>
+  </defs>
+  <circle cx="54" cy="44" r="22" fill="#FFF3C4" fill-opacity="0.15"/>
+  <path fill="url(#flame)" d="M54,22C59,31 65,37 65,44.5C65,51 60,55.5 54,55.5C48,55.5 43,51 43,44.5C43,37 49,31 54,22Z"/>
+  <path fill="#FFFDF2" d="M54,34C56.6,39 59,42 59,46C59,49.3 56.8,51.5 54,51.5C51.2,51.5 49,49.3 49,46C49,42 51.4,39 54,34Z"/>
+  <path fill="#5D2A0A" d="M53,54h2v4.5h-2z"/>
+  <path fill="url(#bowl)" d="M28,58C40,61 68,61 80,58C78,71 67,80 54,80C41,80 30,71 28,58Z"/>
+  <path fill="#FFF7DC" d="M28,58C40,61 68,61 80,58C78,61.5 68,64 54,64C40,64 30,61.5 28,58Z"/>
+  <path fill="#A0461A" d="M40.2,70.5a1.8,1.8 0,1 0,3.6 0a1.8,1.8 0,1 0,-3.6 0ZM52.2,72.5a1.8,1.8 0,1 0,3.6 0a1.8,1.8 0,1 0,-3.6 0ZM64.2,70.5a1.8,1.8 0,1 0,3.6 0a1.8,1.8 0,1 0,-3.6 0Z"/>
+  <path fill="#E29A12" d="M46,79.5L62,79.5L65,84L43,84Z"/>
+</svg>
