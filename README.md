@@ -1,4 +1,6 @@
-# 🪔 Aarti Sangrah (आरती संग्रह)
+# 🪔 Devghar (देवघर)
+
+*Formerly called Aarti Sangrah.*
 
 A free app with the **aartis, shlokas, stotras and abhangs** sung in Marathi homes, in Devanagari,
 with a clean and easy-to-use design. The menus can be in Marathi or English; the texts themselves
@@ -26,7 +28,7 @@ always stay in Devanagari.
 
 ### Install on Android
 
-1. Open the link above on your phone and download `AartiSangrah-vX.Y.Z.apk`.
+1. Open the link above on your phone and download `Devghar-vX.Y.Z.apk`.
 2. Open the downloaded file.
 3. If the phone asks for permission to **Install unknown apps**, allow it for your browser.
 4. Tap **Install**. Done! 🙏
@@ -42,7 +44,7 @@ switch. It can be kept on the home screen like a normal app and works offline af
 1. Open **[nilkanth01.github.io/aarti-sangrah](https://nilkanth01.github.io/aarti-sangrah/)** in **Safari**.
 2. Tap the **Share** button (the square with an arrow pointing up).
 3. Scroll down, tap **Add to Home Screen**, then tap **Add**.
-4. Open the 🪔 app from your home screen. Done! 🙏
+4. Open the 🪔 **Devghar** app from your home screen. Done! 🙏
 
 > The web app also works on Android phones and computers in any modern browser. It needs no App Store
 > listing or Apple account, and it shows new aartis automatically because it reads the same

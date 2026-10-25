@@ -1,4 +1,4 @@
-/* आरती संग्रह — web / iPhone version of the Android app. No libraries, no tracking.
+/* देवघर (Devghar) — web / iPhone version of the Android app. No libraries, no tracking.
  * Content comes from content.json (the same file the Android app uses). Favourites and
  * settings stay in this browser's localStorage. */
 'use strict';
@@ -43,13 +43,13 @@
   const STR = {
     mr: {
       tabHome: 'मुख्य', tabSearch: 'शोधा', tabFav: 'आवडते', tabSettings: 'सेटिंग्ज', back: 'मागे',
-      appName: 'आरती संग्रह', tagline: 'आरत्या • श्लोक • स्तोत्रे • अभंग', searchHint: 'आरती, श्लोक किंवा देव शोधा…',
+      appName: 'देवघर', tagline: 'आरत्या • श्लोक • स्तोत्रे • अभंग', searchHint: 'आरती, श्लोक किंवा देव शोधा…',
       otherLang: 'English', sequences: 'पूजा क्रम', categories: 'प्रकार', deities: 'देवता', recent: 'अलीकडे वाचलेले',
       start: 'सुरू करा', all: 'सर्व', footer: 'खाते नाही • जाहिराती नाहीत • इंटरनेटशिवायही चालते',
       today: d => `आज ${MR_DAYS[d.getDay()]}`, deityOfDay: n => `आजचे दैवत: ${n}`,
       parts: n => `${mrNum(n)} भाग`, texts: n => `${mrNum(n)} रचना`,
       textSize: 'अक्षरांचा आकार', share: 'शेअर करा', prev: 'मागील', next: 'पुढील',
-      addFav: 'आवडत्यांत जोडा', removeFav: 'आवडत्यांतून काढा', shareFooter: '— आरती संग्रह', by: a => `रचना: ${a}`,
+      addFav: 'आवडत्यांत जोडा', removeFav: 'आवडत्यांतून काढा', shareFooter: '— देवघर', by: a => `रचना: ${a}`,
       searchSub: 'मराठी किंवा इंग्रजीत शोधा — उदा. सुखकर्ता, ganpati, ramraksha', searchPh: 'आरती, श्लोक, देव किंवा ओळ…',
       clear: 'पुसा', results: 'शोध परिणाम', noResults: 'काही सापडले नाही',
       noResultsHint: 'दुसरा शब्द वापरून पहा. इंग्रजी अक्षरांतही शोधता येते — उदा. aarti, vitthal, datta.',
@@ -60,7 +60,7 @@
       appearance: 'दिसणे', theme: 'रंगसंगती', auto: 'आपोआप', day: 'दिवस', night: 'रात्र',
       keepAwake: 'वाचताना स्क्रीन चालू ठेवा', keepAwakeHint: 'आरती म्हणताना स्क्रीन बंद होणार नाही',
       keepAwakeNo: 'हा ब्राउझर ही सुविधा देत नाही.',
-      updates: 'अपडेट्स', collection: 'आरती संग्रह', collectionInfo: (v, n) => `आवृत्ती ${mrNum(v)} • ${mrNum(n)} रचना`,
+      updates: 'अपडेट्स', collection: 'आरत्या व श्लोक', collectionInfo: (v, n) => `आवृत्ती ${mrNum(v)} • ${mrNum(n)} रचना`,
       checkNew: 'नवीन तपासा', otaNote: 'नवीन आरत्या इंटरनेट असताना आपोआप येतात.',
       about: 'माहिती',
       aboutText: 'हे ॲप पूर्णपणे मोफत आहे — खाते नाही, जाहिराती नाहीत, तुमची कोणतीही माहिती गोळा केली जात नाही. एकदा उघडल्यावर इंटरनेटशिवायही चालते.',
@@ -70,18 +70,18 @@
       installAndroid: 'होम स्क्रीनवर आयकॉन ठेवा — इंटरनेटशिवायही चालेल.', install: 'इंस्टॉल', dismiss: 'बंद करा',
       copied: 'मजकूर कॉपी केला', appUpdated: 'ॲपची नवीन आवृत्ती आली', refresh: 'रीफ्रेश',
       upToDate: 'सर्व आरत्या अद्ययावत आहेत 🙏', offline: 'इंटरनेट जोडणी तपासा आणि पुन्हा प्रयत्न करा',
-      contentUpdated: n => n > 0 ? `${mrNum(n)} नवीन आरत्या/श्लोक जोडले गेले 🌼` : 'आरती संग्रह अद्ययावत झाला 🌼',
+      contentUpdated: n => n > 0 ? `${mrNum(n)} नवीन आरत्या/श्लोक जोडले गेले 🌼` : 'आरत्या व श्लोक अद्ययावत झाले 🌼',
       loadError: 'आरत्या लोड झाल्या नाहीत. इंटरनेट तपासून पुन्हा प्रयत्न करा.', retry: 'पुन्हा प्रयत्न करा',
     },
     en: {
       tabHome: 'Home', tabSearch: 'Search', tabFav: 'Favourites', tabSettings: 'Settings', back: 'Back',
-      appName: 'Aarti Sangrah', tagline: 'Aartis • Shlokas • Stotras • Abhangs', searchHint: 'Search aartis, shlokas or deities…',
+      appName: 'Devghar', tagline: 'Aartis • Shlokas • Stotras • Abhangs', searchHint: 'Search aartis, shlokas or deities…',
       otherLang: 'मराठी', sequences: 'Pooja sequences', categories: 'Categories', deities: 'Deities', recent: 'Recently read',
       start: 'Start', all: 'All', footer: 'No account • No ads • Works offline',
       today: d => `Today is ${EN_DAYS[d.getDay()]}`, deityOfDay: n => `Deity of the day: ${n}`,
       parts: n => (n === 1 ? '1 part' : `${n} parts`), texts: n => (n === 1 ? '1 text' : `${n} texts`),
       textSize: 'Text size', share: 'Share', prev: 'Previous', next: 'Next',
-      addFav: 'Add to favourites', removeFav: 'Remove from favourites', shareFooter: '— Aarti Sangrah', by: a => `By ${a}`,
+      addFav: 'Add to favourites', removeFav: 'Remove from favourites', shareFooter: '— Devghar', by: a => `By ${a}`,
       searchSub: 'Type in English or Marathi — e.g. ganpati, ramraksha, सुखकर्ता', searchPh: 'Aarti, shloka, deity or a line…',
       clear: 'Clear', results: 'Search results', noResults: 'Nothing found',
       noResultsHint: 'Try another word. English spellings work too — e.g. aarti, vitthal, datta.',
@@ -92,7 +92,7 @@
       appearance: 'Appearance', theme: 'Theme', auto: 'Auto', day: 'Day', night: 'Night',
       keepAwake: 'Keep screen on while reading', keepAwakeHint: "The screen won't sleep during an aarti",
       keepAwakeNo: "This browser doesn't support it.",
-      updates: 'Updates', collection: 'Aarti collection', collectionInfo: (v, n) => `Version ${v} • ${n} texts`,
+      updates: 'Updates', collection: 'Aartis & shlokas', collectionInfo: (v, n) => `Version ${v} • ${n} texts`,
       checkNew: 'Check for new', otaNote: 'New aartis arrive automatically whenever you are online.',
       about: 'About',
       aboutText: 'This app is completely free — no account, no ads, and none of your data is collected. Once opened, it works without internet too.',
@@ -102,7 +102,7 @@
       installAndroid: 'Add an icon to your home screen — it works offline too.', install: 'Install', dismiss: 'Close',
       copied: 'Text copied', appUpdated: 'A new version of the app is ready', refresh: 'Refresh',
       upToDate: 'All aartis are up to date 🙏', offline: 'Check your internet connection and try again',
-      contentUpdated: n => (n > 0 ? `${n} new aartis/shlokas added 🌼` : 'Aarti collection updated 🌼'),
+      contentUpdated: n => (n > 0 ? `${n} new aartis/shlokas added 🌼` : 'Aartis & shlokas updated 🌼'),
       loadError: "Couldn't load the aartis. Check your internet and try again.", retry: 'Try again',
     },
   };

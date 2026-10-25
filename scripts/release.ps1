@@ -39,7 +39,7 @@ if ($LASTEXITCODE -ne 0) { throw "content.json has problems" }
 if ($LASTEXITCODE -ne 0) { throw "Gradle build failed" }
 
 New-Item -ItemType Directory -Force release | Out-Null
-$apk = "release\AartiSangrah-v$Version.apk"
+$apk = "release\Devghar-v$Version.apk"
 Copy-Item "app\build\outputs\apk\release\app-release.apk" $apk -Force
 
 git add -A
@@ -50,9 +50,9 @@ git push origin main --tags
 if ($LASTEXITCODE -ne 0) { throw "git push failed" }
 
 if ($NotesFile) {
-    gh release create "v$Version" $apk --title "Aarti Sangrah v$Version" --notes-file $NotesFile
+    gh release create "v$Version" $apk --title "Devghar v$Version" --notes-file $NotesFile
 } else {
-    gh release create "v$Version" $apk --title "Aarti Sangrah v$Version" --notes $Notes
+    gh release create "v$Version" $apk --title "Devghar v$Version" --notes $Notes
 }
 if ($LASTEXITCODE -ne 0) { throw "gh release failed" }
 Write-Host "Done: $apk published."

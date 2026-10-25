@@ -29,7 +29,7 @@ class Strings private constructor(val language: AppLanguage) {
     val back = t("मागे", "Back")
 
     // Home
-    val appName = t("आरती संग्रह", "Aarti Sangrah")
+    val appName = t("देवघर", "Devghar")
     val appTagline = t("आरत्या • श्लोक • स्तोत्रे • अभंग", "Aartis • Shlokas • Stotras • Abhangs")
     val searchHint = t("आरती, श्लोक किंवा देव शोधा…", "Search aartis, shlokas or deities…")
     /** Label of the quick language switch: always names the *other* language. */
@@ -59,7 +59,7 @@ class Strings private constructor(val language: AppLanguage) {
     val next = t("पुढील", "Next")
     val addFavorite = t("आवडत्यांत जोडा", "Add to favourites")
     val removeFavorite = t("आवडत्यांतून काढा", "Remove from favourites")
-    val shareFooter = t("— आरती संग्रह ॲप", "— Aarti Sangrah app")
+    val shareFooter = t("— देवघर ॲप", "— Devghar app")
     fun composedBy(author: String) = t("रचना: $author", "By $author")
 
     // Search
@@ -101,7 +101,7 @@ class Strings private constructor(val language: AppLanguage) {
     val keepScreenOn = t("वाचताना स्क्रीन चालू ठेवा", "Keep screen on while reading")
     val keepScreenOnHint = t("आरती म्हणताना स्क्रीन बंद होणार नाही", "The screen won't sleep during an aarti")
     val updates = t("अपडेट्स", "Updates")
-    val collection = t("आरती संग्रह", "Aarti collection")
+    val collection = t("आरत्या व श्लोक", "Aartis & shlokas")
     fun collectionInfo(version: Int, count: Int) =
         t("आवृत्ती ${num(version)} • ${num(count)} रचना", "Version $version • $count texts")
     val checkNew = t("नवीन तपासा", "Check for new")
@@ -125,7 +125,7 @@ class Strings private constructor(val language: AppLanguage) {
     fun message(m: UiMessage): String = when (m) {
         is UiMessage.ContentUpdated ->
             if (m.newItems > 0) t("${num(m.newItems)} नवीन आरत्या/श्लोक जोडले गेले 🌼", "${m.newItems} new aartis/shlokas added 🌼")
-            else t("आरती संग्रह अद्ययावत झाला 🌼", "Aarti collection updated 🌼")
+            else t("आरत्या व श्लोक अद्ययावत झाले 🌼", "Aartis & shlokas updated 🌼")
         UiMessage.ContentUpToDate -> t("सर्व आरत्या अद्ययावत आहेत 🙏", "All aartis are up to date 🙏")
         UiMessage.NeedsAppUpdate -> t("नवीन मजकुरासाठी कृपया ॲप अपडेट करा", "Please update the app to get the new content")
         UiMessage.Offline -> t("इंटरनेट जोडणी तपासा आणि पुन्हा प्रयत्न करा", "Check your internet connection and try again")
