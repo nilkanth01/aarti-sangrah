@@ -29,6 +29,7 @@ import androidx.compose.material.icons.automirrored.rounded.QueueMusic
 import androidx.compose.material.icons.rounded.PlayArrow
 import androidx.compose.material.icons.rounded.Search
 import androidx.compose.material.icons.rounded.SystemUpdate
+import androidx.compose.material.icons.rounded.Translate
 import androidx.compose.material.icons.rounded.WbSunny
 import androidx.compose.material3.FilledTonalButton
 import androidx.compose.material3.Icon
@@ -52,6 +53,7 @@ import com.nilkanth.aartisangrah.R
 import com.nilkanth.aartisangrah.data.AppRelease
 import com.nilkanth.aartisangrah.data.Library
 import com.nilkanth.aartisangrah.data.Marathi
+import com.nilkanth.aartisangrah.ui.LocalStrings
 import com.nilkanth.aartisangrah.ui.components.DeityAvatar
 import com.nilkanth.aartisangrah.ui.components.ItemCard
 import com.nilkanth.aartisangrah.ui.components.Ornament
@@ -76,28 +78,30 @@ fun HomeScreen(
     onOpenSearch: () -> Unit,
     onDownloadUpdate: (AppRelease) -> Unit,
     onToggleFavorite: (String) -> Unit,
+    onToggleLanguage: () -> Unit,
 ) {
+    val strings = LocalStrings.current
     val recentItems = recents.mapNotNull { library.item(it) }
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
-        item { Hero(onOpenSearch) }
+        item { Hero(onOpenSearch, onToggleLanguage) }
         if (appUpdate != null) item { UpdateBanner(appUpdate) { onDownloadUpdate(appUpdate) } }
         item { TodayCard(library, onOpenReader, onOpenList) }
         if (library.playlists.isNotEmpty()) {
-            item { SectionTitle("पूजा क्रम") }
+            item { SectionTitle(strings.poojaSequences) }
             item { PlaylistRow(library, onOpenReader) }
         }
-        item { SectionTitle("प्रकार") }
+        item { SectionTitle(strings.categories) }
         item { CategoryGrid(library, onOpenList) }
-        item { SectionTitle("देवता") }
+        item { SectionTitle(strings.deities) }
         item { DeityRow(library, onOpenList) }
         if (recentItems.isNotEmpty()) {
-            item { SectionTitle("अलीकडे वाचलेले") }
+            item { SectionTitle(strings.recentlyRead) }
             items(recentItems, key = { "recent-" + it.id }) { item ->
                 ItemCard(
                     item = item,
                     library = library,
                     isFavorite = item.id in favorites,
-                    onClick = { onOpenReader(recentItems.map { it.id }, recentItems.indexOf(item), "अलीकडे वाचलेले") },
+                    onClick = { onOpenReader(recentItems.map { it.id }, recentItems.indexOf(item), strings.recentlyRead) },
                     onToggleFavorite = { onToggleFavorite(item.id) },
                 )
             }
@@ -107,7 +111,8 @@ fun HomeScreen(
 }
 
 @Composable
-private fun Hero(onOpenSearch: () -> Unit) {
+private fun Hero(onOpenSearch: () -> Unit, onToggleLanguage: () -> Unit) {
+    val strings = LocalStrings.current
     Box(
         Modifier
             .fillMaxWidth()
@@ -121,18 +126,34 @@ private fun Hero(onOpenSearch: () -> Unit) {
                 .padding(horizontal = 20.dp)
                 .padding(top = 14.dp, bottom = 22.dp),
         ) {
-            Text(
-                "॥ श्री गणेशाय नमः ॥",
-                color = Gold,
-                style = MaterialTheme.typography.titleSmall,
-                modifier = Modifier.align(Alignment.CenterHorizontally),
-            )
+            Box(Modifier.fillMaxWidth()) {
+                Text(
+                    "॥ श्री गणेशाय नमः ॥",
+                    color = Gold,
+                    style = MaterialTheme.typography.titleSmall,
+                    modifier = Modifier.align(Alignment.Center),
+                )
+                // Quick switch between Marathi and English menus (aartis stay in Devanagari).
+                Row(
+                    Modifier
+                        .align(Alignment.CenterEnd)
+                        .clip(RoundedCornerShape(50))
+                        .background(Color.White.copy(alpha = 0.18f))
+                        .clickable(onClick = onToggleLanguage)
+                        .padding(horizontal = 10.dp, vertical = 4.dp),
+                    verticalAlignment = Alignment.CenterVertically,
+                ) {
+                    Icon(Icons.Rounded.Translate, contentDescription = null, tint = Color.White, modifier = Modifier.size(15.dp))
+                    Spacer(Modifier.width(4.dp))
+                    Text(strings.otherLanguage, style = MaterialTheme.typography.labelMedium, color = Color.White)
+                }
+            }
             Spacer(Modifier.height(10.dp))
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Column(Modifier.weight(1f)) {
-                    Text("आरती संग्रह", style = MaterialTheme.typography.displaySmall, color = Color.White)
+                    Text(strings.appName, style = MaterialTheme.typography.displaySmall, color = Color.White)
                     Text(
-                        "आरत्या • श्लोक • स्तोत्रे • अभंग",
+                        strings.appTagline,
                         style = MaterialTheme.typography.bodyMedium,
                         color = Color.White.copy(alpha = 0.88f),
                     )
@@ -153,7 +174,7 @@ private fun Hero(onOpenSearch: () -> Unit) {
             ) {
                 Icon(Icons.Rounded.WbSunny, contentDescription = null, tint = Gold, modifier = Modifier.size(16.dp))
                 Spacer(Modifier.width(6.dp))
-                Text(Marathi.date(), style = MaterialTheme.typography.labelLarge, color = Color.White)
+                Text(strings.date(), style = MaterialTheme.typography.labelLarge, color = Color.White)
             }
             Spacer(Modifier.height(18.dp))
             Surface(
@@ -167,7 +188,7 @@ private fun Hero(onOpenSearch: () -> Unit) {
                     Icon(Icons.Rounded.Search, contentDescription = null, tint = MaterialTheme.colorScheme.primary)
                     Spacer(Modifier.width(12.dp))
                     Text(
-                        "आरती, श्लोक किंवा देव शोधा…",
+                        strings.searchHint,
                         style = MaterialTheme.typography.bodyLarge,
                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                     )
@@ -200,6 +221,7 @@ private fun MandalaBackdrop(modifier: Modifier) {
 
 @Composable
 private fun UpdateBanner(release: AppRelease, onDownload: () -> Unit) {
+    val strings = LocalStrings.current
     Surface(
         color = MaterialTheme.colorScheme.tertiaryContainer,
         shape = RoundedCornerShape(22.dp),
@@ -209,10 +231,10 @@ private fun UpdateBanner(release: AppRelease, onDownload: () -> Unit) {
             Icon(Icons.Rounded.SystemUpdate, contentDescription = null, tint = MaterialTheme.colorScheme.onTertiaryContainer)
             Spacer(Modifier.width(12.dp))
             Column(Modifier.weight(1f)) {
-                Text("नवीन आवृत्ती ${release.versionName} उपलब्ध", style = MaterialTheme.typography.titleSmall)
-                Text("नवीन सुविधा व सुधारणा", style = MaterialTheme.typography.bodySmall)
+                Text(strings.newVersionAvailable(release.versionName), style = MaterialTheme.typography.titleSmall)
+                Text(strings.newFeatures, style = MaterialTheme.typography.bodySmall)
             }
-            FilledTonalButton(onClick = onDownload) { Text("डाउनलोड") }
+            FilledTonalButton(onClick = onDownload) { Text(strings.download) }
         }
     }
 }
@@ -223,10 +245,12 @@ private fun TodayCard(
     onOpenReader: (List<String>, Int, String) -> Unit,
     onOpenList: (String, String) -> Unit,
 ) {
+    val strings = LocalStrings.current
     val deity = library.deity(Marathi.deityOfDay()) ?: return
     val items = library.itemsOfDeity(deity.id)
     if (items.isEmpty()) return
     val ids = items.map { it.id }
+    val deityName = strings.deityName(deity)
     Surface(
         shape = RoundedCornerShape(26.dp),
         color = MaterialTheme.colorScheme.surfaceContainerLowest,
@@ -238,16 +262,16 @@ private fun TodayCard(
                 DeityAvatar(deity, 52.dp)
                 Spacer(Modifier.width(14.dp))
                 Column(Modifier.weight(1f)) {
-                    Text("आज ${Marathi.day()}", style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
-                    Text("आजचे दैवत: ${deity.name}", style = MaterialTheme.typography.titleMedium)
+                    Text(strings.today(), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                    Text(strings.deityOfDay(deityName), style = MaterialTheme.typography.titleMedium)
                 }
-                TextButton(onClick = { onOpenList("deity", deity.id) }) { Text("सर्व") }
+                TextButton(onClick = { onOpenList("deity", deity.id) }) { Text(strings.all) }
             }
             Spacer(Modifier.height(12.dp))
             LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 itemsIndexed(items, key = { _, it -> it.id }) { index, item ->
                     Surface(
-                        onClick = { onOpenReader(ids, index, deity.name) },
+                        onClick = { onOpenReader(ids, index, deityName) },
                         shape = RoundedCornerShape(18.dp),
                         color = deityColor(deity).copy(alpha = if (LocalIsDark.current) 0.22f else 0.10f),
                         modifier = Modifier.widthIn(max = 230.dp),
@@ -257,7 +281,7 @@ private fun TodayCard(
                             Spacer(Modifier.height(6.dp))
                             Text(item.title, style = MaterialTheme.typography.titleSmall, maxLines = 1, overflow = TextOverflow.Ellipsis)
                             Text(
-                                library.category(item.category)?.name.orEmpty(),
+                                library.category(item.category)?.let { strings.categoryName(it) }.orEmpty(),
                                 style = MaterialTheme.typography.labelSmall,
                                 color = MaterialTheme.colorScheme.onSurfaceVariant,
                             )
@@ -278,6 +302,7 @@ private val playlistBrushes = listOf(
 
 @Composable
 private fun PlaylistRow(library: Library, onOpenReader: (List<String>, Int, String) -> Unit) {
+    val strings = LocalStrings.current
     LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
         itemsIndexed(library.playlists, key = { _, it -> it.id }) { index, playlist ->
             Box(
@@ -285,7 +310,7 @@ private fun PlaylistRow(library: Library, onOpenReader: (List<String>, Int, Stri
                     .width(272.dp)
                     .clip(RoundedCornerShape(26.dp))
                     .background(Brush.linearGradient(playlistBrushes[index % playlistBrushes.size]))
-                    .clickable { onOpenReader(playlist.itemIds, 0, playlist.name) },
+                    .clickable { onOpenReader(playlist.itemIds, 0, strings.playlistName(playlist)) },
             ) {
                 Canvas(Modifier.matchParentSize()) {
                     drawCircle(Color.White.copy(alpha = 0.08f), radius = 70.dp.toPx(), center = Offset(size.width, 0f))
@@ -299,9 +324,15 @@ private fun PlaylistRow(library: Library, onOpenReader: (List<String>, Int, Stri
                         Icon(Icons.AutoMirrored.Rounded.QueueMusic, contentDescription = null, tint = Color.White)
                     }
                     Spacer(Modifier.height(10.dp))
-                    Text(playlist.name, style = MaterialTheme.typography.titleMedium, color = Color.White, maxLines = 1, overflow = TextOverflow.Ellipsis)
                     Text(
-                        playlist.description,
+                        strings.playlistName(playlist),
+                        style = MaterialTheme.typography.titleMedium,
+                        color = Color.White,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis,
+                    )
+                    Text(
+                        strings.playlistDescription(playlist),
                         style = MaterialTheme.typography.bodySmall,
                         color = Color.White.copy(alpha = 0.85f),
                         maxLines = 2,
@@ -318,11 +349,11 @@ private fun PlaylistRow(library: Library, onOpenReader: (List<String>, Int, Stri
                             verticalAlignment = Alignment.CenterVertically,
                         ) {
                             Icon(Icons.Rounded.PlayArrow, contentDescription = null, tint = Color(0xFF7A1F3D), modifier = Modifier.size(20.dp))
-                            Text("सुरू करा", style = MaterialTheme.typography.labelLarge, color = Color(0xFF7A1F3D))
+                            Text(strings.start, style = MaterialTheme.typography.labelLarge, color = Color(0xFF7A1F3D))
                         }
                         Spacer(Modifier.weight(1f))
                         Text(
-                            "${Marathi.num(playlist.itemIds.size)} भाग",
+                            strings.parts(playlist.itemIds.size),
                             style = MaterialTheme.typography.labelLarge,
                             color = Color.White.copy(alpha = 0.9f),
                         )
@@ -335,6 +366,7 @@ private fun PlaylistRow(library: Library, onOpenReader: (List<String>, Int, Stri
 
 @Composable
 private fun CategoryGrid(library: Library, onOpenList: (String, String) -> Unit) {
+    val strings = LocalStrings.current
     val dark = LocalIsDark.current
     val scheme = MaterialTheme.colorScheme
     val tints = listOf(
@@ -363,9 +395,15 @@ private fun CategoryGrid(library: Library, onOpenList: (String, String) -> Unit)
                                 Icon(categoryIcon(category.id), contentDescription = null, tint = fg)
                             }
                             Spacer(Modifier.height(12.dp))
-                            Text(category.name, style = MaterialTheme.typography.titleMedium, color = fg, maxLines = 1)
                             Text(
-                                "${Marathi.num(count)} रचना",
+                                strings.categoryName(category),
+                                style = MaterialTheme.typography.titleMedium,
+                                color = fg,
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis,
+                            )
+                            Text(
+                                strings.texts(count),
                                 style = MaterialTheme.typography.labelMedium,
                                 color = fg.copy(alpha = 0.75f),
                             )
@@ -380,6 +418,7 @@ private fun CategoryGrid(library: Library, onOpenList: (String, String) -> Unit)
 
 @Composable
 private fun DeityRow(library: Library, onOpenList: (String, String) -> Unit) {
+    val strings = LocalStrings.current
     val withItems = library.deities.filter { library.itemsOfDeity(it.id).isNotEmpty() }
     LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
         items(withItems, key = { it.id }) { deity ->
@@ -394,7 +433,7 @@ private fun DeityRow(library: Library, onOpenList: (String, String) -> Unit) {
                 DeityAvatar(deity, 62.dp)
                 Spacer(Modifier.height(6.dp))
                 Text(
-                    deity.name.removePrefix("श्री ").removePrefix("सद्गुरु "),
+                    strings.deityShortName(deity),
                     style = MaterialTheme.typography.labelMedium,
                     maxLines = 1,
                     overflow = TextOverflow.Ellipsis,
@@ -412,7 +451,7 @@ private fun Footer() {
         Spacer(Modifier.height(8.dp))
         Text("॥ शुभं भवतु ॥", style = MaterialTheme.typography.titleSmall, color = MaterialTheme.colorScheme.primary)
         Text(
-            "खाते नाही • जाहिराती नाहीत • इंटरनेटशिवायही चालते",
+            LocalStrings.current.footer,
             style = MaterialTheme.typography.labelSmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

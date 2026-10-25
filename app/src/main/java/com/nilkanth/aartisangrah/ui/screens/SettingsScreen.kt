@@ -46,23 +46,26 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.nilkanth.aartisangrah.BuildConfig
+import com.nilkanth.aartisangrah.data.AppLanguage
 import com.nilkanth.aartisangrah.data.AppRelease
 import com.nilkanth.aartisangrah.data.Library
-import com.nilkanth.aartisangrah.data.Marathi
 import com.nilkanth.aartisangrah.data.Prefs
 import com.nilkanth.aartisangrah.data.ThemeMode
+import com.nilkanth.aartisangrah.ui.LocalStrings
 import com.nilkanth.aartisangrah.ui.components.Ornament
 import com.nilkanth.aartisangrah.ui.theme.verseStyle
 
 @Composable
 fun SettingsScreen(
     library: Library,
+    language: AppLanguage,
     theme: ThemeMode,
     fontSize: Float,
     keepScreenOn: Boolean,
     appUpdate: AppRelease?,
     checkingContent: Boolean,
     checkingApp: Boolean,
+    onLanguage: (AppLanguage) -> Unit,
     onTheme: (ThemeMode) -> Unit,
     onFontSize: (Float) -> Unit,
     onKeepScreenOn: (Boolean) -> Unit,
@@ -72,12 +75,13 @@ fun SettingsScreen(
     onReportIssue: () -> Unit,
     onOpenSource: () -> Unit,
 ) {
+    val strings = LocalStrings.current
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
         item {
             Column(Modifier.statusBarsPadding().padding(start = 20.dp, end = 20.dp, top = 18.dp, bottom = 4.dp)) {
-                Text("सेटिंग्ज", style = MaterialTheme.typography.headlineMedium)
+                Text(strings.tabSettings, style = MaterialTheme.typography.headlineMedium)
                 Text(
-                    "तुमच्या सोयीनुसार ॲप बदला",
+                    strings.settingsSubtitle,
                     style = MaterialTheme.typography.bodyMedium,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                 )
@@ -85,13 +89,37 @@ fun SettingsScreen(
         }
 
         item {
-            Group("दिसणे") {
-                Text("रंगसंगती", style = MaterialTheme.typography.titleSmall)
+            // Each option is labelled in its own language so it can always be found.
+            Group(if (strings.english) "Language • भाषा" else "भाषा • Language") {
+                Text(strings.appLanguage, style = MaterialTheme.typography.titleSmall)
+                Spacer(Modifier.height(8.dp))
+                val options = listOf(AppLanguage.MARATHI to "मराठी", AppLanguage.ENGLISH to "English")
+                SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+                    options.forEachIndexed { i, (option, label) ->
+                        SegmentedButton(
+                            selected = language == option,
+                            onClick = { onLanguage(option) },
+                            shape = SegmentedButtonDefaults.itemShape(i, options.size),
+                        ) { Text(label) }
+                    }
+                }
+                Text(
+                    strings.languageNote,
+                    style = MaterialTheme.typography.bodySmall,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                    modifier = Modifier.padding(top = 8.dp),
+                )
+            }
+        }
+
+        item {
+            Group(strings.appearance) {
+                Text(strings.theme, style = MaterialTheme.typography.titleSmall)
                 Spacer(Modifier.height(8.dp))
                 val options = listOf(
-                    Triple(ThemeMode.SYSTEM, "आपोआप", Icons.Rounded.BrightnessAuto),
-                    Triple(ThemeMode.LIGHT, "दिवस", Icons.Rounded.LightMode),
-                    Triple(ThemeMode.DARK, "रात्र", Icons.Rounded.DarkMode),
+                    Triple(ThemeMode.SYSTEM, strings.themeAuto, Icons.Rounded.BrightnessAuto),
+                    Triple(ThemeMode.LIGHT, strings.themeDay, Icons.Rounded.LightMode),
+                    Triple(ThemeMode.DARK, strings.themeNight, Icons.Rounded.DarkMode),
                 )
                 SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
                     options.forEachIndexed { i, (mode, label, icon) ->
@@ -105,8 +133,8 @@ fun SettingsScreen(
                 }
                 Spacer(Modifier.height(18.dp))
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text("अक्षरांचा आकार", style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
-                    Text(Marathi.num(fontSize.toInt()), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
+                    Text(strings.textSize, style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
+                    Text(strings.num(fontSize.toInt()), style = MaterialTheme.typography.labelLarge, color = MaterialTheme.colorScheme.primary)
                 }
                 Slider(value = fontSize, onValueChange = onFontSize, valueRange = Prefs.MIN_FONT_SIZE..Prefs.MAX_FONT_SIZE)
                 Text(
@@ -118,9 +146,9 @@ fun SettingsScreen(
                 HorizontalDivider(Modifier.padding(vertical = 14.dp), color = MaterialTheme.colorScheme.outlineVariant)
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
-                        Text("वाचताना स्क्रीन चालू ठेवा", style = MaterialTheme.typography.titleSmall)
+                        Text(strings.keepScreenOn, style = MaterialTheme.typography.titleSmall)
                         Text(
-                            "आरती म्हणताना स्क्रीन बंद होणार नाही",
+                            strings.keepScreenOnHint,
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant,
                         )
@@ -131,17 +159,17 @@ fun SettingsScreen(
         }
 
         item {
-            Group("अपडेट्स") {
+            Group(strings.updates) {
                 UpdateRow(
                     icon = Icons.AutoMirrored.Rounded.LibraryBooks,
-                    title = "आरती संग्रह",
-                    subtitle = "आवृत्ती ${Marathi.num(library.version)} • ${Marathi.num(library.items.size)} रचना",
+                    title = strings.collection,
+                    subtitle = strings.collectionInfo(library.version, library.items.size),
                 ) {
                     if (checkingContent) CircularProgressIndicator(Modifier.size(28.dp), strokeWidth = 3.dp)
-                    else OutlinedButton(onClick = onCheckContent) { Text("नवीन तपासा") }
+                    else OutlinedButton(onClick = onCheckContent) { Text(strings.checkNew) }
                 }
                 Text(
-                    "नवीन आरत्या इंटरनेटवरून आपोआप येतात — ॲप पुन्हा इंस्टॉल करायची गरज नाही.",
+                    strings.otaNote,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(start = 40.dp, top = 2.dp),
@@ -149,28 +177,24 @@ fun SettingsScreen(
                 HorizontalDivider(Modifier.padding(vertical = 14.dp), color = MaterialTheme.colorScheme.outlineVariant)
                 UpdateRow(
                     icon = Icons.Rounded.SystemUpdate,
-                    title = "ॲप आवृत्ती",
+                    title = strings.appVersion,
                     subtitle = BuildConfig.VERSION_NAME,
                 ) {
                     when {
-                        appUpdate != null -> Button(onClick = { onDownloadUpdate(appUpdate) }) { Text("v${appUpdate.versionName} घ्या") }
+                        appUpdate != null -> Button(onClick = { onDownloadUpdate(appUpdate) }) { Text(strings.getVersion(appUpdate.versionName)) }
                         checkingApp -> CircularProgressIndicator(Modifier.size(28.dp), strokeWidth = 3.dp)
-                        else -> OutlinedButton(onClick = onCheckApp) { Text("तपासा") }
+                        else -> OutlinedButton(onClick = onCheckApp) { Text(strings.check) }
                     }
                 }
             }
         }
 
         item {
-            Group("माहिती") {
-                Text(
-                    "हे ॲप पूर्णपणे मोफत आहे — खाते नाही, जाहिराती नाहीत, तुमची कोणतीही माहिती गोळा केली जात नाही. " +
-                        "सर्व आरत्या फोनमध्येच साठवलेल्या आहेत, त्यामुळे इंटरनेटशिवायही ॲप चालते.",
-                    style = MaterialTheme.typography.bodyMedium,
-                )
+            Group(strings.about) {
+                Text(strings.aboutText, style = MaterialTheme.typography.bodyMedium)
                 Spacer(Modifier.height(8.dp))
-                LinkRow(Icons.Rounded.BugReport, "चूक कळवा / नवीन आरती सुचवा", onReportIssue)
-                LinkRow(Icons.Rounded.Code, "स्रोत कोड (GitHub)", onOpenSource)
+                LinkRow(Icons.Rounded.BugReport, strings.reportIssue, onReportIssue)
+                LinkRow(Icons.Rounded.Code, strings.sourceCode, onOpenSource)
             }
         }
 

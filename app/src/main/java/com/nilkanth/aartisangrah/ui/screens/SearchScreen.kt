@@ -39,7 +39,7 @@ import androidx.compose.ui.platform.LocalFocusManager
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.unit.dp
 import com.nilkanth.aartisangrah.data.Library
-import com.nilkanth.aartisangrah.data.Marathi
+import com.nilkanth.aartisangrah.ui.LocalStrings
 import com.nilkanth.aartisangrah.ui.components.EmptyState
 import com.nilkanth.aartisangrah.ui.components.ItemCard
 
@@ -57,12 +57,13 @@ fun SearchScreen(
     val focus = remember { FocusRequester() }
     val focusManager = LocalFocusManager.current
     LaunchedEffect(autoFocus) { if (autoFocus) runCatching { focus.requestFocus() } }
+    val strings = LocalStrings.current
 
     Column(Modifier.fillMaxSize()) {
         Column(Modifier.statusBarsPadding().padding(start = 20.dp, end = 20.dp, top = 18.dp)) {
-            Text("शोधा", style = MaterialTheme.typography.headlineMedium)
+            Text(strings.tabSearch, style = MaterialTheme.typography.headlineMedium)
             Text(
-                "मराठी किंवा इंग्रजीत शोधा — उदा. सुखकर्ता, ganpati, ramraksha",
+                strings.searchSubtitle,
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -71,11 +72,11 @@ fun SearchScreen(
             value = query,
             onValueChange = { query = it },
             modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 12.dp).focusRequester(focus),
-            placeholder = { Text("आरती, श्लोक, देव किंवा ओळ…") },
+            placeholder = { Text(strings.searchPlaceholder) },
             leadingIcon = { Icon(Icons.Rounded.Search, contentDescription = null, tint = MaterialTheme.colorScheme.primary) },
             trailingIcon = {
                 if (query.isNotEmpty()) {
-                    IconButton(onClick = { query = "" }) { Icon(Icons.Rounded.Clear, contentDescription = "पुसा") }
+                    IconButton(onClick = { query = "" }) { Icon(Icons.Rounded.Clear, contentDescription = strings.clear) }
                 }
             },
             singleLine = true,
@@ -91,18 +92,18 @@ fun SearchScreen(
         )
         LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(8.dp)) {
             item {
-                FilterChip(selected = categoryId == null, onClick = { categoryId = null }, label = { Text("सर्व") })
+                FilterChip(selected = categoryId == null, onClick = { categoryId = null }, label = { Text(strings.all) })
             }
             items(library.categories, key = { it.id }) { c ->
                 FilterChip(
                     selected = categoryId == c.id,
                     onClick = { categoryId = if (categoryId == c.id) null else c.id },
-                    label = { Text(c.name) },
+                    label = { Text(strings.categoryName(c)) },
                 )
             }
         }
         Text(
-            "${Marathi.num(results.size)} रचना",
+            strings.texts(results.size),
             style = MaterialTheme.typography.labelLarge,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
             modifier = Modifier.padding(horizontal = 20.dp, vertical = 8.dp),
@@ -110,8 +111,8 @@ fun SearchScreen(
         if (results.isEmpty()) {
             EmptyState(
                 icon = Icons.Rounded.SearchOff,
-                title = "काही सापडले नाही",
-                message = "दुसरा शब्द वापरून पहा. इंग्रजी अक्षरांतही शोधता येते — उदा. aarti, vitthal, datta.",
+                title = strings.noResults,
+                message = strings.noResultsHint,
             )
         } else {
             val ids = results.map { it.id }
@@ -121,7 +122,7 @@ fun SearchScreen(
                         item = item,
                         library = library,
                         isFavorite = item.id in favorites,
-                        onClick = { onOpenReader(ids, index, "शोध परिणाम") },
+                        onClick = { onOpenReader(ids, index, strings.searchResults) },
                         onToggleFavorite = { onToggleFavorite(item.id) },
                     )
                 }

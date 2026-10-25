@@ -49,6 +49,7 @@ import androidx.compose.ui.unit.sp
 import com.nilkanth.aartisangrah.data.Deity
 import com.nilkanth.aartisangrah.data.Item
 import com.nilkanth.aartisangrah.data.Library
+import com.nilkanth.aartisangrah.ui.LocalStrings
 import com.nilkanth.aartisangrah.ui.theme.LocalIsDark
 import com.nilkanth.aartisangrah.ui.theme.Mukta
 
@@ -138,6 +139,7 @@ fun ItemCard(
     onToggleFavorite: () -> Unit,
     modifier: Modifier = Modifier,
 ) {
+    val strings = LocalStrings.current
     val deity = library.deity(item.deity)
     val category = library.category(item.category)
     Surface(
@@ -153,7 +155,12 @@ fun ItemCard(
             Spacer(Modifier.width(14.dp))
             Column(Modifier.weight(1f)) {
                 Text(item.title, style = MaterialTheme.typography.titleMedium, maxLines = 1, overflow = TextOverflow.Ellipsis)
-                val meta = listOfNotNull(category?.name, item.author ?: deity?.name).joinToString(" • ")
+                // In English the transliterated title helps; in Marathi the next line of the text does.
+                val second = if (strings.english) item.titleEn.ifBlank { item.preview } else item.preview
+                val meta = listOfNotNull(
+                    category?.let { strings.categoryName(it) },
+                    item.author ?: deity?.let { strings.deityName(it) },
+                ).joinToString(" • ")
                 Text(
                     meta,
                     style = MaterialTheme.typography.labelMedium,
@@ -162,7 +169,7 @@ fun ItemCard(
                     overflow = TextOverflow.Ellipsis,
                 )
                 Text(
-                    item.preview,
+                    second,
                     style = MaterialTheme.typography.bodySmall,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     maxLines = 1,
@@ -176,11 +183,12 @@ fun ItemCard(
 
 @Composable
 fun FavoriteButton(isFavorite: Boolean, onToggle: () -> Unit, tint: Color = MaterialTheme.colorScheme.outline) {
+    val strings = LocalStrings.current
     val color by animateColorAsState(if (isFavorite) Color(0xFFE0245E) else tint, label = "fav")
     IconButton(onClick = onToggle) {
         Icon(
             if (isFavorite) Icons.Rounded.Favorite else Icons.Rounded.FavoriteBorder,
-            contentDescription = if (isFavorite) "आवडत्यांतून काढा" else "आवडत्यांत जोडा",
+            contentDescription = if (isFavorite) strings.removeFavorite else strings.addFavorite,
             tint = color,
         )
     }

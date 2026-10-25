@@ -4,12 +4,18 @@
 **खाते नाही • जाहिराती नाहीत • इंटरनेटशिवायही चालते.**
 
 A free Android app with traditional Marathi Hindu aartis, shlokas, stotras and abhangs in Devanagari.
-No account, no ads, no tracking, works offline, and gets new content over the air.
+Menus in Marathi or English (the texts always stay in Devanagari). No account, no ads, no tracking,
+works offline, and gets new content over the air.
 
 <p align="center">
   <img src="docs/screenshots/1-home.png" width="230" alt="Home screen" />
   <img src="docs/screenshots/2-reader.png" width="230" alt="Reading an aarti" />
   <img src="docs/screenshots/7-home-dark.png" width="230" alt="Dark mode" />
+</p>
+<p align="center">
+  <img src="docs/screenshots/8-home-english.png" width="230" alt="Home screen with English menus" />
+  <img src="docs/screenshots/9-reader-english.png" width="230" alt="Reader with English menus, aarti in Devanagari" />
+  <img src="docs/screenshots/10-settings-english.png" width="230" alt="Settings with the language switch" />
 </p>
 
 ## 📥 डाउनलोड / Download
@@ -27,6 +33,9 @@ No account, no ads, no tracking, works offline, and gets new content over the ai
 ## ✨ सुविधा / Features
 
 - **५२ रचना** — १८ आरत्या, १८ श्लोक व मंत्र, ८ स्तोत्रे, ८ अभंग व संतवाणी
+- **ॲपची भाषा: मराठी / English** — मेनू, माहिती व सेटिंग्ज इंग्रजीतही; आरत्या व श्लोक नेहमी देवनागरीतच.
+  मुख्यपृष्ठावरील **English / मराठी** बटण किंवा **सेटिंग्ज → भाषा** वापरा.
+  *Switch the menus to English from the home screen button or Settings → Language; the aartis stay in Devanagari.*
 - **पूजा क्रम** — गणेशोत्सव आरती क्रम, सकाळचे श्लोक, सायंकाळची प्रार्थना, साई आरती — एकामागून एक स्वाइप करा
 - **आजचे दैवत** — वारानुसार (सोमवार शंकर, मंगळवार गणपती…) आरत्या मुख्यपृष्ठावर
 - **ध्रुपद हायलाइट** — प्रत्येक कडव्यानंतर ध्रुपद वेगळ्या रंगात, सगळ्यांना सोबत म्हणता यावे म्हणून
@@ -92,6 +101,9 @@ A new item looks like this (`\n` = new line, each string in `verses` is one क�
 - `category`: `aarti`, `shlok`, `stotra` or `abhang`
 - `deity`: one of the `id`s in the `deities` list (`ganpati`, `devi`, `shankar`, `vitthal`, `datta`, `ram`, `maruti`, `krishna`, `vishnu`, `sai`, `sant`, `surya`, `navgrah`, `sarva`) — you can add new deities too
 - `refrain` (ध्रुपद) is optional; it is shown after every verse. `refrainFirst: true` also shows it at the top
+- Optional `about` (मराठी माहिती) and `aboutEn` (the same note in English, shown when the app is in English)
+- `titleEn` is shown under the Devanagari title when the app is in English, and helps English search
+- New deities, categories and playlists need an English `nameEn` too (playlists and categories also take `descriptionEn`)
 - To add it to a पूजा क्रम, put its `id` in a `playlists[].items` list
 - Check locally with `python scripts/validate_content.py`
 - If new content ever needs a newer app, set `"minAppVersion"` to that app's `versionCode`; older apps will keep their current content instead of breaking

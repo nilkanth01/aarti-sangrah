@@ -4,12 +4,15 @@
 
   Usage (from the project folder):
     .\scripts\release.ps1 -Version 1.1.0 -Notes "New aartis and a darker night mode"
+    .\scripts\release.ps1 -Version 1.1.0 -NotesFile notes.md   # for Marathi notes (UTF-8 file)
 
   Needs: keystore.properties + the .jks file it points to, and `gh auth login` done once.
 #>
 param(
     [Parameter(Mandatory = $true)][string]$Version,
-    [string]$Notes = "Improvements and fixes"
+    [string]$Notes = "Improvements and fixes",
+    [string]$NotesFile = "",
+    [string]$CommitBody = ""
 )
 $ErrorActionPreference = "Stop"
 $root = Split-Path -Parent $PSScriptRoot
@@ -17,6 +20,7 @@ Set-Location $root
 
 if ($Version -notmatch '^\d+\.\d+\.\d+$') { throw "Version must look like 1.2.3" }
 if (-not (Test-Path "keystore.properties")) { throw "keystore.properties is missing - see README (Signing)" }
+if ($NotesFile -and -not (Test-Path $NotesFile)) { throw "Notes file not found: $NotesFile" }
 
 # Bump versionCode and versionName in gradle.properties (UTF-8, no BOM).
 $propsPath = Join-Path $root "gradle.properties"
@@ -39,11 +43,16 @@ $apk = "release\AartiSangrah-v$Version.apk"
 Copy-Item "app\build\outputs\apk\release\app-release.apk" $apk -Force
 
 git add -A
-git commit -m "Release v$Version"
+if ($CommitBody) { git commit -m "Release v$Version" -m $CommitBody } else { git commit -m "Release v$Version" }
+if ($LASTEXITCODE -ne 0) { throw "git commit failed" }
 git tag "v$Version"
 git push origin main --tags
 if ($LASTEXITCODE -ne 0) { throw "git push failed" }
 
-gh release create "v$Version" $apk --title "Aarti Sangrah v$Version" --notes $Notes
+if ($NotesFile) {
+    gh release create "v$Version" $apk --title "Aarti Sangrah v$Version" --notes-file $NotesFile
+} else {
+    gh release create "v$Version" $apk --title "Aarti Sangrah v$Version" --notes $Notes
+}
 if ($LASTEXITCODE -ne 0) { throw "gh release failed" }
 Write-Host "Done: $apk published."

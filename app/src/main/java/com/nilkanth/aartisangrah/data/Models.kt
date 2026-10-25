@@ -8,6 +8,7 @@ data class Category(
     val name: String,
     val nameEn: String,
     val description: String,
+    val descriptionEn: String,
 )
 
 data class Deity(
@@ -16,13 +17,17 @@ data class Deity(
     val nameEn: String,
     val letter: String,
     val color: Long,
+    /** Extra English search words, e.g. "Ganesh Vinayak" for Ganpati. */
+    val keywords: String,
 )
 
 /** An ordered set of items read one after another, e.g. the Ganeshotsav aarti order. */
 data class Playlist(
     val id: String,
     val name: String,
+    val nameEn: String,
     val description: String,
+    val descriptionEn: String,
     val itemIds: List<String>,
 )
 
@@ -35,6 +40,7 @@ data class Item(
     val author: String?,
     val language: String?,
     val about: String?,
+    val aboutEn: String?,
     /** The chorus (ध्रुपद) sung after every verse. */
     val refrain: String?,
     /** Show the refrain once before the first verse as well. */
@@ -72,7 +78,9 @@ class Library(
             item.id to buildString {
                 append(item.title).append(' ').append(item.titleEn).append(' ').append(item.keywords).append(' ')
                 item.author?.let { append(it).append(' ') }
-                deity(item.deity)?.let { append(it.name).append(' ').append(it.nameEn).append(' ') }
+                deity(item.deity)?.let {
+                    append(it.name).append(' ').append(it.nameEn).append(' ').append(it.keywords).append(' ')
+                }
                 category(item.category)?.let { append(it.name).append(' ').append(it.nameEn).append(' ') }
                 item.refrain?.let { append(it).append(' ') }
                 item.verses.forEach { append(it).append(' ') }
@@ -108,6 +116,7 @@ object LibraryParser {
                 name = it.getString("name"),
                 nameEn = it.optString("nameEn"),
                 description = it.optString("description"),
+                descriptionEn = it.optString("descriptionEn"),
             )
         }
         val deities = root.getJSONArray("deities").objects().map {
@@ -117,6 +126,7 @@ object LibraryParser {
                 nameEn = it.optString("nameEn"),
                 letter = it.optString("letter").ifBlank { it.getString("name").take(1) },
                 color = parseColor(it.optString("color", "#8C5A00")),
+                keywords = it.optString("keywords"),
             )
         }
         val items = root.getJSONArray("items").objects().map {
@@ -129,6 +139,7 @@ object LibraryParser {
                 author = it.optStringOrNull("author"),
                 language = it.optStringOrNull("language"),
                 about = it.optStringOrNull("about"),
+                aboutEn = it.optStringOrNull("aboutEn"),
                 refrain = it.optStringOrNull("refrain"),
                 refrainFirst = it.optBoolean("refrainFirst", false),
                 verses = it.getJSONArray("verses").strings().filter { v -> v.isNotBlank() },
@@ -146,7 +157,9 @@ object LibraryParser {
             Playlist(
                 id = it.getString("id"),
                 name = it.getString("name"),
+                nameEn = it.optString("nameEn"),
                 description = it.optString("description"),
+                descriptionEn = it.optString("descriptionEn"),
                 itemIds = it.getJSONArray("items").strings().filter { id -> id in known },
             )
         }.orEmpty().filter { it.itemIds.isNotEmpty() }

@@ -6,6 +6,9 @@ import kotlinx.coroutines.flow.StateFlow
 
 enum class ThemeMode { SYSTEM, LIGHT, DARK }
 
+/** Language of the app's menus and labels. Aartis and shlokas always stay in Devanagari. */
+enum class AppLanguage { MARATHI, ENGLISH }
+
 /** Small on-device settings store. Nothing here ever leaves the phone. */
 class Prefs(context: Context) {
     private val sp = context.getSharedPreferences("aarti_prefs", Context.MODE_PRIVATE)
@@ -14,6 +17,11 @@ class Prefs(context: Context) {
         runCatching { ThemeMode.valueOf(sp.getString("theme", null) ?: "SYSTEM") }.getOrDefault(ThemeMode.SYSTEM),
     )
     val theme: StateFlow<ThemeMode> = _theme
+
+    private val _language = MutableStateFlow(
+        runCatching { AppLanguage.valueOf(sp.getString("language", null) ?: "MARATHI") }.getOrDefault(AppLanguage.MARATHI),
+    )
+    val language: StateFlow<AppLanguage> = _language
 
     private val _fontSize = MutableStateFlow(sp.getFloat("fontSize", DEFAULT_FONT_SIZE))
     val fontSize: StateFlow<Float> = _fontSize
@@ -35,6 +43,14 @@ class Prefs(context: Context) {
         _theme.value = mode
         sp.edit().putString("theme", mode.name).apply()
     }
+
+    fun setLanguage(language: AppLanguage) {
+        _language.value = language
+        sp.edit().putString("language", language.name).apply()
+    }
+
+    fun toggleLanguage() =
+        setLanguage(if (_language.value == AppLanguage.MARATHI) AppLanguage.ENGLISH else AppLanguage.MARATHI)
 
     fun setFontSize(size: Float) {
         val clamped = size.coerceIn(MIN_FONT_SIZE, MAX_FONT_SIZE)

@@ -8,13 +8,22 @@ import com.nilkanth.aartisangrah.data.AppUpdates
 import com.nilkanth.aartisangrah.data.ContentRepository
 import com.nilkanth.aartisangrah.data.ContentUpdate
 import com.nilkanth.aartisangrah.data.Library
-import com.nilkanth.aartisangrah.data.Marathi
 import com.nilkanth.aartisangrah.data.Prefs
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+
+/** Short notices shown as snackbars; the UI turns them into text in the chosen language. */
+sealed interface UiMessage {
+    data class ContentUpdated(val newItems: Int) : UiMessage
+    data object ContentUpToDate : UiMessage
+    data object NeedsAppUpdate : UiMessage
+    data object Offline : UiMessage
+    data object AppUpToDate : UiMessage
+    data object AppUpdateAvailable : UiMessage
+}
 
 class AppViewModel(app: Application) : AndroidViewModel(app) {
     private val repo = ContentRepository(app)
@@ -30,8 +39,8 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     private val _checkingApp = MutableStateFlow(false)
     val checkingApp: StateFlow<Boolean> = _checkingApp
 
-    private val _messages = MutableSharedFlow<String>(extraBufferCapacity = 4)
-    val messages: SharedFlow<String> = _messages
+    private val _messages = MutableSharedFlow<UiMessage>(extraBufferCapacity = 4)
+    val messages: SharedFlow<UiMessage> = _messages
 
     init {
         viewModelScope.launch {
@@ -40,7 +49,7 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
             if (System.currentTimeMillis() - prefs.lastUpdateCheck > 6 * 60 * 60 * 1000L) {
                 prefs.lastUpdateCheck = System.currentTimeMillis()
                 val result = repo.checkForUpdate()
-                if (result is ContentUpdate.Updated) _messages.emit(updatedMessage(result))
+                if (result is ContentUpdate.Updated) _messages.emit(UiMessage.ContentUpdated(result.newItems))
                 refreshAppUpdate()
             }
         }
@@ -51,10 +60,10 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         viewModelScope.launch {
             _checkingContent.value = true
             val msg = when (val r = repo.checkForUpdate()) {
-                is ContentUpdate.Updated -> updatedMessage(r)
-                is ContentUpdate.UpToDate -> "सर्व आरत्या अद्ययावत आहेत 🙏"
-                ContentUpdate.NeedsAppUpdate -> "नवीन मजकुरासाठी कृपया ॲप अपडेट करा"
-                is ContentUpdate.Failed -> "इंटरनेट जोडणी तपासा आणि पुन्हा प्रयत्न करा"
+                is ContentUpdate.Updated -> UiMessage.ContentUpdated(r.newItems)
+                is ContentUpdate.UpToDate -> UiMessage.ContentUpToDate
+                ContentUpdate.NeedsAppUpdate -> UiMessage.NeedsAppUpdate
+                is ContentUpdate.Failed -> UiMessage.Offline
             }
             _checkingContent.value = false
             _messages.emit(msg)
@@ -69,9 +78,9 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
             _checkingApp.value = false
             _messages.emit(
                 when (found) {
-                    null -> "इंटरनेट जोडणी तपासा आणि पुन्हा प्रयत्न करा"
-                    false -> "तुमच्याकडे नवीनतम आवृत्ती आहे 🙏"
-                    true -> "नवीन आवृत्ती उपलब्ध आहे!"
+                    null -> UiMessage.Offline
+                    false -> UiMessage.AppUpToDate
+                    true -> UiMessage.AppUpdateAvailable
                 },
             )
         }
@@ -84,8 +93,4 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
         _appUpdate.value = latest.takeIf { newer }
         return newer
     }
-
-    private fun updatedMessage(r: ContentUpdate.Updated) =
-        if (r.newItems > 0) "${Marathi.num(r.newItems)} नवीन आरत्या/श्लोक जोडले गेले 🌼"
-        else "आरती संग्रह अद्ययावत झाला 🌼"
 }

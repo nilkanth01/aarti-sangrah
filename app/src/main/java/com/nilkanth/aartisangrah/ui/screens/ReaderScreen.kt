@@ -56,8 +56,8 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.nilkanth.aartisangrah.data.Item
 import com.nilkanth.aartisangrah.data.Library
-import com.nilkanth.aartisangrah.data.Marathi
 import com.nilkanth.aartisangrah.data.Prefs
+import com.nilkanth.aartisangrah.ui.LocalStrings
 import com.nilkanth.aartisangrah.ui.components.DeityAvatar
 import com.nilkanth.aartisangrah.ui.components.FavoriteButton
 import com.nilkanth.aartisangrah.ui.components.Ornament
@@ -89,6 +89,7 @@ fun ReaderScreen(
     val current = items[pager.currentPage.coerceIn(0, items.lastIndex)]
     val scope = rememberCoroutineScope()
     var showFontSheet by remember { mutableStateOf(false) }
+    val strings = LocalStrings.current
 
     LaunchedEffect(current.id) { onMarkRead(current.id) }
     KeepScreenOn(keepScreenOn)
@@ -112,15 +113,15 @@ fun ReaderScreen(
                     }
                 },
                 navigationIcon = {
-                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "मागे") }
+                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = strings.back) }
                 },
                 actions = {
                     IconButton(onClick = { showFontSheet = true }) {
-                        Icon(Icons.Rounded.FormatSize, contentDescription = "अक्षरांचा आकार")
+                        Icon(Icons.Rounded.FormatSize, contentDescription = strings.textSize)
                     }
                     FavoriteButton(current.id in favorites, { onToggleFavorite(current.id) }, MaterialTheme.colorScheme.onSurfaceVariant)
                     IconButton(onClick = { onShare(current) }) {
-                        Icon(Icons.Rounded.Share, contentDescription = "शेअर करा")
+                        Icon(Icons.Rounded.Share, contentDescription = strings.share)
                     }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
@@ -154,6 +155,7 @@ fun ReaderScreen(
 
 @Composable
 private fun ItemPage(item: Item, library: Library, fontSize: Float) {
+    val strings = LocalStrings.current
     val deity = library.deity(item.deity)
     val category = library.category(item.category)
     val style = verseStyle(fontSize)
@@ -172,19 +174,36 @@ private fun ItemPage(item: Item, library: Library, fontSize: Float) {
                     color = MaterialTheme.colorScheme.primary,
                     textAlign = TextAlign.Center,
                 )
+                if (strings.english && item.titleEn.isNotBlank()) {
+                    Text(
+                        item.titleEn,
+                        style = MaterialTheme.typography.titleSmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant,
+                        textAlign = TextAlign.Center,
+                    )
+                }
                 Text(
-                    listOfNotNull(deity?.name, category?.name, item.language).joinToString(" • "),
+                    listOfNotNull(
+                        deity?.let { strings.deityName(it) },
+                        category?.let { strings.categoryName(it) },
+                        strings.languageName(item.language),
+                    ).joinToString(" • "),
                     style = MaterialTheme.typography.labelLarge,
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     textAlign = TextAlign.Center,
                 )
                 item.author?.let {
-                    Text("रचना: $it", style = MaterialTheme.typography.titleSmall, color = deityTextColor(deity), textAlign = TextAlign.Center)
+                    Text(
+                        strings.composedBy(it),
+                        style = MaterialTheme.typography.titleSmall,
+                        color = deityTextColor(deity),
+                        textAlign = TextAlign.Center,
+                    )
                 }
                 Ornament(Modifier.padding(top = 14.dp))
             }
         }
-        item.about?.let { about ->
+        strings.about(item)?.let { about ->
             item(key = "about") {
                 Surface(
                     color = MaterialTheme.colorScheme.secondaryContainer.copy(alpha = 0.6f),
@@ -236,6 +255,7 @@ private fun RefrainBlock(text: String, style: TextStyle) {
 
 @Composable
 private fun PagerBar(page: Int, count: Int, onPrev: () -> Unit, onNext: () -> Unit) {
+    val strings = LocalStrings.current
     Surface(color = MaterialTheme.colorScheme.surfaceContainer) {
         Row(
             Modifier.navigationBarsPadding().padding(horizontal = 8.dp, vertical = 4.dp),
@@ -243,17 +263,17 @@ private fun PagerBar(page: Int, count: Int, onPrev: () -> Unit, onNext: () -> Un
         ) {
             TextButton(onClick = onPrev, enabled = page > 0) {
                 Icon(Icons.AutoMirrored.Rounded.NavigateBefore, contentDescription = null)
-                Text("मागील")
+                Text(strings.previous)
             }
             Column(Modifier.weight(1f), horizontalAlignment = Alignment.CenterHorizontally) {
-                Text("${Marathi.num(page + 1)} / ${Marathi.num(count)}", style = MaterialTheme.typography.titleSmall)
+                Text("${strings.num(page + 1)} / ${strings.num(count)}", style = MaterialTheme.typography.titleSmall)
                 LinearProgressIndicator(
                     progress = { (page + 1f) / count },
                     modifier = Modifier.width(88.dp).padding(top = 4.dp),
                 )
             }
             TextButton(onClick = onNext, enabled = page < count - 1) {
-                Text("पुढील")
+                Text(strings.next)
                 Icon(Icons.AutoMirrored.Rounded.NavigateNext, contentDescription = null)
             }
         }
@@ -264,7 +284,7 @@ private fun PagerBar(page: Int, count: Int, onPrev: () -> Unit, onNext: () -> Un
 private fun FontSizeSheet(size: Float, onChange: (Float) -> Unit, onDismiss: () -> Unit) {
     ModalBottomSheet(onDismissRequest = onDismiss) {
         Column(Modifier.padding(horizontal = 24.dp).padding(bottom = 36.dp)) {
-            Text("अक्षरांचा आकार", style = MaterialTheme.typography.titleLarge)
+            Text(LocalStrings.current.textSize, style = MaterialTheme.typography.titleLarge)
             Text(
                 "सुखकर्ता दुःखहर्ता",
                 style = verseStyle(size),

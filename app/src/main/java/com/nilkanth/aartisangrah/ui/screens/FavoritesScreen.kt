@@ -15,7 +15,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import com.nilkanth.aartisangrah.data.Library
-import com.nilkanth.aartisangrah.data.Marathi
+import com.nilkanth.aartisangrah.ui.LocalStrings
 import com.nilkanth.aartisangrah.ui.components.EmptyState
 import com.nilkanth.aartisangrah.ui.components.ItemCard
 
@@ -26,12 +26,13 @@ fun FavoritesScreen(
     onOpenReader: (ids: List<String>, index: Int, title: String) -> Unit,
     onToggleFavorite: (String) -> Unit,
 ) {
+    val strings = LocalStrings.current
     val items = favorites.mapNotNull { library.item(it) }
     Column(Modifier.fillMaxSize()) {
         Column(Modifier.statusBarsPadding().padding(start = 20.dp, end = 20.dp, top = 18.dp, bottom = 8.dp)) {
-            Text("आवडते", style = MaterialTheme.typography.headlineMedium)
+            Text(strings.tabFavorites, style = MaterialTheme.typography.headlineMedium)
             Text(
-                if (items.isEmpty()) "तुमच्या आवडत्या आरत्या एका ठिकाणी" else "${Marathi.num(items.size)} आवडत्या रचना",
+                if (items.isEmpty()) strings.favoritesEmptySubtitle else strings.favoritesCount(items.size),
                 style = MaterialTheme.typography.bodyMedium,
                 color = MaterialTheme.colorScheme.onSurfaceVariant,
             )
@@ -39,8 +40,8 @@ fun FavoritesScreen(
         if (items.isEmpty()) {
             EmptyState(
                 icon = Icons.Rounded.FavoriteBorder,
-                title = "अजून काही आवडते नाही",
-                message = "कोणतीही आरती उघडा आणि ♡ दाबा — ती येथे लगेच मिळेल.",
+                title = strings.favoritesEmptyTitle,
+                message = strings.favoritesEmptyMessage,
             )
         } else {
             val ids = items.map { it.id }
@@ -50,7 +51,7 @@ fun FavoritesScreen(
                         item = item,
                         library = library,
                         isFavorite = true,
-                        onClick = { onOpenReader(ids, index, "आवडते") },
+                        onClick = { onOpenReader(ids, index, strings.tabFavorites) },
                         onToggleFavorite = { onToggleFavorite(item.id) },
                     )
                 }

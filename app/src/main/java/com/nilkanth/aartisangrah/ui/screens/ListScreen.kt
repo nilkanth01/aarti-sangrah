@@ -37,7 +37,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import com.nilkanth.aartisangrah.data.Item
 import com.nilkanth.aartisangrah.data.Library
-import com.nilkanth.aartisangrah.data.Marathi
+import com.nilkanth.aartisangrah.ui.LocalStrings
 import com.nilkanth.aartisangrah.ui.components.DeityAvatar
 import com.nilkanth.aartisangrah.ui.components.ItemCard
 import com.nilkanth.aartisangrah.ui.components.categoryIcon
@@ -55,9 +55,10 @@ fun ListScreen(
     onOpenReader: (ids: List<String>, index: Int, title: String) -> Unit,
     onToggleFavorite: (String) -> Unit,
 ) {
+    val strings = LocalStrings.current
     val deity = if (type == "deity") library.deity(id) else null
     val category = if (type == "category") library.category(id) else null
-    val title = deity?.name ?: category?.name ?: ""
+    val title = deity?.let { strings.deityName(it) } ?: category?.let { strings.categoryName(it) } ?: ""
     val items: List<Item> = when {
         deity != null -> library.itemsOfDeity(id)
         category != null -> library.itemsInCategory(id)
@@ -71,7 +72,7 @@ fun ListScreen(
             TopAppBar(
                 title = { Text(title, style = MaterialTheme.typography.titleLarge) },
                 navigationIcon = {
-                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = "मागे") }
+                    IconButton(onClick = onBack) { Icon(Icons.AutoMirrored.Rounded.ArrowBack, contentDescription = strings.back) }
                 },
                 colors = TopAppBarDefaults.topAppBarColors(containerColor = MaterialTheme.colorScheme.background),
             )
@@ -106,7 +107,8 @@ fun ListScreen(
                     Column(Modifier.weight(1f)) {
                         Text(title, style = MaterialTheme.typography.headlineSmall, color = Color.White)
                         Text(
-                            category?.description?.takeIf { it.isNotBlank() } ?: "${Marathi.num(items.size)} रचना",
+                            category?.let { strings.categoryDescription(it) }?.takeIf { it.isNotBlank() }
+                                ?: strings.texts(items.size),
                             style = MaterialTheme.typography.bodyMedium,
                             color = Color.White.copy(alpha = 0.88f),
                         )

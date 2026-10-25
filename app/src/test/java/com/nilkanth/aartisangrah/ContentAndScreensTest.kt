@@ -7,11 +7,15 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.core.app.ApplicationProvider
+import com.nilkanth.aartisangrah.data.AppLanguage
 import com.nilkanth.aartisangrah.data.Library
 import com.nilkanth.aartisangrah.data.LibraryParser
 import com.nilkanth.aartisangrah.data.ThemeMode
+import com.nilkanth.aartisangrah.ui.LocalStrings
+import com.nilkanth.aartisangrah.ui.Strings
 import com.nilkanth.aartisangrah.ui.screens.HomeScreen
 import com.nilkanth.aartisangrah.ui.screens.ListScreen
 import com.nilkanth.aartisangrah.ui.screens.ReaderScreen
@@ -50,9 +54,16 @@ class ContentAndScreensTest {
         library.items.forEach { item ->
             assertTrue("${item.id} has unknown category", library.category(item.category) != null)
             assertTrue("${item.id} has unknown deity", item.deity == null || library.deity(item.deity) != null)
+            assertTrue("${item.id} has a note but no English note", item.about == null || item.aboutEn != null)
         }
-        library.playlists.forEach { assertEquals(it.itemIds.size, library.itemsOf(it).size) }
+        library.playlists.forEach {
+            assertEquals(it.itemIds.size, library.itemsOf(it).size)
+            assertTrue("${it.id} has no English name", it.nameEn.isNotBlank())
+        }
+        library.deities.forEach { assertTrue("${it.id} has no English name", it.nameEn.isNotBlank()) }
+        library.categories.forEach { assertTrue("${it.id} has no English name", it.nameEn.isNotBlank()) }
         assertTrue(library.search("ganpati").isNotEmpty())
+        assertTrue(library.search("vinayak").isNotEmpty())
         assertTrue(library.search("सुखकर्ता").first().id == "sukhakarta")
         assertTrue(library.search("ramraksha").isNotEmpty())
     }
@@ -60,7 +71,7 @@ class ContentAndScreensTest {
     @Test
     fun renderScreens() {
         shot("1-home") {
-            HomeScreen(library, listOf("sukhakarta"), emptyList(), null, { _, _, _ -> }, { _, _ -> }, {}, {}, {})
+            HomeScreen(library, listOf("sukhakarta"), emptyList(), null, { _, _, _ -> }, { _, _ -> }, {}, {}, {}, {})
         }
         shot("2-reader") {
             ReaderScreen(
@@ -76,20 +87,47 @@ class ContentAndScreensTest {
         }
         shot("5-settings") {
             SettingsScreen(
-                library, ThemeMode.SYSTEM, 22f, true, null, false, false,
-                {}, {}, {}, {}, {}, {}, {}, {},
+                library, AppLanguage.MARATHI, ThemeMode.SYSTEM, 22f, true, null, false, false,
+                {}, {}, {}, {}, {}, {}, {}, {}, {},
             )
         }
         shot("6-reader-dark", ThemeMode.DARK) {
             ReaderScreen(library, listOf("ramraksha"), 0, "", 22f, false, listOf("ramraksha"), {}, {}, {}, {}, {})
         }
         shot("7-home-dark", ThemeMode.DARK) {
-            HomeScreen(library, emptyList(), listOf("pasaydan"), null, { _, _, _ -> }, { _, _ -> }, {}, {}, {})
+            HomeScreen(library, emptyList(), listOf("pasaydan"), null, { _, _, _ -> }, { _, _ -> }, {}, {}, {}, {})
+        }
+        shot("8-home-english", language = AppLanguage.ENGLISH) {
+            HomeScreen(library, emptyList(), emptyList(), null, { _, _, _ -> }, { _, _ -> }, {}, {}, {}, {})
+        }
+        shot("9-reader-english", language = AppLanguage.ENGLISH) {
+            ReaderScreen(
+                library, library.playlist("ganeshotsav")!!.itemIds, 0, "Ganeshotsav Aarti Order",
+                22f, false, emptyList(), {}, {}, {}, {}, {},
+            )
+        }
+        shot("10-settings-english", language = AppLanguage.ENGLISH) {
+            SettingsScreen(
+                library, AppLanguage.ENGLISH, ThemeMode.SYSTEM, 22f, true, null, false, false,
+                {}, {}, {}, {}, {}, {}, {}, {}, {},
+            )
+        }
+        shot("11-deity-english", language = AppLanguage.ENGLISH) {
+            ListScreen(library, "deity", "ganpati", emptyList(), {}, { _, _, _ -> }, {})
         }
     }
 
-    private fun shot(name: String, theme: ThemeMode = ThemeMode.LIGHT, content: @Composable () -> Unit) {
-        compose.activity.setContent { AartiTheme(theme) { Surface { content() } } }
+    private fun shot(
+        name: String,
+        theme: ThemeMode = ThemeMode.LIGHT,
+        language: AppLanguage = AppLanguage.MARATHI,
+        content: @Composable () -> Unit,
+    ) {
+        compose.activity.setContent {
+            AartiTheme(theme) {
+                CompositionLocalProvider(LocalStrings provides Strings.of(language)) { Surface { content() } }
+            }
+        }
         compose.waitForIdle()
         val view = compose.activity.window.decorView
         val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)

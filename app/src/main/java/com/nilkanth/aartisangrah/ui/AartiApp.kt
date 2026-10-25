@@ -33,6 +33,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberUpdatedState
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -58,11 +59,18 @@ import com.nilkanth.aartisangrah.ui.screens.SearchScreen
 import com.nilkanth.aartisangrah.ui.screens.SettingsScreen
 import com.nilkanth.aartisangrah.ui.theme.LocalIsDark
 
-private enum class Tab(val route: String, val label: String, val icon: ImageVector) {
-    Home("home", "मुख्य", Icons.Rounded.Home),
-    Search("search", "शोधा", Icons.Rounded.Search),
-    Favorites("favorites", "आवडते", Icons.Rounded.Favorite),
-    Settings("settings", "सेटिंग्ज", Icons.Rounded.Settings),
+private enum class Tab(val route: String, val icon: ImageVector) {
+    Home("home", Icons.Rounded.Home),
+    Search("search", Icons.Rounded.Search),
+    Favorites("favorites", Icons.Rounded.Favorite),
+    Settings("settings", Icons.Rounded.Settings);
+
+    fun label(strings: Strings) = when (this) {
+        Home -> strings.tabHome
+        Search -> strings.tabSearch
+        Favorites -> strings.tabFavorites
+        Settings -> strings.tabSettings
+    }
 }
 
 private fun readerRoute(ids: List<String>, index: Int, title: String) =
@@ -79,6 +87,7 @@ fun AartiApp(vm: AppViewModel) {
     val favorites by vm.prefs.favorites.collectAsStateWithLifecycle()
     val recents by vm.prefs.recents.collectAsStateWithLifecycle()
     val theme by vm.prefs.theme.collectAsStateWithLifecycle()
+    val language by vm.prefs.language.collectAsStateWithLifecycle()
     val fontSize by vm.prefs.fontSize.collectAsStateWithLifecycle()
     val keepScreenOn by vm.prefs.keepScreenOn.collectAsStateWithLifecycle()
     val appUpdate by vm.appUpdate.collectAsStateWithLifecycle()
@@ -88,7 +97,9 @@ fun AartiApp(vm: AppViewModel) {
     val nav = rememberNavController()
     val snackbar = remember { SnackbarHostState() }
     val context = LocalContext.current
-    LaunchedEffect(Unit) { vm.messages.collect { snackbar.showSnackbar(it) } }
+    val strings = LocalStrings.current
+    val currentStrings by rememberUpdatedState(strings)
+    LaunchedEffect(Unit) { vm.messages.collect { snackbar.showSnackbar(currentStrings.message(it)) } }
 
     val backStack by nav.currentBackStackEntryAsState()
     val route = backStack?.destination?.route
@@ -112,7 +123,7 @@ fun AartiApp(vm: AppViewModel) {
                             selected = tab == currentTab,
                             onClick = { nav.navigateTab(tab.route) },
                             icon = { Icon(tab.icon, contentDescription = null) },
-                            label = { Text(tab.label) },
+                            label = { Text(tab.label(strings)) },
                             colors = NavigationBarItemDefaults.colors(
                                 indicatorColor = MaterialTheme.colorScheme.primaryContainer,
                                 selectedIconColor = MaterialTheme.colorScheme.onPrimaryContainer,
@@ -142,6 +153,7 @@ fun AartiApp(vm: AppViewModel) {
                     onOpenSearch = { nav.navigateTab("search?focus=true") },
                     onDownloadUpdate = { openUrl(it.apkUrl ?: it.pageUrl) },
                     onToggleFavorite = vm.prefs::toggleFavorite,
+                    onToggleLanguage = vm.prefs::toggleLanguage,
                 )
             }
             composable(
@@ -162,12 +174,14 @@ fun AartiApp(vm: AppViewModel) {
             composable(Tab.Settings.route) {
                 SettingsScreen(
                     library = lib,
+                    language = language,
                     theme = theme,
                     fontSize = fontSize,
                     keepScreenOn = keepScreenOn,
                     appUpdate = appUpdate,
                     checkingContent = checkingContent,
                     checkingApp = checkingApp,
+                    onLanguage = vm.prefs::setLanguage,
                     onTheme = vm.prefs::setTheme,
                     onFontSize = vm.prefs::setFontSize,
                     onKeepScreenOn = vm.prefs::setKeepScreenOn,
@@ -215,7 +229,7 @@ fun AartiApp(vm: AppViewModel) {
                     onToggleFavorite = vm.prefs::toggleFavorite,
                     onFontSize = vm.prefs::setFontSize,
                     onMarkRead = vm.prefs::markRead,
-                    onShare = { context.shareItem(it) },
+                    onShare = { context.shareItem(it, strings) },
                 )
             }
         }
@@ -228,17 +242,17 @@ private fun NavHostController.navigateTab(route: String) = navigate(route) {
     restoreState = true
 }
 
-private fun Context.shareItem(item: Item) {
+private fun Context.shareItem(item: Item, strings: Strings) {
     val text = buildString {
         append("॥ ").append(item.title).append(" ॥\n")
-        item.author?.let { append("रचना: ").append(it).append('\n') }
+        item.author?.let { append(strings.composedBy(it)).append('\n') }
         append('\n')
         if (item.refrainFirst && item.refrain != null) append(item.refrain).append("\n\n")
         item.verses.forEach { verse ->
             append(verse).append("\n\n")
             item.refrain?.let { append(it).append("\n\n") }
         }
-        append("— आरती संग्रह ॲप")
+        append(strings.shareFooter)
     }
     val send = Intent(Intent.ACTION_SEND).setType("text/plain").putExtra(Intent.EXTRA_TEXT, text)
     runCatching { startActivity(Intent.createChooser(send, item.title)) }

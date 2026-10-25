@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "minAppVersion": 1,
   "updated": "2026-10-25",
   "categories": [
@@ -7,123 +7,141 @@
       "id": "aarti",
       "name": "आरत्या",
       "nameEn": "Aartis",
-      "description": "देवदेवतांच्या पारंपरिक आरत्या"
+      "description": "देवदेवतांच्या पारंपरिक आरत्या",
+      "descriptionEn": "Traditional aartis of the deities"
     },
     {
       "id": "shlok",
       "name": "श्लोक व मंत्र",
       "nameEn": "Shlokas & Mantras",
-      "description": "दैनंदिन श्लोक, मंत्र व प्रार्थना"
+      "description": "दैनंदिन श्लोक, मंत्र व प्रार्थना",
+      "descriptionEn": "Daily shlokas, mantras and prayers"
     },
     {
       "id": "stotra",
       "name": "स्तोत्रे",
       "nameEn": "Stotras",
-      "description": "रामरक्षा, अथर्वशीर्ष, मारुती स्तोत्र व इतर"
+      "description": "रामरक्षा, अथर्वशीर्ष, मारुती स्तोत्र व इतर",
+      "descriptionEn": "Ramraksha, Atharvashirsha, Maruti Stotra and more"
     },
     {
       "id": "abhang",
       "name": "अभंग व संतवाणी",
       "nameEn": "Abhangs",
-      "description": "संतांचे अभंग, पसायदान व मनाचे श्लोक"
+      "description": "संतांचे अभंग, पसायदान व मनाचे श्लोक",
+      "descriptionEn": "Abhangs of the saints, Pasaydan and Manache Shlok"
     }
   ],
   "deities": [
     {
       "id": "ganpati",
       "name": "श्री गणपती",
-      "nameEn": "Ganpati Ganesh Ganesha Ganapati Vinayak",
+      "nameEn": "Ganpati",
+      "keywords": "Ganpati Ganesh Ganesha Ganapati Vinayak",
       "letter": "ग",
       "color": "#E8590C"
     },
     {
       "id": "devi",
       "name": "श्री देवी",
-      "nameEn": "Devi Durga Amba Bhavani Mata",
+      "nameEn": "Devi",
+      "keywords": "Devi Durga Amba Bhavani Mata",
       "letter": "दे",
       "color": "#D6336C"
     },
     {
       "id": "shankar",
       "name": "श्री शंकर",
-      "nameEn": "Shankar Shiva Mahadev Shiv",
+      "nameEn": "Shankar",
+      "keywords": "Shankar Shiva Mahadev Shiv",
       "letter": "शं",
       "color": "#1971C2"
     },
     {
       "id": "vitthal",
       "name": "श्री विठ्ठल",
-      "nameEn": "Vitthal Vithoba Pandurang Pandharpur",
+      "nameEn": "Vitthal",
+      "keywords": "Vitthal Vithoba Pandurang Pandharpur",
       "letter": "वि",
       "color": "#364FC7"
     },
     {
       "id": "datta",
       "name": "श्री दत्त",
-      "nameEn": "Datta Dattatreya Gurudev",
+      "nameEn": "Datta",
+      "keywords": "Datta Dattatreya Gurudev",
       "letter": "द",
       "color": "#A61E4D"
     },
     {
       "id": "ram",
       "name": "श्री राम",
-      "nameEn": "Ram Rama Shriram",
+      "nameEn": "Ram",
+      "keywords": "Ram Rama Shriram",
       "letter": "रा",
       "color": "#2F9E44"
     },
     {
       "id": "maruti",
       "name": "श्री मारुती",
-      "nameEn": "Maruti Hanuman Bajrang",
+      "nameEn": "Maruti",
+      "keywords": "Maruti Hanuman Bajrang",
       "letter": "मा",
       "color": "#C92A2A"
     },
     {
       "id": "krishna",
       "name": "श्री कृष्ण",
-      "nameEn": "Krishna Gopal Govind",
+      "nameEn": "Krishna",
+      "keywords": "Krishna Gopal Govind",
       "letter": "कृ",
       "color": "#0C8599"
     },
     {
       "id": "vishnu",
       "name": "श्री विष्णू",
-      "nameEn": "Vishnu Narayan Hari Jagdish",
+      "nameEn": "Vishnu",
+      "keywords": "Vishnu Narayan Hari Jagdish",
       "letter": "ह",
       "color": "#5F3DC4"
     },
     {
       "id": "sai",
       "name": "श्री साईबाबा",
-      "nameEn": "Sai Baba Shirdi",
+      "nameEn": "Sai Baba",
+      "keywords": "Sai Baba Shirdi",
       "letter": "सा",
       "color": "#E67700"
     },
     {
       "id": "sant",
       "name": "संत व सद्गुरू",
-      "nameEn": "Sant Saints Dnyaneshwar Tukaram Ramdas Gajanan Maharaj",
+      "nameEn": "Saints & Gurus",
+      "keywords": "Sant Saints Dnyaneshwar Tukaram Ramdas Gajanan Maharaj",
       "letter": "सं",
       "color": "#7048E8"
     },
     {
       "id": "surya",
       "name": "श्री सूर्य",
-      "nameEn": "Surya Sun Aditya",
+      "nameEn": "Surya",
+      "keywords": "Surya Sun Aditya",
       "letter": "सू",
       "color": "#F08C00"
     },
     {
       "id": "navgrah",
       "name": "नवग्रह",
-      "nameEn": "Navagraha Planets Shani",
+      "nameEn": "Navagraha",
+      "keywords": "Navagraha Planets Shani",
       "letter": "न",
       "color": "#495057"
     },
     {
       "id": "sarva",
       "name": "सर्व देवता",
-      "nameEn": "All deities general prayer",
+      "nameEn": "General",
+      "keywords": "All deities general prayer",
       "letter": "ॐ",
       "color": "#8C5A00"
     }
@@ -133,6 +151,8 @@
       "id": "ganeshotsav",
       "name": "गणेशोत्सव आरती क्रम",
       "description": "घरोघरी म्हटल्या जाणाऱ्या आरत्या पारंपरिक क्रमाने — सुखकर्तापासून मंत्रपुष्पांजलीपर्यंत",
+      "nameEn": "Ganeshotsav Aarti Order",
+      "descriptionEn": "The aartis sung at home, in the traditional order — from Sukhkarta to Mantrapushpanjali",
       "items": [
         "sukhakarta",
         "shendur-lal",
@@ -150,6 +170,8 @@
       "id": "sakal",
       "name": "सकाळचे श्लोक",
       "description": "दिवसाची सुरुवात — करदर्शन, भूमिवंदन, गणेश व गुरु स्मरण",
+      "nameEn": "Morning Shlokas",
+      "descriptionEn": "Start the day — Kar-darshan, Bhumi-vandan, and remembering Ganesh and the Guru",
       "items": [
         "karagre-vasate",
         "samudra-vasane",
@@ -162,6 +184,8 @@
       "id": "sandhyakal",
       "name": "सायंकाळची प्रार्थना",
       "description": "दिवेलागणीला — शुभंकरोती, रामरक्षा, भीमरूपी व मनाचे श्लोक",
+      "nameEn": "Evening Prayers",
+      "descriptionEn": "At lamp-lighting — Shubham Karoti, Ramraksha, Bhimrupi and Manache Shlok",
       "items": [
         "shubham-karoti",
         "ramraksha",
@@ -173,6 +197,8 @@
       "id": "shirdi",
       "name": "साई आरती",
       "description": "श्री साईबाबांच्या आरत्या व दत्त नामस्मरण",
+      "nameEn": "Sai Aarti",
+      "descriptionEn": "Shri Sai Baba's aartis and Datta naamsmaran",
       "items": [
         "aarti-saibaba",
         "shirdi-majhe",
@@ -192,6 +218,7 @@
       "author": "समर्थ रामदास",
       "language": "मराठी",
       "about": "समर्थ रामदास स्वामींनी मोरगावच्या श्री मयुरेश्वराच्या दर्शनानंतर ही आरती रचली, अशी परंपरा आहे. गणेशोत्सवात सर्वप्रथम हीच आरती म्हटली जाते.",
+      "aboutEn": "Tradition says Samarth Ramdas composed this aarti after seeing Shri Mayureshwar at Morgaon. It is the first aarti sung during Ganeshotsav.",
       "refrain": "जय देव जय देव जय मंगलमूर्ती।\nदर्शनमात्रें मनकामना पुरती॥",
       "verses": [
         "सुखकर्ता दुःखहर्ता वार्ता विघ्नाची।\nनुरवी पुरवी प्रेम कृपा जयाची।\nसर्वांगी सुंदर उटी शेंदुराची।\nकंठी झळके माळ मुक्ताफळांची॥१॥",
@@ -244,6 +271,7 @@
       "author": "समर्थ रामदास",
       "language": "मराठी",
       "about": "देवीची ही आरती नवरात्रात व रोजच्या आरतीत म्हटली जाते.",
+      "aboutEn": "This Devi aarti is sung during Navratri and in daily worship.",
       "refrain": "जय देवी जय देवी महिषासुरमथनी।\nसुरवर-ईश्वर-वरदे तारक संजीवनी॥",
       "verses": [
         "दुर्गे दुर्घट भारी तुजविण संसारी।\nअनाथनाथे अंबे करुणा विस्तारी।\nवारी वारी जन्ममरणाते वारी।\nहारी पडलो आता संकट निवारी॥१॥",
@@ -278,6 +306,7 @@
       "author": "संत नामदेव",
       "language": "मराठी",
       "about": "पंढरपूरच्या श्री विठ्ठलाची आरती. आषाढी-कार्तिकी वारीत आणि घरोघरी म्हटली जाते.",
+      "aboutEn": "Aarti of Shri Vitthal of Pandharpur, sung during the Ashadhi and Kartiki wari and in homes.",
       "refrain": "जय देव जय देव जय पांडुरंगा।\nरखुमाईवल्लभा राईच्या वल्लभा पावें जिवलगा॥",
       "verses": [
         "युगें अठ्ठावीस विटेवरी उभा।\nवामांगी रखुमाई दिसे दिव्य शोभा।\nपुंडलिकाचे भेटी परब्रह्म आलें गा।\nचरणी वाहे भीमा उद्धरी जगा॥१॥",
@@ -331,6 +360,7 @@
       "author": "रामा जनार्दन",
       "language": "मराठी",
       "about": "संत ज्ञानेश्वर माऊलींची आरती.",
+      "aboutEn": "Aarti of Sant Dnyaneshwar Mauli.",
       "refrain": "आरती ज्ञानराजा। महाकैवल्यतेजा।\nसेविती साधुसंत। मनु वेधला माझा॥",
       "refrainFirst": true,
       "verses": [
@@ -349,6 +379,7 @@
       "author": "रामेश्वर भट्ट",
       "language": "मराठी",
       "about": "संत तुकाराम महाराजांची आरती. तुकोबांचे अभंग इंद्रायणीत बुडवले गेले तरी ते तरले, या कथेचा उल्लेख आहे.",
+      "aboutEn": "Aarti of Sant Tukaram Maharaj. It recalls how his abhangs, sunk in the Indrayani river, came back unharmed.",
       "refrain": "आरती तुकारामा। स्वामी सद्गुरुधामा।\nसच्चिदानंद मूर्ती। पाय दाखवीं आम्हां॥",
       "refrainFirst": true,
       "verses": [
@@ -366,6 +397,7 @@
       "author": "संत माधवदास",
       "language": "मराठी",
       "about": "श्रीरामाची आरती. काही ठिकाणी कडव्यांचा क्रम वेगळा म्हटला जातो.",
+      "aboutEn": "Aarti of Shri Ram. In some places the stanzas are sung in a different order.",
       "refrain": "जय देव जय देव निजबोधा रामा।\nपरमार्थें आरती सद्भावें आरती परिपूर्णकामा॥",
       "verses": [
         "उत्कट साधुनि शिळा सेतू बांधोनी।\nलिंगदेह लंकापुर विध्वंसूनी।\nकामक्रोधादिक राक्षस मर्दूनी।\nदेह अहंभाव रावण निवटूनी॥१॥",
@@ -419,6 +451,7 @@
       "author": "माधव अडकर",
       "language": "मराठी",
       "about": "शिर्डीच्या साईबाबांची आरती. शिर्डी मंदिरातील आरतीत ही म्हटली जाते.",
+      "aboutEn": "Aarti of Sai Baba of Shirdi, sung at the Shirdi temple aarti.",
       "refrain": "आरती साईबाबा। सौख्यदातार जीवा।\nचरणरजातळीं। द्यावा दासां विसावा। भक्तां विसावा॥",
       "refrainFirst": true,
       "verses": [
@@ -458,6 +491,7 @@
       "author": "संत दासगणू महाराज",
       "language": "मराठी",
       "about": "शेगावच्या श्री गजानन महाराजांची आरती.",
+      "aboutEn": "Aarti of Shri Gajanan Maharaj of Shegaon.",
       "refrain": "जय जय सत्चित्स्वरूपा स्वामी गणराया।\nअवतरलासी भूवर जड-मूढ ताराया॥",
       "refrainFirst": true,
       "verses": [
@@ -499,6 +533,7 @@
       "author": "संत नामदेव व संस्कृत श्लोक",
       "language": "मराठी",
       "about": "सर्व आरत्या झाल्यावर म्हटली जाणारी प्रार्थना. पहिले कडवे संत नामदेवांचे असून पुढील श्लोक संस्कृत आहेत.",
+      "aboutEn": "The prayer sung after all the aartis. The first stanza is by Sant Namdev; the rest are Sanskrit shlokas.",
       "verses": [
         "घालीन लोटांगण वंदीन चरण।\nडोळ्यांनी पाहीन रूप तुझें।\nप्रेमें आलिंगन आनंदें पूजिन।\nभावें ओवाळीन म्हणे नामा॥१॥",
         "त्वमेव माता च पिता त्वमेव।\nत्वमेव बंधुश्च सखा त्वमेव।\nत्वमेव विद्या द्रविणं त्वमेव।\nत्वमेव सर्वं मम देवदेव॥२॥",
@@ -516,6 +551,7 @@
       "deity": "sarva",
       "language": "संस्कृत",
       "about": "आरतीनंतर हातात फुले घेऊन म्हटला जाणारा वैदिक मंत्र. शेवटी ती फुले देवाला अर्पण करतात.",
+      "aboutEn": "Vedic mantra recited after the aarti with flowers in hand; the flowers are then offered to the deity.",
       "verses": [
         "ॐ यज्ञेन यज्ञमयजन्त देवास्तानि धर्माणि प्रथमान्यासन्।\nते ह नाकं महिमानः सचन्त यत्र पूर्वे साध्याः सन्ति देवाः॥१॥",
         "ॐ राजाधिराजाय प्रसह्य साहिने।\nनमो वयं वैश्रवणाय कुर्महे।\nस मे कामान्कामकामाय मह्यम्।\nकामेश्वरो वैश्रवणो ददातु।\nकुबेराय वैश्रवणाय। महाराजाय नमः॥२॥",
@@ -533,6 +569,7 @@
       "deity": "ganpati",
       "language": "संस्कृत",
       "about": "कोणत्याही कामाच्या सुरुवातीला म्हटला जाणारा गणेश श्लोक.",
+      "aboutEn": "Ganesh shloka recited before starting any work.",
       "verses": [
         "वक्रतुण्ड महाकाय सूर्यकोटिसमप्रभ।\nनिर्विघ्नं कुरु मे देव सर्वकार्येषु सर्वदा॥"
       ],
@@ -558,6 +595,7 @@
       "deity": "sarva",
       "language": "संस्कृत",
       "about": "सकाळी उठल्यावर आपल्या तळहातांकडे पाहून म्हणायचा श्लोक (करदर्शन).",
+      "aboutEn": "Recited on waking up while looking at your palms (Kar-darshan).",
       "verses": [
         "कराग्रे वसते लक्ष्मीः करमध्ये सरस्वती।\nकरमूले तु गोविन्दः प्रभाते करदर्शनम्॥"
       ],
@@ -571,6 +609,7 @@
       "deity": "sarva",
       "language": "संस्कृत",
       "about": "जमिनीवर पाय ठेवण्यापूर्वी भूमातेला केलेला नमस्कार.",
+      "aboutEn": "A salutation to Mother Earth before setting foot on the ground.",
       "verses": [
         "समुद्रवसने देवि पर्वतस्तनमण्डले।\nविष्णुपत्नि नमस्तुभ्यं पादस्पर्शं क्षमस्व मे॥"
       ],
@@ -584,6 +623,7 @@
       "deity": "sarva",
       "language": "मराठी",
       "about": "संध्याकाळी देवापाशी दिवा लावल्यावर म्हणायची प्रार्थना. शब्दांत घराघरांत थोडा फरक असू शकतो.",
+      "aboutEn": "Evening prayer said after lighting the lamp before the deity. The wording varies a little from home to home.",
       "verses": [
         "शुभं करोति कल्याणम् आरोग्यं धनसंपदा।\nशत्रुबुद्धिविनाशाय दीपज्योतिर्नमोऽस्तु ते॥१॥",
         "दीपज्योतिः परब्रह्म दीपज्योतिर्जनार्दनः।\nदीपो हरतु मे पापं दीपज्योतिर्नमोऽस्तु ते॥२॥",
@@ -648,6 +688,7 @@
       "deity": "devi",
       "language": "संस्कृत",
       "about": "विद्येची देवता श्री सरस्वतीची वंदना. शाळेत व अभ्यासापूर्वी म्हटली जाते.",
+      "aboutEn": "Prayer to Saraswati, goddess of learning — said at school and before studying.",
       "verses": [
         "या कुन्देन्दुतुषारहारधवला या शुभ्रवस्त्रावृता।\nया वीणावरदण्डमण्डितकरा या श्वेतपद्मासना।\nया ब्रह्माच्युतशङ्करप्रभृतिभिर्देवैः सदा वन्दिता।\nसा मां पातु सरस्वती भगवती निःशेषजाड्यापहा॥"
       ],
@@ -710,6 +751,7 @@
       "deity": "surya",
       "language": "संस्कृत",
       "about": "सूर्यनमस्कार घालताना प्रत्येक नमस्काराला म्हणायची सूर्याची बारा नावे.",
+      "aboutEn": "The twelve names of Surya, one for each Surya Namaskar.",
       "verses": [
         "ॐ मित्राय नमः।\nॐ रवये नमः।\nॐ सूर्याय नमः।\nॐ भानवे नमः॥",
         "ॐ खगाय नमः।\nॐ पूष्णे नमः।\nॐ हिरण्यगर्भाय नमः।\nॐ मरीचये नमः॥",
@@ -726,6 +768,7 @@
       "deity": "sarva",
       "language": "मराठी",
       "about": "जेवणापूर्वी म्हणायचे श्लोक. 'वदनी कवळ घेता' हा श्लोक समर्थ रामदासांच्या परंपरेतील आहे.",
+      "aboutEn": "Shlokas said before meals. 'Vadani kaval gheta' comes from the Samarth Ramdas tradition.",
       "verses": [
         "वदनि कवळ घेतां नाम घ्या श्रीहरीचें।\nसहज हवन होतें नाम घेतां फुकाचें।\nजीवन करि जिवित्वा अन्न हें पूर्णब्रह्म।\nउदरभरण नोहे जाणिजे यज्ञकर्म॥१॥",
         "ब्रह्मार्पणं ब्रह्महविर्ब्रह्माग्नौ ब्रह्मणा हुतम्।\nब्रह्मैव तेन गन्तव्यं ब्रह्मकर्मसमाधिना॥२॥",
@@ -755,6 +798,7 @@
       "deity": "ganpati",
       "language": "संस्कृत",
       "about": "श्री गणपतीचे उपनिषद. गणेश चतुर्थी, संकष्टी व रोजच्या पूजेत याचे पठण केले जाते.",
+      "aboutEn": "The Upanishad of Shri Ganpati, recited on Ganesh Chaturthi, Sankashti and in daily worship.",
       "verses": [
         "ॐ भद्रं कर्णेभिः शृणुयाम देवाः। भद्रं पश्येमाक्षभिर्यजत्राः।\nस्थिरैरङ्गैस्तुष्टुवांसस्तनूभिः। व्यशेम देवहितं यदायुः॥\nॐ स्वस्ति न इन्द्रो वृद्धश्रवाः। स्वस्ति नः पूषा विश्ववेदाः।\nस्वस्ति नस्तार्क्ष्यो अरिष्टनेमिः। स्वस्ति नो बृहस्पतिर्दधातु॥\nॐ शान्तिः शान्तिः शान्तिः॥",
         "ॐ नमस्ते गणपतये।\nत्वमेव प्रत्यक्षं तत्त्वमसि। त्वमेव केवलं कर्ताऽसि।\nत्वमेव केवलं धर्ताऽसि। त्वमेव केवलं हर्ताऽसि।\nत्वमेव सर्वं खल्विदं ब्रह्मासि।\nत्वं साक्षादात्माऽसि नित्यम्॥१॥",
@@ -784,6 +828,7 @@
       "deity": "ganpati",
       "language": "संस्कृत",
       "about": "नारद पुराणातील गणपतीच्या बारा नावांचे स्तोत्र — 'प्रणम्य शिरसा देवं'. संकटे दूर व्हावीत म्हणून म्हटले जाते.",
+      "aboutEn": "The twelve-name stotra of Ganpati from the Narada Purana ('Pranamya shirasa devam'), recited to remove obstacles.",
       "verses": [
         "प्रणम्य शिरसा देवं गौरीपुत्रं विनायकम्।\nभक्तावासं स्मरेन्नित्यमायुःकामार्थसिद्धये॥१॥",
         "प्रथमं वक्रतुण्डं च एकदन्तं द्वितीयकम्।\nतृतीयं कृष्णपिङ्गाक्षं गजवक्त्रं चतुर्थकम्॥२॥",
@@ -806,6 +851,7 @@
       "author": "बुधकौशिक ऋषी",
       "language": "संस्कृत",
       "about": "बुधकौशिक ऋषींनी रचलेले श्रीरामाचे कवच-स्तोत्र. संध्याकाळी शुभंकरोतीनंतर म्हणण्याची प्रथा आहे.",
+      "aboutEn": "Shri Ram's protective stotra by Budhakaushika Rishi, traditionally recited in the evening after Shubham Karoti.",
       "verses": [
         "॥ श्रीगणेशाय नमः ॥\nअस्य श्रीरामरक्षास्तोत्रमन्त्रस्य। बुधकौशिक ऋषिः।\nश्रीसीतारामचंद्रो देवता। अनुष्टुप् छन्दः। सीता शक्तिः।\nश्रीमद्हनुमान् कीलकम्।\nश्रीरामचन्द्रप्रीत्यर्थे रामरक्षास्तोत्रजपे विनियोगः॥",
         "॥ अथ ध्यानम् ॥\nध्यायेदाजानुबाहुं धृतशरधनुषं बद्धपद्मासनस्थं।\nपीतं वासो वसानं नवकमलदलस्पर्धिनेत्रं प्रसन्नम्।\nवामाङ्कारूढसीतामुखकमलमिलल्लोचनं नीरदाभं।\nनानालङ्कारदीप्तं दधतमुरुजटामण्डनं रामचन्द्रम्॥\n॥ इति ध्यानम् ॥",
@@ -860,6 +906,7 @@
       "author": "समर्थ रामदास",
       "language": "मराठी",
       "about": "समर्थ रामदासांचे मारुती स्तोत्र. भीती व संकटे दूर व्हावीत म्हणून रोज म्हटले जाते.",
+      "aboutEn": "Samarth Ramdas's Maruti Stotra, recited daily to remove fear and trouble.",
       "verses": [
         "भीमरूपी महारुद्रा वज्रहनुमान मारुती।\nवनारी अंजनीसूता रामदूता प्रभंजना॥१॥",
         "महाबळी प्राणदाता सकळां उठवी बळें।\nसौख्यकारी शोकहर्ता धूर्त वैष्णव गायका॥२॥",
@@ -891,6 +938,7 @@
       "author": "गोस्वामी तुलसीदास",
       "language": "अवधी",
       "about": "गोस्वामी तुलसीदासांनी अवधी भाषेत रचलेली हनुमानाची चाळीस चौपायांची स्तुती.",
+      "aboutEn": "Forty-verse praise of Hanuman, composed by Goswami Tulsidas in Awadhi.",
       "verses": [
         "॥ दोहा ॥\nश्रीगुरु चरन सरोज रज निज मनु मुकुरु सुधारि।\nबरनउँ रघुबर बिमल जसु जो दायकु फल चारि॥\nबुद्धिहीन तनु जानिके सुमिरौं पवन-कुमार।\nबल बुधि बिद्या देहु मोहिं हरहु कलेस बिकार॥",
         "जय हनुमान ज्ञान गुन सागर। जय कपीस तिहुँ लोक उजागर॥१॥\nराम दूत अतुलित बल धामा। अंजनि-पुत्र पवनसुत नामा॥२॥\nमहाबीर बिक्रम बजरंगी। कुमति निवार सुमति के संगी॥३॥\nकंचन बरन बिराज सुबेसा। कानन कुंडल कुंचित केसा॥४॥",
@@ -916,6 +964,7 @@
       "author": "आदि शंकराचार्य",
       "language": "संस्कृत",
       "about": "'नमः शिवाय' या पाच अक्षरांवर आधारित शिवस्तुती.",
+      "aboutEn": "Praise of Shiva built on the five syllables of 'Namah Shivaya'.",
       "verses": [
         "नागेन्द्रहाराय त्रिलोचनाय भस्माङ्गरागाय महेश्वराय।\nनित्याय शुद्धाय दिगम्बराय तस्मै नकाराय नमः शिवाय॥१॥",
         "मन्दाकिनीसलिलचन्दनचर्चिताय नन्दीश्वरप्रमथनाथमहेश्वराय।\nमन्दारपुष्पबहुपुष्पसुपूजिताय तस्मै मकाराय नमः शिवाय॥२॥",
@@ -952,6 +1001,7 @@
       "author": "महर्षी व्यास",
       "language": "संस्कृत",
       "about": "नऊ ग्रहांची स्तुती — सूर्यापासून केतूपर्यंत प्रत्येक ग्रहासाठी एक श्लोक.",
+      "aboutEn": "Praise of the nine planets — one shloka each, from Surya to Ketu.",
       "verses": [
         "जपाकुसुमसंकाशं काश्यपेयं महाद्युतिम्।\nतमोऽरिं सर्वपापघ्नं प्रणतोऽस्मि दिवाकरम्॥१॥",
         "दधिशङ्खतुषाराभं क्षीरोदार्णवसम्भवम्।\nनमामि शशिनं सोमं शम्भोर्मुकुटभूषणम्॥२॥",
@@ -975,6 +1025,7 @@
       "author": "संत ज्ञानेश्वर",
       "language": "मराठी",
       "about": "ज्ञानेश्वरीच्या शेवटी संत ज्ञानेश्वरांनी संपूर्ण विश्वाच्या कल्याणासाठी परमेश्वराकडे मागितलेले दान.",
+      "aboutEn": "The boon Sant Dnyaneshwar asked for the welfare of the whole world, at the end of the Dnyaneshwari.",
       "verses": [
         "आतां विश्वात्मकें देवें। येणें वाग्यज्ञें तोषावें।\nतोषोनि मज द्यावें। पसायदान हें॥१॥",
         "जे खळांची व्यंकटी सांडो। तयां सत्कर्मीं रती वाढो।\nभूतां परस्परें पडो। मैत्र जीवांचें॥२॥",
@@ -997,6 +1048,7 @@
       "author": "समर्थ रामदास",
       "language": "मराठी",
       "about": "समर्थ रामदासांनी मनाला केलेला उपदेश. एकूण २०५ श्लोकांपैकी पहिले तेरा श्लोक येथे दिले आहेत.",
+      "aboutEn": "Samarth Ramdas's advice to the mind. The first thirteen of its 205 shlokas are given here.",
       "verses": [
         "गणाधीश जो ईश सर्वां गुणांचा।\nमुळारंभ आरंभ तो निर्गुणाचा।\nनमूं शारदा मूळ चत्वार वाचा।\nगमूं पंथ आनंत या राघवाचा॥१॥",
         "मना सज्जना भक्तिपंथेंचि जावें।\nतरी श्रीहरी पाविजेतो स्वभावें।\nजनीं निंद्य तें सर्व सोडूनि द्यावें।\nजनीं वंद्य तें सर्व भावें करावें॥२॥",
@@ -1107,6 +1159,7 @@
       "author": "संत ज्ञानेश्वर",
       "language": "मराठी",
       "about": "संत ज्ञानेश्वरांच्या हरिपाठातील पहिला अभंग. वारकरी रोज हरिपाठ म्हणतात.",
+      "aboutEn": "The first abhang of Sant Dnyaneshwar's Haripath, recited daily by Warkaris.",
       "verses": [
         "देवाचिये द्वारीं उभा क्षणभरी।\nतेणें मुक्ति चारी साधियेल्या॥१॥",
         "हरि मुखें म्हणा हरि मुखें म्हणा।\nपुण्याची गणना कोण करी॥२॥",
