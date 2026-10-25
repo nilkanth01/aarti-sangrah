@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- A lit diya (oil lamp) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:aapt="http://schemas.android.com/aapt"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- glow -->
+    <path
+        android:fillColor="#26FFF3C4"
+        android:pathData="M54,44m-22,0a22,22 0,1 1,44 0a22,22 0,1 1,-44 0" />
+    <!-- outer flame -->
+    <path android:pathData="M54,22C59,31 65,37 65,44.5C65,51 60,55.5 54,55.5C48,55.5 43,51 43,44.5C43,37 49,31 54,22Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="54" android:startY="22"
+                android:endX="54" android:endY="56">
+                <item android:offset="0" android:color="#FFFFF4B8" />
+                <item android:offset="1" android:color="#FFFFB300" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- inner flame -->
+    <path
+        android:fillColor="#FFFFFDF2"
+        android:pathData="M54,34C56.6,39 59,42 59,46C59,49.3 56.8,51.5 54,51.5C51.2,51.5 49,49.3 49,46C49,42 51.4,39 54,34Z" />
+    <!-- wick -->
+    <path
+        android:fillColor="#FF5D2A0A"
+        android:pathData="M53,54h2v4.5h-2z" />
+    <!-- bowl -->
+    <path android:pathData="M28,58C40,61 68,61 80,58C78,71 67,80 54,80C41,80 30,71 28,58Z">
+        <aapt:attr name="android:fillColor">
+            <gradient
+                android:type="linear"
+                android:startX="54" android:startY="58"
+                android:endX="54" android:endY="80">
+                <item android:offset="0" android:color="#FFFFE38A" />
+                <item android:offset="1" android:color="#FFE29A12" />
+            </gradient>
+        </aapt:attr>
+    </path>
+    <!-- rim highlight -->
+    <path
+        android:fillColor="#FFFFF7DC"
+        android:pathData="M28,58C40,61 68,61 80,58C78,61.5 68,64 54,64C40,64 30,61.5 28,58Z" />
+    <!-- decoration dots -->
+    <path
+        android:fillColor="#FFA0461A"
+        android:pathData="M40.2,70.5a1.8,1.8 0,1 0,3.6 0a1.8,1.8 0,1 0,-3.6 0ZM52.2,72.5a1.8,1.8 0,1 0,3.6 0a1.8,1.8 0,1 0,-3.6 0ZM64.2,70.5a1.8,1.8 0,1 0,3.6 0a1.8,1.8 0,1 0,-3.6 0Z" />
+    <!-- base -->
+    <path
+        android:fillColor="#FFE29A12"
+        android:pathData="M46,79.5L62,79.5L65,84L43,84Z" />
+</vector>

@@ -1,0 +1,16 @@
+# Build output
+build/
+.gradle/
+.kotlin/
+/release/
+
+# Machine-specific
+local.properties
+.idea/
+*.iml
+.DS_Store
+
+# Signing secrets — NEVER commit these
+keystore.properties
+*.jks
+*.keystore
