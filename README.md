@@ -1,11 +1,10 @@
-# 🪔 आरती संग्रह — Aarti Sangrah
+# 🪔 Aarti Sangrah (आरती संग्रह)
 
-मराठी घरांमध्ये म्हटल्या जाणाऱ्या **आरत्या, श्लोक, स्तोत्रे आणि अभंग** — देवनागरीत, सुंदर आणि सोप्या अँड्रॉइड ॲपमध्ये.
-**खाते नाही • जाहिराती नाहीत • इंटरनेटशिवायही चालते.**
+A free app with the **aartis, shlokas, stotras and abhangs** sung in Marathi homes, in Devanagari,
+with a clean and easy-to-use design. The menus can be in Marathi or English; the texts themselves
+always stay in Devanagari.
 
-A free Android app with traditional Marathi Hindu aartis, shlokas, stotras and abhangs in Devanagari.
-Menus in Marathi or English (the texts always stay in Devanagari). No account, no ads, no tracking,
-works offline, and gets new content over the air.
+**No account • No ads • No tracking • Works offline • New aartis arrive automatically**
 
 <p align="center">
   <img src="docs/screenshots/1-home.png" width="230" alt="Home screen" />
@@ -18,135 +17,138 @@ works offline, and gets new content over the air.
   <img src="docs/screenshots/10-settings-english.png" width="230" alt="Settings with the language switch" />
 </p>
 
-## 📥 डाउनलोड / Download
+## 📥 Download
 
-**[नवीनतम APK डाउनलोड करा → Releases](https://github.com/nilkanth01/aarti-sangrah/releases/latest)** (Android)
-
-🍎 iPhone / iPad वापरता? → **[वेब ॲप उघडा](https://nilkanth01.github.io/aarti-sangrah/)** ([installation steps below](#-iphone--ipad--वेब-ॲप))
-
-फोनवर इंस्टॉल कसे करायचे:
-1. वरील लिंकवरून `AartiSangrah-vX.Y.Z.apk` फाइल फोनवर डाउनलोड करा.
-2. डाउनलोड झालेली फाइल उघडा.
-3. "Install unknown apps / अज्ञात ॲप्स" अशी परवानगी विचारल्यास ती तुमच्या ब्राउझरला द्या.
-4. **Install** दाबा. झाले! 🙏
-
-> Android 8.0 (Oreo) किंवा नवीन फोन लागतो. ॲपचा आकार सुमारे 2.5 MB आहे.
-
-## 🍎 iPhone / iPad — वेब ॲप
-
-**👉 [nilkanth01.github.io/aarti-sangrah](https://nilkanth01.github.io/aarti-sangrah/)**
-
-iPhone वर APK चालत नाही, म्हणून त्याच आरत्या, तेच डिझाइन आणि तीच भाषा सुविधा असलेले वेब ॲप आहे.
-ते होम स्क्रीनवर ॲपसारखे ठेवता येते आणि एकदा उघडल्यावर इंटरनेटशिवायही चालते.
-
-iPhone वर ॲप म्हणून ठेवण्यासाठी:
-1. **Safari** मध्ये वरील लिंक उघडा.
-2. खालील **Share** बटण (⬆️ असलेला चौकोन) दाबा.
-3. खाली सरकवून **Add to Home Screen / होम स्क्रीनवर जोडा** निवडा, मग **Add** दाबा.
-4. होम स्क्रीनवर 🪔 **आरती संग्रह** आयकॉन दिसेल — तिथून उघडा. झाले! 🙏
-
-*English:* iPhones can't install APKs, so there is a web version with the same aartis, design and language
-switch. Open the link in **Safari**, tap **Share**, then **Add to Home Screen**. It then opens full-screen like
-an app and works offline. It also works on Android phones and computers, in any modern browser.
-
-> The web app has no App Store listing and needs no Apple account. New aartis appear automatically,
-> because it reads the same `content/content.json`. "Keep screen on" depends on the browser
-> (it works on recent iPhones). Favourites and settings are saved in that phone's browser.
-
-## ✨ सुविधा / Features
-
-- **५२ रचना** — १८ आरत्या, १८ श्लोक व मंत्र, ८ स्तोत्रे, ८ अभंग व संतवाणी
-- **ॲपची भाषा: मराठी / English** — मेनू, माहिती व सेटिंग्ज इंग्रजीतही; आरत्या व श्लोक नेहमी देवनागरीतच.
-  मुख्यपृष्ठावरील **English / मराठी** बटण किंवा **सेटिंग्ज → भाषा** वापरा.
-  *Switch the menus to English from the home screen button or Settings → Language; the aartis stay in Devanagari.*
-- **पूजा क्रम** — गणेशोत्सव आरती क्रम, सकाळचे श्लोक, सायंकाळची प्रार्थना, साई आरती — एकामागून एक स्वाइप करा
-- **आजचे दैवत** — वारानुसार (सोमवार शंकर, मंगळवार गणपती…) आरत्या मुख्यपृष्ठावर
-- **ध्रुपद हायलाइट** — प्रत्येक कडव्यानंतर ध्रुपद वेगळ्या रंगात, सगळ्यांना सोबत म्हणता यावे म्हणून
-- **मोठी अक्षरे** — अक्षरांचा आकार हवा तसा (16–40), मराठी वळणाचा *Tiro Devanagari Marathi* फॉन्ट
-- **शोध** — मराठी किंवा इंग्रजीत (`ganpati`, `ramraksha`, `सुखकर्ता`)
-- **आवडते** ♡, **अलीकडे वाचलेले**, **शेअर**
-- **स्क्रीन चालू ठेवा** — आरती म्हणताना फोनची स्क्रीन बंद होत नाही
-- **दिवस / रात्र मोड**
-- **आपोआप अपडेट** — नवीन आरत्या इंटरनेटवरून येतात; नवीन आवृत्ती आल्यास ॲप सांगते
-
-## 📚 संग्रहात काय आहे / What's inside
-
-| प्रकार | रचना |
+| Phone | Get it |
 |---|---|
-| **आरत्या** | सुखकर्ता दुःखहर्ता, शेंदुर लाल चढायो, जय गणेश देवा, दुर्गे दुर्घट भारी, लवथवती विक्राळा, युगे अठ्ठावीस, येई हो विठ्ठले, त्रिगुणात्मक त्रैमूर्ती, आरती ज्ञानराजा, आरती तुकारामा, उत्कट साधुनि शिळा (राम), सत्राणें उड्डाणें (मारुती), ओवाळूं आरती मदनगोपाळा, आरती साईबाबा, शिर्डी माझें पंढरपूर, गजानन महाराज आरती, ॐ जय जगदीश हरे, घालीन लोटांगण |
-| **श्लोक व मंत्र** | मंत्रपुष्पांजली, वक्रतुंड महाकाय, गुरुर्ब्रह्मा, कराग्रे वसते, समुद्रवसने, शुभं करोति, गायत्री मंत्र, महामृत्युंजय, कर्पूरगौरं, सर्वमंगलमांगल्ये, या कुन्देन्दु, शान्ताकारं, वसुदेवसुतं, मनोजवं, दत्त नामस्मरण, सूर्यनमस्कार मंत्र, भोजन मंत्र, शांति मंत्र |
-| **स्तोत्रे** | गणपती अथर्वशीर्ष, संकटनाशन गणपती स्तोत्र, रामरक्षा, भीमरूपी (मारुती स्तोत्र), हनुमान चालीसा, शिव पंचाक्षर, श्रीरामचंद्र कृपालु, नवग्रह स्तोत्र |
-| **अभंग व संतवाणी** | पसायदान, मनाचे श्लोक (१–१३), सुंदर तें ध्यान, रूप पाहतां लोचनीं, माझें माहेर पंढरी, अवघा रंग एक झाला, वृक्षवल्ली आम्हां सोयरीं, हरिपाठ |
+| **Android** | **[Download the latest APK](https://github.com/nilkanth01/aarti-sangrah/releases/latest)** |
+| **iPhone / iPad** | **[Open the web app](https://nilkanth01.github.io/aarti-sangrah/)**, then add it to your home screen ([steps below](#-iphone--ipad)) |
 
-> **पाठभेद:** या पारंपरिक रचना वेगवेगळ्या घरांत/गावांत थोड्या वेगळ्या शब्दांत म्हटल्या जातात.
-> एखादी चूक आढळल्यास किंवा नवीन आरती हवी असल्यास ॲपमधील **सेटिंग्ज → चूक कळवा** वापरा, किंवा
-> [येथे Issue उघडा](https://github.com/nilkanth01/aarti-sangrah/issues/new). दुरुस्ती सर्वांच्या फोनवर आपोआप पोहोचेल.
+### Install on Android
+
+1. Open the link above on your phone and download `AartiSangrah-vX.Y.Z.apk`.
+2. Open the downloaded file.
+3. If the phone asks for permission to **Install unknown apps**, allow it for your browser.
+4. Tap **Install**. Done! 🙏
+
+> Needs Android 8.0 (Oreo) or newer. The app is about 2.5 MB.
+> To update, install a newer APK over the old one; your favourites and settings are kept.
+
+### 🍎 iPhone / iPad
+
+iPhones can't install APK files, so there is a web version with the same aartis, design and language
+switch. It can be kept on the home screen like a normal app and works offline after the first visit.
+
+1. Open **[nilkanth01.github.io/aarti-sangrah](https://nilkanth01.github.io/aarti-sangrah/)** in **Safari**.
+2. Tap the **Share** button (the square with an arrow pointing up).
+3. Scroll down, tap **Add to Home Screen**, then tap **Add**.
+4. Open the 🪔 app from your home screen. Done! 🙏
+
+> The web app also works on Android phones and computers in any modern browser. It needs no App Store
+> listing or Apple account, and it shows new aartis automatically because it reads the same
+> `content/content.json` as the Android app. Favourites and settings are saved in that phone's browser.
+> "Keep screen on" depends on the browser; it works on recent iPhones.
+
+## ✨ Features
+
+- **52 texts**: 18 aartis, 18 shlokas & mantras, 8 stotras, 8 abhangs
+- **Marathi or English menus**: use the **English / मराठी** button on the home screen or
+  **Settings → Language**. Aartis and shlokas always stay in Devanagari; in English mode each title
+  also shows its English spelling
+- **Pooja sequences**: Ganeshotsav aarti order, morning shlokas, evening prayers and Sai aarti; swipe
+  from one to the next
+- **Deity of the day**: aartis for the weekday's deity on the home screen (Monday Shankar,
+  Tuesday Ganpati, …)
+- **Highlighted chorus**: the refrain is shown in colour after every verse so everyone can sing along
+- **Large, adjustable text** (16–40) in the *Tiro Devanagari Marathi* font, which uses Marathi letter shapes
+- **Search** in English or Devanagari (`ganpati`, `ramraksha`, `सुखकर्ता`)
+- **Favourites** ♡, **Recently read**, **Share**
+- **Keep screen on** while reading, so the phone doesn't sleep during an aarti
+- **Day / Night mode**
+- **Automatic updates**: new aartis download by themselves, and the app tells you when a newer version is out
+
+## 📚 What's inside
+
+| Category | Texts |
+|---|---|
+| **Aartis** | सुखकर्ता दुःखहर्ता, शेंदुर लाल चढायो, जय गणेश जय गणेश देवा, दुर्गे दुर्घट भारी, लवथवती विक्राळा, युगे अठ्ठावीस विटेवरी उभा, येई हो विठ्ठले, त्रिगुणात्मक त्रैमूर्ती, आरती ज्ञानराजा, आरती तुकारामा, उत्कट साधुनि शिळा, सत्राणें उड्डाणें, ओवाळूं आरती मदनगोपाळा, आरती साईबाबा, शिर्डी माझें पंढरपूर, जय जय सत्चित्स्वरूपा, ॐ जय जगदीश हरे, घालीन लोटांगण |
+| **Shlokas & mantras** | मंत्रपुष्पांजली, वक्रतुंड महाकाय, गुरुर्ब्रह्मा गुरुर्विष्णुः, कराग्रे वसते लक्ष्मीः, समुद्रवसने देवि, शुभं करोति कल्याणम्, गायत्री मंत्र, महामृत्युंजय मंत्र, कर्पूरगौरं करुणावतारं, सर्वमंगलमांगल्ये, या कुन्देन्दुतुषारहारधवला, शान्ताकारं भुजगशयनं, वसुदेवसुतं देवं, मनोजवं मारुततुल्यवेगं, दत्त नामस्मरण, सूर्यनमस्कार मंत्र, भोजन मंत्र, शांति मंत्र |
+| **Stotras** | श्री गणपती अथर्वशीर्ष, संकटनाशन गणपती स्तोत्र, श्री रामरक्षा स्तोत्र, भीमरूपी महारुद्रा, श्री हनुमान चालीसा, शिव पंचाक्षर स्तोत्र, श्रीरामचंद्र कृपालु भजु मन, नवग्रह स्तोत्र |
+| **Abhangs** | पसायदान, मनाचे श्लोक (1–13), सुंदर तें ध्यान उभें विटेवरी, रूप पाहतां लोचनीं, माझें माहेर पंढरी, अवघा रंग एक झाला, वृक्षवल्ली आम्हां सोयरीं वनचरें, हरिपाठ — देवाचिये द्वारीं |
+
+> **Variations in wording:** these traditional texts are sung with small differences from family to family
+> and village to village. If you spot a mistake or want an aarti added, use **Settings → Report a mistake**
+> in the app or [open an issue here](https://github.com/nilkanth01/aarti-sangrah/issues/new).
+> Corrections reach everyone's phone automatically.
 
 ---
 
-## 🔄 ॲप अपडेट कसे होते / How updates work
+## 🔄 How updates work
 
 There are two kinds of updates. Most changes only need the first one.
 
-### 1. नवीन आरत्या / दुरुस्ती — APK न बदलता (content update, no reinstall)
+### 1. New or corrected aartis (no reinstall needed)
 
-All texts live in one file: [`content/content.json`](content/content.json). The app ships with a copy
-(so it works offline) and checks this file on GitHub at most every 6 hours, or when the user taps
-**सेटिंग्ज → नवीन तपासा**.
+All texts live in one file: [`content/content.json`](content/content.json). The Android app ships with a
+copy (so it works offline) and checks this file on GitHub at most every 6 hours, or when someone taps
+**Settings → Check for new**. The web app reads the same file whenever it is online.
 
 To add or fix an aarti:
 1. Edit `content/content.json` (on github.com you can click the ✏️ pencil icon).
-2. **Increase `"version"` by 1** (for example `1` → `2`). Phones only download a higher version.
+2. **Increase `"version"` by 1** (for example `2` → `3`). Phones only download a higher version.
 3. Commit to `main`. The **Check** workflow on GitHub validates the file (you'll get an email if
-   something is wrong), and every phone picks it up automatically. You can also run
-   `python scripts/validate_content.py` locally before pushing.
+   something is wrong), the web app is republished, and every phone picks up the change automatically.
+   You can also run `python scripts/validate_content.py` locally before pushing.
 
-A new item looks like this (`\n` = new line, each string in `verses` is one कडवे):
+A new item looks like this (`\n` starts a new line; each string in `verses` is one stanza):
 
 ```json
 {
   "id": "my-new-aarti",
-  "title": "आरतीचे नाव",
-  "titleEn": "Aarti name in English",
+  "title": "सुखकर्ता दुःखहर्ता",
+  "titleEn": "Sukhkarta Dukhharta",
   "category": "aarti",
   "deity": "ganpati",
-  "author": "रचनाकार",
-  "refrain": "जय देव जय देव ...।\nदुसरी ओळ॥",
+  "author": "Composer's name in Devanagari",
+  "about": "Optional note in Marathi",
+  "aboutEn": "Optional note in English",
+  "refrain": "First line of the chorus।\nSecond line॥",
   "refrainFirst": false,
   "verses": [
-    "पहिल्या कडव्याची पहिली ओळ।\nदुसरी ओळ॥१॥",
-    "दुसरे कडवे...॥२॥"
+    "First stanza, line one।\nline two॥१॥",
+    "Second stanza…॥२॥"
   ],
   "keywords": "english search words"
 }
 ```
 
 - `category`: `aarti`, `shlok`, `stotra` or `abhang`
-- `deity`: one of the `id`s in the `deities` list (`ganpati`, `devi`, `shankar`, `vitthal`, `datta`, `ram`, `maruti`, `krishna`, `vishnu`, `sai`, `sant`, `surya`, `navgrah`, `sarva`) — you can add new deities too
-- `refrain` (ध्रुपद) is optional; it is shown after every verse. `refrainFirst: true` also shows it at the top
-- Optional `about` (मराठी माहिती) and `aboutEn` (the same note in English, shown when the app is in English)
-- `titleEn` is shown under the Devanagari title when the app is in English, and helps English search
+- `deity`: one of the `id`s in the `deities` list (`ganpati`, `devi`, `shankar`, `vitthal`, `datta`, `ram`,
+  `maruti`, `krishna`, `vishnu`, `sai`, `sant`, `surya`, `navgrah`, `sarva`); you can add new deities too
+- `refrain` (the chorus) is optional and is shown after every verse; `refrainFirst: true` also shows it at the top
+- `about` / `aboutEn` are optional notes, shown in the app's chosen language
+- `titleEn` is shown under the Devanagari title in English mode and helps English search
 - New deities, categories and playlists need an English `nameEn` too (playlists and categories also take `descriptionEn`)
-- To add it to a पूजा क्रम, put its `id` in a `playlists[].items` list
-- Check locally with `python scripts/validate_content.py`
-- If new content ever needs a newer app, set `"minAppVersion"` to that app's `versionCode`; older apps will keep their current content instead of breaking
+- To add an item to a pooja sequence, put its `id` in that entry's `playlists[].items` list
+- If new content ever needs a newer app, set `"minAppVersion"` to that app's `versionCode`; older apps then
+  keep their current content instead of breaking
 
-### 2. नवीन आवृत्ती — new APK (code changes)
+### 2. A new app version (code changes)
 
 ```powershell
-.\scripts\release.ps1 -Version 1.1.0 -Notes "काय बदलले ते"
+.\scripts\release.ps1 -Version 1.2.0 -Notes "What changed"
+.\scripts\release.ps1 -Version 1.2.0 -NotesFile notes.md   # longer notes from a UTF-8 file
 ```
 
-This bumps the version in `gradle.properties`, builds a **signed** APK, commits, tags, pushes and
-creates a GitHub release with the APK attached. Every installed app then shows
-**"नवीन आवृत्ती उपलब्ध"** with a download button, and the new APK installs *over* the old one
-(favourites and settings are kept).
+This bumps the version in `gradle.properties`, builds a **signed** APK, commits, tags, pushes and creates
+a GitHub release with the APK attached. Every installed Android app then shows a **new version available**
+message with a download button, and the new APK installs *over* the old one (favourites and settings are kept).
 
 > ⚠️ **Keep the signing key safe.** Android only accepts an update if it is signed with the same key.
 > The key is `C:\Users\nilkanth\AndroidDev\keys\aarti-sangrah-release.jks` and its passwords are in
 > `keystore.properties` (a backup copy is next to the key). Neither is on GitHub. **Back up that
-> `keys` folder** (e.g. to a pen drive or private cloud storage). If it is lost, people would have
-> to uninstall and reinstall to get future versions.
+> `keys` folder** (for example to a pen drive or private cloud storage). If it is lost, people would
+> have to uninstall and reinstall to get future versions.
 
 ---
 
@@ -164,7 +166,7 @@ Everything needed was installed into `C:\Users\nilkanth\AndroidDev` (no admin ri
 ```powershell
 .\gradlew.bat assembleDebug        # debug APK  -> app\build\outputs\apk\debug\
 .\gradlew.bat assembleRelease      # signed APK -> app\build\outputs\apk\release\ (needs keystore.properties)
-.\gradlew.bat testDebugUnitTest    # checks content.json and re-renders docs\screenshots\
+.\gradlew.bat testDebugUnitTest    # checks content.json, re-renders docs\screenshots\ and web\icons\
 ```
 
 On a new computer: install JDK 17 and the Android SDK (or Android Studio), create `local.properties`
@@ -175,7 +177,7 @@ with `sdk.dir=...`, and copy your `keystore.properties` + `.jks` to sign release
 ```
 content/content.json        all aartis & shlokas (bundled in the APK + fetched for updates)
 app/src/main/java/.../data  content loading, OTA updates, release check, settings
-app/src/main/java/.../ui    Jetpack Compose screens and theme
+app/src/main/java/.../ui    Jetpack Compose screens, theme and the Marathi/English strings
 app/src/main/res/font       Tiro Devanagari Marathi + Mukta (SIL Open Font License)
 web/                        iPhone / web app: index.html, app.css, app.js, sw.js (offline), icons
 scripts/build_web.py        assembles web/ + content.json + fonts into build/site
@@ -189,7 +191,7 @@ The web app is plain HTML/CSS/JavaScript with no libraries or build tools.
 ### Web app
 
 `.github/workflows/pages.yml` rebuilds and publishes the web app to GitHub Pages on every push to `main`,
-so a `content.json` change updates the APK users (over the air) and the web users at the same time.
+so a `content.json` change reaches Android users (over the air) and web users at the same time.
 Each deploy stamps a new build id into `sw.js`, so installed copies update themselves the next time
 they are opened. To try it locally:
 
@@ -198,14 +200,14 @@ python scripts\build_web.py
 python -m http.server 8765 -d build\site    # then open http://localhost:8765
 ```
 
-`web/icons/*.png` are rendered from the Android launcher icon by `gradlew testDebugUnitTest`.
+The web app's menu text lives in `web/app.js` and the Android app's in `ui/Strings.kt`; change both
+when you edit a label.
 
 ## 🔒 Privacy
 
-The app has no account, no ads, no analytics. It talks to only two addresses, both on GitHub:
-`raw.githubusercontent.com` (new content) and `api.github.com` (is there a newer version?).
-The web app only loads its own files from `nilkanth01.github.io`.
-Favourites and settings never leave the phone.
+The app has no account, no ads and no analytics. The Android app talks to only two addresses, both on
+GitHub: `raw.githubusercontent.com` (new content) and `api.github.com` (is there a newer version?).
+The web app only loads its own files from `nilkanth01.github.io`. Favourites and settings never leave the phone.
 
 ## 📄 License
 
