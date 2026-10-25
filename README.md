@@ -65,7 +65,9 @@ All texts live in one file: [`content/content.json`](content/content.json). The 
 To add or fix an aarti:
 1. Edit `content/content.json` (on github.com you can click the ✏️ pencil icon).
 2. **Increase `"version"` by 1** (for example `1` → `2`). Phones only download a higher version.
-3. Commit to `main`. Every phone picks it up automatically (run `python scripts/validate_content.py` first to catch typos).
+3. Commit to `main`. The **Check** workflow on GitHub validates the file (you'll get an email if
+   something is wrong), and every phone picks it up automatically. You can also run
+   `python scripts/validate_content.py` locally before pushing.
 
 A new item looks like this (`\n` = new line, each string in `verses` is one कडवे):
 
@@ -141,7 +143,7 @@ app/src/main/java/.../data  content loading, OTA updates, release check, setting
 app/src/main/java/.../ui    Jetpack Compose screens and theme
 app/src/main/res/font       Tiro Devanagari Marathi + Mukta (SIL Open Font License)
 scripts/release.ps1         one-command signed release to GitHub
-scripts/validate_content.py content checker — run it before pushing content changes
+scripts/validate_content.py content checker (also runs on every push via .github/workflows/check.yml)
 ```
 
 Tech: Kotlin, Jetpack Compose (Material 3), no third-party runtime libraries besides AndroidX.
