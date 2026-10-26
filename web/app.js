@@ -24,6 +24,8 @@
     theme: store.get('theme', 'auto'),
     fontSize: store.get('fontSize', 22),
     keepAwake: store.get('keepAwake', true),
+    speechSlow: store.get('speechSlow', false),
+    music: store.get('music', true),
     favorites: store.get('favorites', []),
     recents: store.get('recents', []),
   };
@@ -72,6 +74,13 @@
       upToDate: 'सर्व आरत्या अद्ययावत आहेत 🙏', offline: 'इंटरनेट जोडणी तपासा आणि पुन्हा प्रयत्न करा',
       contentUpdated: n => n > 0 ? `${mrNum(n)} नवीन आरत्या/श्लोक जोडले गेले 🌼` : 'आरत्या व श्लोक अद्ययावत झाले 🌼',
       loadError: 'आरत्या लोड झाल्या नाहीत. इंटरनेट तपासून पुन्हा प्रयत्न करा.', retry: 'पुन्हा प्रयत्न करा',
+      listen: 'ऐका', pause: 'थांबवा', resume: 'पुढे ऐका', stopListening: 'बंद करा', slow: 'हळू', normalSpeed: 'सामान्य',
+      music: 'तंबोरा', lineOf: (i, n) => `ओळ ${mrNum(i)} / ${mrNum(n)}`,
+      hindiVoiceNote: 'मराठी आवाज नाही — हिंदी आवाज वापरत आहे',
+      noVoice: 'या फोनवर मराठी किंवा हिंदी आवाज नाही.', noSpeech: 'हा ब्राउझर वाचून दाखवू शकत नाही.',
+      listenGroup: 'ऐका', speechSpeed: 'वाचण्याचा वेग', musicSetting: 'सोबत तंबोरा वाजवा',
+      listenNote: '“ऐका” दाबल्यावर आरती ओळ-ओळ वाचली जाते आणि चालू ओळ रंगीत दिसते — उच्चार शिकण्यासाठी. आवाज फोन/ब्राउझरचा स्वतःचा असतो.',
+      voiceStatus: v => (v === 'mr' ? 'आवाज: मराठी ✓' : v === 'hi' ? 'मराठी आवाज नाही — हिंदी आवाज वापरला जाईल' : 'या ब्राउझरमध्ये मराठी/हिंदी आवाज सापडला नाही'),
     },
     en: {
       tabHome: 'Home', tabSearch: 'Search', tabFav: 'Favourites', tabSettings: 'Settings', back: 'Back',
@@ -104,6 +113,13 @@
       upToDate: 'All aartis are up to date 🙏', offline: 'Check your internet connection and try again',
       contentUpdated: n => (n > 0 ? `${n} new aartis/shlokas added 🌼` : 'Aartis & shlokas updated 🌼'),
       loadError: "Couldn't load the aartis. Check your internet and try again.", retry: 'Try again',
+      listen: 'Listen', pause: 'Pause', resume: 'Resume', stopListening: 'Stop', slow: 'Slow', normalSpeed: 'Normal',
+      music: 'Tanpura', lineOf: (i, n) => `Line ${i} of ${n}`,
+      hindiVoiceNote: 'No Marathi voice — using the Hindi voice',
+      noVoice: 'This device has no Marathi or Hindi voice.', noSpeech: "This browser can't read text aloud.",
+      listenGroup: 'Listen', speechSpeed: 'Reading speed', musicSetting: 'Play tanpura in the background',
+      listenNote: '“Listen” reads the text line by line and highlights the current line, to help with pronunciation. The voice is your phone’s or browser’s own.',
+      voiceStatus: v => (v === 'mr' ? 'Voice: Marathi ✓' : v === 'hi' ? 'No Marathi voice — the Hindi voice will be used' : 'No Marathi or Hindi voice found in this browser'),
     },
   };
   const S = () => STR[state.lang];
@@ -153,6 +169,9 @@
     feedback: '<path d="M20 2H4c-1.1 0-1.99.9-1.99 2L2 22l4-4h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-7 12h-2v-2h2v2zm0-4h-2V6h2v4z"/>',
     code: '<path d="M9.4 16.6L4.8 12l4.6-4.6L8 6l-6 6 6 6 1.4-1.4zm5.2 0l4.6-4.6-4.6-4.6L16 6l6 6-6 6-1.4-1.4z"/>',
     check: '<path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41z"/>',
+    headphones: '<path d="M12 1a9 9 0 0 0-9 9v7c0 1.66 1.34 3 3 3h3v-8H5v-2c0-3.87 3.13-7 7-7s7 3.13 7 7v2h-4v8h3c1.66 0 3-1.34 3-3v-7a9 9 0 0 0-9-9z"/>',
+    pause: '<path d="M6 19h4V5H6v14zm8-14v14h4V5h-4z"/>',
+    'music-off': '<path d="M4.27 3L3 4.27l9 9v.28A4 4 0 1 0 14 17v-1.73L19.73 21 21 19.73 4.27 3zM14 7h4V3h-6v5.18l2 2z"/>',
   };
   const icon = (name, cls = '') => `<svg class="ic ${cls}" viewBox="0 0 24 24" aria-hidden="true">${ICONS[name] || ''}</svg>`;
   const catIcon = id => (id === 'shlok'
@@ -440,6 +459,17 @@
       ${seg('lang', state.lang, [['mr', 'मराठी'], ['en', 'English']])}
       <p class="note" style="margin-top:8px">${esc(s.langNote)}</p></div>
 
+    <div class="group-title">${esc(s.listenGroup)}</div>
+    <div class="group"><p class="note">${esc(s.listenNote)}</p>
+      <h3 style="margin-top:14px">${esc(s.speechSpeed)}</h3>
+      ${seg('speech', state.speechSlow ? 'slow' : 'normal', [['slow', s.slow], ['normal', s.normalSpeed]])}
+      <div class="divider"></div>
+      <div class="row"><h3 class="grow">${esc(s.musicSetting)}</h3>
+        <button type="button" class="switch ${state.music ? 'on' : ''}" role="switch" aria-checked="${state.music}"
+          aria-label="${esc(s.musicSetting)}" data-action="music-setting"></button></div>
+      <p class="note" style="margin-top:10px">${esc('speechSynthesis' in window ? s.voiceStatus(marathiVoiceStatus()) : s.noSpeech)}</p>
+    </div>
+
     <div class="group-title">${esc(s.appearance)}</div>
     <div class="group"><h3>${esc(s.theme)}</h3>
       ${seg('theme', state.theme, [['auto', s.auto, 'auto'], ['light', s.day, 'sun'], ['dark', s.night, 'moon']])}
@@ -478,8 +508,9 @@
     const c = lib.catMap.get(item.category);
     const s = S();
     const about = aboutOf(item);
-    const refrain = item.refrain ? `<div class="refrain" lang="mr">${esc(item.refrain)}</div>` : '';
+    const refrain = block => (item.refrain ? `<div class="refrain" lang="mr" data-b="${block}">${linesHtml(item.refrain)}</div>` : '');
     const meta = [d && deityName(d), c && catName(c), langName(item.language)].filter(Boolean).join(' • ');
+    const pager = ids.length > 1;
     markRead(item.id);
     return `
     <header class="appbar"><button type="button" class="icon-btn" data-action="back" aria-label="${esc(s.back)}">${icon('back')}</button>
@@ -496,16 +527,32 @@
         ${item.author ? `<div class="by">${esc(s.by(item.author))}</div>` : ''}
         ${ORNAMENT}</div>
       ${about ? `<div class="about">${icon('info')}<span>${esc(about)}</span></div>` : ''}
-      ${item.refrainFirst ? refrain : ''}
-      ${item.verses.map(v => `<div class="verse" lang="mr">${esc(v)}</div>${refrain}`).join('')}
+      ${item.refrainFirst ? refrain('rt') : ''}
+      ${item.verses.map((v, k) => `<div class="verse" lang="mr" data-b="v${k}">${linesHtml(v)}</div>${refrain(`r${k}`)}`).join('')}
       ${ORNAMENT}
     </article>
-    ${ids.length > 1 ? `
+    <button type="button" class="listen-fab ${pager ? 'above-pager' : ''}" data-action="listen">${icon('headphones')}${esc(s.listen)}</button>
+    <div class="player ${pager ? 'above-pager' : ''}" id="player" hidden>
+      <div class="player-progress"><i></i></div>
+      <div class="player-row">
+        <button type="button" class="play-btn" data-action="play-pause" aria-label="${esc(s.pause)}">${icon('pause')}</button>
+        <div class="grow"><b id="player-line"></b><small id="player-note" hidden>${esc(s.hindiVoiceNote)}</small></div>
+        <button type="button" class="chip ${state.speechSlow ? 'on' : ''}" data-action="speed" aria-pressed="${state.speechSlow}">${esc(s.slow)}</button>
+        <button type="button" class="icon-btn music ${state.music ? 'on' : ''}" data-action="music" aria-pressed="${state.music}" aria-label="${esc(s.music)}">${icon(state.music ? 'note' : 'music-off')}</button>
+        <button type="button" class="icon-btn" data-action="stop-listen" aria-label="${esc(s.stopListening)}">${icon('close')}</button>
+      </div>
+    </div>
+    ${pager ? `
     <nav class="pager"><div class="pager-in">
       <button type="button" data-action="page" data-to="${i - 1}" ${i === 0 ? 'disabled' : ''}>${icon('chev-left')}${esc(s.prev)}</button>
       <div class="mid">${esc(num(i + 1))} / ${esc(num(ids.length))}<div class="progress"><i style="width:${((i + 1) / ids.length) * 100}%"></i></div></div>
       <button type="button" data-action="page" data-to="${i + 1}" ${i === ids.length - 1 ? 'disabled' : ''}>${esc(s.next)}${icon('chev-right')}</button>
     </div></nav>` : ''}`;
+  }
+
+  function readerItem() {
+    const el = $('.reader');
+    return el && lib.byId.get(el.dataset.ids.split(',')[Number(el.dataset.i)]);
   }
 
   function homeRedirect() {
@@ -584,6 +631,193 @@
     }
   }
 
+  // ---------- Read aloud (speech + tanpura) ----------
+  /** Each line in its own span so the line being read can be highlighted. */
+  function linesHtml(text) {
+    return text.split('\n').map((line, k) => `<span class="ln" data-l="${k}">${esc(line)}</span>`).join('\n');
+  }
+
+  const cleanLine = line => line
+    .replace(/॥\s*[०-९0-9]+\s*॥/g, ' ')
+    .replace(/[।॥'"“”‘’()०-९0-9]/g, ' ')
+    .replace(/—/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+
+  /** The lines exactly as shown on screen (refrain after every verse), ready to speak. */
+  function recitationScript(item) {
+    const out = [];
+    const add = (block, text) => text.split('\n').forEach((raw, line) => {
+      const text2 = cleanLine(raw);
+      if (text2) out.push({ block, line, text: text2 });
+    });
+    if (item.refrain && item.refrainFirst) add('rt', item.refrain);
+    item.verses.forEach((v, k) => {
+      add(`v${k}`, v);
+      if (item.refrain) add(`r${k}`, item.refrain);
+    });
+    return out;
+  }
+
+  const speechLang = item => (item.language === 'हिंदी' || item.language === 'अवधी' ? 'hi' : 'mr');
+
+  function findVoice(prefix) {
+    const voices = 'speechSynthesis' in window ? speechSynthesis.getVoices() : [];
+    const matches = voices.filter(v => v.lang.replace('_', '-').toLowerCase().startsWith(prefix));
+    // Prefer natural/online voices when the browser offers several.
+    return matches.find(v => /natural|online|google/i.test(v.name)) || matches[0] || null;
+  }
+
+  /** 'mr', 'hi' or '' — which voice the browser can use for Marathi text. */
+  function marathiVoiceStatus() {
+    if (findVoice('mr')) return 'mr';
+    if (findVoice('hi')) return 'hi';
+    return '';
+  }
+
+  const speech = { status: 'idle', itemId: null, index: -1, script: [], gen: 0, hindi: false, autoNext: false };
+
+  function listen(item, from = 0) {
+    if (!('speechSynthesis' in window)) { toast(S().noSpeech); return; }
+    const script = recitationScript(item);
+    if (!script.length) return;
+    const gen = ++speech.gen;
+    speechSynthesis.cancel();
+    const wanted = speechLang(item);
+    // Marathi and Hindi voices can each read the other's Devanagari, so fall back either way.
+    const voice = findVoice(wanted) || findVoice(wanted === 'hi' ? 'mr' : 'hi');
+    if (!voice && speechSynthesis.getVoices().length) {
+      stopSpeech();
+      toast(S().noVoice);
+      return;
+    }
+    Object.assign(speech, {
+      status: 'playing', itemId: item.id, index: from, script,
+      hindi: wanted === 'mr' && !!voice && voice.lang.toLowerCase().startsWith('hi'),
+    });
+    for (let k = from; k < script.length; k++) {
+      const u = new SpeechSynthesisUtterance(script[k].text);
+      u.lang = voice ? voice.lang : (wanted === 'hi' ? 'hi-IN' : 'mr-IN');
+      if (voice) u.voice = voice;
+      u.rate = state.speechSlow ? 0.65 : 0.9;
+      u.onstart = () => {
+        if (gen !== speech.gen) return;
+        speech.index = k;
+        updatePlayer();
+      };
+      if (k === script.length - 1) {
+        u.onend = () => {
+          if (gen !== speech.gen) return;
+          stopSpeech();
+          nextInSequence();
+        };
+      }
+      u.onerror = e => {
+        if (gen !== speech.gen || e.error === 'interrupted' || e.error === 'canceled') return;
+        stopSpeech();
+      };
+      speechSynthesis.speak(u);
+    }
+    startMusic();
+    updatePlayer();
+  }
+
+  function pauseSpeech() {
+    speech.gen++;
+    speechSynthesis.cancel();
+    speech.status = 'paused';
+    stopMusic();
+    updatePlayer();
+  }
+
+  function stopSpeech() {
+    speech.gen++;
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+    Object.assign(speech, { status: 'idle', itemId: null, index: -1, script: [] });
+    stopMusic();
+    updatePlayer();
+  }
+
+  function nextInSequence() {
+    const el = $('.reader');
+    if (!el) return;
+    const ids = el.dataset.ids.split(',');
+    const next = Number(el.dataset.i) + 1;
+    if (next >= ids.length) return;
+    speech.autoNext = true;
+    goPage(next);
+  }
+
+  /** Updates the player bar and the highlighted line without re-rendering the page. */
+  function updatePlayer() {
+    const player = $('#player');
+    const fab = $('.listen-fab');
+    const reader = $('.reader');
+    if (!player || !reader) return;
+    const ids = reader.dataset.ids.split(',');
+    const here = ids[Number(reader.dataset.i)];
+    const active = speech.status !== 'idle' && speech.itemId === here;
+    player.hidden = !active;
+    fab.hidden = active;
+    reader.classList.toggle('with-player', active);
+    reader.querySelectorAll('.ln.on').forEach(n => n.classList.remove('on'));
+    if (!active) return;
+    const s = S();
+    const playing = speech.status === 'playing';
+    const btn = player.querySelector('[data-action="play-pause"]');
+    btn.innerHTML = icon(playing ? 'pause' : 'play');
+    btn.setAttribute('aria-label', playing ? s.pause : s.resume);
+    $('#player-line').textContent = s.lineOf(speech.index + 1, speech.script.length);
+    $('#player-note').hidden = !speech.hindi;
+    player.querySelector('.player-progress i').style.width = `${((speech.index + 1) / speech.script.length) * 100}%`;
+    const line = speech.script[speech.index];
+    const node = line && reader.querySelector(`[data-b="${line.block}"] [data-l="${line.line}"]`);
+    if (node) {
+      node.classList.add('on');
+      const r = node.getBoundingClientRect();
+      if (r.top < 90 || r.bottom > window.innerHeight - 170) node.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+  }
+
+  // Soft tanpura drone (audio/tanpura.wav, made by scripts/make_tanpura.py), looped quietly.
+  let audioCtx = null;
+  let droneBuffer = null;
+  let droneSource = null;
+
+  /** Must run inside a tap on iPhone, or the browser keeps the audio muted. */
+  function unlockAudio() {
+    try {
+      audioCtx = audioCtx || new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+    } catch { audioCtx = null; }
+  }
+
+  async function startMusic() {
+    if (!state.music || !audioCtx || droneSource) return;
+    try {
+      if (!droneBuffer) {
+        const data = await (await fetch('audio/tanpura.wav')).arrayBuffer();
+        droneBuffer = await new Promise((ok, fail) => audioCtx.decodeAudioData(data, ok, fail));
+      }
+      if (droneSource || speech.status !== 'playing') return;
+      const gain = audioCtx.createGain();
+      gain.gain.value = 0.18;
+      gain.connect(audioCtx.destination);
+      droneSource = audioCtx.createBufferSource();
+      droneSource.buffer = droneBuffer;
+      droneSource.loop = true;
+      droneSource.connect(gain);
+      droneSource.start();
+    } catch { droneSource = null; }
+  }
+
+  function stopMusic() {
+    if (!droneSource) return;
+    try { droneSource.stop(); } catch { /* already stopped */ }
+    droneSource.disconnect();
+    droneSource = null;
+  }
+
   // ---------- Router ----------
   const TABS = [
     { id: 'home', href: '#/', icon: 'home', label: 'tabHome' },
@@ -627,6 +861,20 @@
     lastKey = r.key;
 
     setAwake(r.name === 'read' && state.keepAwake);
+    // Read aloud: carry on through a sequence, switch with a swipe, stop when leaving the reader.
+    if (r.name === 'read') {
+      const reader = $('.reader');
+      const here = reader && reader.dataset.ids.split(',')[Number(reader.dataset.i)];
+      if (speech.itemId && speech.itemId !== here) {
+        if (speech.status === 'playing') listen(lib.byId.get(here)); else stopSpeech();
+      } else if (speech.autoNext && speech.status === 'idle' && here) {
+        listen(lib.byId.get(here));
+      }
+      speech.autoNext = false;
+      updatePlayer();
+    } else if (speech.status !== 'idle') {
+      stopSpeech();
+    }
     if (r.name === 'search') {
       const input = $('#q');
       if (r.q.get('focus')) input.focus();
@@ -647,6 +895,27 @@
     }
     else if (a === 'theme') { setState('theme', el.dataset.value); applyTheme(); render(true); }
     else if (a === 'awake') { setState('keepAwake', !state.keepAwake); render(true); }
+    else if (a === 'listen') { unlockAudio(); listen(readerItem()); }
+    else if (a === 'play-pause') {
+      if (speech.status === 'playing') pauseSpeech();
+      else { unlockAudio(); listen(readerItem(), Math.max(0, speech.index)); }
+    }
+    else if (a === 'speed') {
+      setState('speechSlow', !state.speechSlow);
+      el.classList.toggle('on', state.speechSlow);
+      el.setAttribute('aria-pressed', state.speechSlow);
+      if (speech.status === 'playing') listen(readerItem(), Math.max(0, speech.index));
+    }
+    else if (a === 'music') {
+      setState('music', !state.music);
+      el.classList.toggle('on', state.music);
+      el.setAttribute('aria-pressed', state.music);
+      el.innerHTML = icon(state.music ? 'note' : 'music-off');
+      if (state.music && speech.status === 'playing') { unlockAudio(); startMusic(); } else stopMusic();
+    }
+    else if (a === 'stop-listen') stopSpeech();
+    else if (a === 'speech') { setState('speechSlow', el.dataset.value === 'slow'); render(true); }
+    else if (a === 'music-setting') { setState('music', !state.music); render(true); }
     else if (a === 'size') openSizeSheet();
     else if (a === 'share') share(lib.byId.get(el.dataset.id));
     else if (a === 'page') goPage(Number(el.dataset.to));
@@ -706,6 +975,10 @@
   }, { passive: true });
 
   window.addEventListener('hashchange', () => { inAppNavigations++; render(); });
+  // Browsers load their voice list late; refresh the voice note in Settings when it arrives.
+  if ('speechSynthesis' in window) {
+    speechSynthesis.addEventListener?.('voiceschanged', () => { if (route().name === 'settings') render(true); });
+  }
   document.addEventListener('visibilitychange', () => {
     if (document.visibilityState === 'visible' && route().name === 'read' && state.keepAwake) setAwake(true);
   });

@@ -62,6 +62,32 @@ class Strings private constructor(val language: AppLanguage) {
     val shareFooter = t("— देवघर ॲप", "— Devghar app")
     fun composedBy(author: String) = t("रचना: $author", "By $author")
 
+    // Read aloud
+    val listen = t("ऐका", "Listen")
+    val pause = t("थांबवा", "Pause")
+    val resume = t("पुढे ऐका", "Resume")
+    val stopListening = t("बंद करा", "Stop")
+    val slow = t("हळू", "Slow")
+    val normalSpeed = t("सामान्य", "Normal")
+    val music = t("तंबोरा", "Tanpura")
+    val preparingVoice = t("आवाज तयार होत आहे…", "Preparing the voice…")
+    fun lineOf(i: Int, n: Int) = t("ओळ ${num(i)} / ${num(n)}", "Line $i of $n")
+    val hindiVoiceNote = t("मराठी आवाज नाही — हिंदी आवाज वापरत आहे", "No Marathi voice — using the Hindi voice")
+    val noVoiceTitle = t("मराठी आवाज उपलब्ध नाही", "Marathi voice not available")
+    val noVoiceMessage = t(
+        "फोनच्या सेटिंग्जमध्ये Text-to-speech उघडा, Google चे इंजिन निवडा आणि मराठी आवाज डाउनलोड करा. मग पुन्हा “ऐका” दाबा.",
+        "Open Text-to-speech in your phone's settings, choose Google's engine and download the Marathi voice. Then tap “Listen” again.",
+    )
+    val openVoiceSettings = t("आवाज सेटिंग्ज उघडा", "Open voice settings")
+    val cancel = t("रद्द", "Cancel")
+    val listenGroup = t("ऐका", "Listen")
+    val speechSpeed = t("वाचण्याचा वेग", "Reading speed")
+    val musicSetting = t("सोबत तंबोरा वाजवा", "Play tanpura in the background")
+    val listenNote = t(
+        "“ऐका” दाबल्यावर आरती ओळ-ओळ वाचली जाते आणि चालू ओळ रंगीत दिसते — उच्चार शिकण्यासाठी. आवाज फोनच्या Text-to-speech मधून येतो (हिंदी रचनांसाठी हिंदी आवाज).",
+        "“Listen” reads the text line by line and highlights the current line, to help with pronunciation. The voice is your phone's text-to-speech voice (Hindi texts use the Hindi voice).",
+    )
+
     // Search
     val searchSubtitle = t(
         "मराठी किंवा इंग्रजीत शोधा — उदा. सुखकर्ता, ganpati, ramraksha",

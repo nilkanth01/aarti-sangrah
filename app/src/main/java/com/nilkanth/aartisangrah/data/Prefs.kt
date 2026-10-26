@@ -29,6 +29,12 @@ class Prefs(context: Context) {
     private val _keepScreenOn = MutableStateFlow(sp.getBoolean("keepScreenOn", true))
     val keepScreenOn: StateFlow<Boolean> = _keepScreenOn
 
+    private val _speechSlow = MutableStateFlow(sp.getBoolean("speechSlow", false))
+    val speechSlow: StateFlow<Boolean> = _speechSlow
+
+    private val _music = MutableStateFlow(sp.getBoolean("music", true))
+    val music: StateFlow<Boolean> = _music
+
     private val _favorites = MutableStateFlow(sp.getString("favorites", "").orEmpty().toIdList())
     val favorites: StateFlow<List<String>> = _favorites
 
@@ -61,6 +67,16 @@ class Prefs(context: Context) {
     fun setKeepScreenOn(on: Boolean) {
         _keepScreenOn.value = on
         sp.edit().putBoolean("keepScreenOn", on).apply()
+    }
+
+    fun setSpeechSlow(on: Boolean) {
+        _speechSlow.value = on
+        sp.edit().putBoolean("speechSlow", on).apply()
+    }
+
+    fun setMusic(on: Boolean) {
+        _music.value = on
+        sp.edit().putBoolean("music", on).apply()
     }
 
     fun toggleFavorite(id: String) {

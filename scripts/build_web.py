@@ -28,6 +28,11 @@ fonts.mkdir()
 for name in ("tiro_marathi", "mukta_regular", "mukta_semibold", "mukta_bold"):
     shutil.copy2(root / "app" / "src" / "main" / "res" / "font" / f"{name}.ttf", fonts / f"{name}.ttf")
 
+# The read-aloud background drone is shared with the Android app.
+audio = out / "audio"
+audio.mkdir()
+shutil.copy2(root / "app" / "src" / "main" / "res" / "raw" / "tanpura.wav", audio / "tanpura.wav")
+
 for name in ("index.html", "sw.js"):
     path = out / name
     path.write_text(path.read_text(encoding="utf-8").replace("__BUILD_ID__", build_id), encoding="utf-8", newline="\n")

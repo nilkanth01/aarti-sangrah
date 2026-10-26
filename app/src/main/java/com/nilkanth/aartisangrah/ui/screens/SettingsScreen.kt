@@ -24,6 +24,7 @@ import androidx.compose.material.icons.rounded.BugReport
 import androidx.compose.material.icons.rounded.Code
 import androidx.compose.material.icons.rounded.DarkMode
 import androidx.compose.material.icons.rounded.LightMode
+import androidx.compose.material.icons.rounded.RecordVoiceOver
 import androidx.compose.material.icons.rounded.SystemUpdate
 import androidx.compose.material3.Button
 import androidx.compose.material3.CircularProgressIndicator
@@ -74,6 +75,11 @@ fun SettingsScreen(
     onDownloadUpdate: (AppRelease) -> Unit,
     onReportIssue: () -> Unit,
     onOpenSource: () -> Unit,
+    speechSlow: Boolean = false,
+    musicOn: Boolean = true,
+    onSpeechSlow: (Boolean) -> Unit = {},
+    onMusic: (Boolean) -> Unit = {},
+    onVoiceSettings: () -> Unit = {},
 ) {
     val strings = LocalStrings.current
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
@@ -109,6 +115,32 @@ fun SettingsScreen(
                     color = MaterialTheme.colorScheme.onSurfaceVariant,
                     modifier = Modifier.padding(top = 8.dp),
                 )
+            }
+        }
+
+        item {
+            Group(strings.listenGroup) {
+                Text(strings.listenNote, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                Spacer(Modifier.height(14.dp))
+                Text(strings.speechSpeed, style = MaterialTheme.typography.titleSmall)
+                Spacer(Modifier.height(8.dp))
+                val speeds = listOf(true to strings.slow, false to strings.normalSpeed)
+                SingleChoiceSegmentedButtonRow(Modifier.fillMaxWidth()) {
+                    speeds.forEachIndexed { i, (isSlow, label) ->
+                        SegmentedButton(
+                            selected = speechSlow == isSlow,
+                            onClick = { onSpeechSlow(isSlow) },
+                            shape = SegmentedButtonDefaults.itemShape(i, speeds.size),
+                        ) { Text(label) }
+                    }
+                }
+                HorizontalDivider(Modifier.padding(vertical = 14.dp), color = MaterialTheme.colorScheme.outlineVariant)
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(strings.musicSetting, style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
+                    Switch(checked = musicOn, onCheckedChange = onMusic)
+                }
+                Spacer(Modifier.height(4.dp))
+                LinkRow(Icons.Rounded.RecordVoiceOver, strings.openVoiceSettings, onVoiceSettings)
             }
         }
 

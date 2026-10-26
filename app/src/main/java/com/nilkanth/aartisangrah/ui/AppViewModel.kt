@@ -3,6 +3,7 @@ package com.nilkanth.aartisangrah.ui
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
+import com.nilkanth.aartisangrah.audio.Reciter
 import com.nilkanth.aartisangrah.data.AppRelease
 import com.nilkanth.aartisangrah.data.AppUpdates
 import com.nilkanth.aartisangrah.data.ContentRepository
@@ -29,6 +30,26 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     private val repo = ContentRepository(app)
     val prefs = Prefs(app)
     val library: StateFlow<Library?> = repo.library
+
+    /** Read-aloud player; the text-to-speech engine itself only starts on the first "Listen". */
+    val reciter = Reciter(app).apply {
+        setSlow(prefs.speechSlow.value)
+        setMusic(prefs.music.value)
+    }
+
+    fun setSpeechSlow(on: Boolean) {
+        prefs.setSpeechSlow(on)
+        reciter.setSlow(on)
+    }
+
+    fun setMusic(on: Boolean) {
+        prefs.setMusic(on)
+        reciter.setMusic(on)
+    }
+
+    override fun onCleared() {
+        reciter.release()
+    }
 
     private val _appUpdate = MutableStateFlow<AppRelease?>(null)
     val appUpdate: StateFlow<AppRelease?> = _appUpdate

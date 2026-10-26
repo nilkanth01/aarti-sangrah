@@ -17,6 +17,7 @@ const SHELL_FILES = [
   'fonts/mukta_semibold.ttf',
   'fonts/mukta_bold.ttf',
   'fonts/tiro_marathi.ttf',
+  'audio/tanpura.wav',
 ];
 
 // cache: 'reload' skips the browser's HTTP cache so a new deploy never stores old files.

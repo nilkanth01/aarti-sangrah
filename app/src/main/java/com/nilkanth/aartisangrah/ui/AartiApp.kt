@@ -57,6 +57,7 @@ import com.nilkanth.aartisangrah.ui.screens.ListScreen
 import com.nilkanth.aartisangrah.ui.screens.ReaderScreen
 import com.nilkanth.aartisangrah.ui.screens.SearchScreen
 import com.nilkanth.aartisangrah.ui.screens.SettingsScreen
+import com.nilkanth.aartisangrah.ui.screens.openVoiceSettings
 import com.nilkanth.aartisangrah.ui.theme.LocalIsDark
 
 private enum class Tab(val route: String, val icon: ImageVector) {
@@ -93,6 +94,9 @@ fun AartiApp(vm: AppViewModel) {
     val appUpdate by vm.appUpdate.collectAsStateWithLifecycle()
     val checkingContent by vm.checkingContent.collectAsStateWithLifecycle()
     val checkingApp by vm.checkingApp.collectAsStateWithLifecycle()
+    val recite by vm.reciter.state.collectAsStateWithLifecycle()
+    val speechSlow by vm.prefs.speechSlow.collectAsStateWithLifecycle()
+    val musicOn by vm.prefs.music.collectAsStateWithLifecycle()
 
     val nav = rememberNavController()
     val snackbar = remember { SnackbarHostState() }
@@ -182,6 +186,11 @@ fun AartiApp(vm: AppViewModel) {
                     checkingContent = checkingContent,
                     checkingApp = checkingApp,
                     onLanguage = vm.prefs::setLanguage,
+                    speechSlow = speechSlow,
+                    musicOn = musicOn,
+                    onSpeechSlow = vm::setSpeechSlow,
+                    onMusic = vm::setMusic,
+                    onVoiceSettings = { openVoiceSettings(context) },
                     onTheme = vm.prefs::setTheme,
                     onFontSize = vm.prefs::setFontSize,
                     onKeepScreenOn = vm.prefs::setKeepScreenOn,
@@ -230,6 +239,17 @@ fun AartiApp(vm: AppViewModel) {
                     onFontSize = vm.prefs::setFontSize,
                     onMarkRead = vm.prefs::markRead,
                     onShare = { context.shareItem(it, strings) },
+                    recite = recite,
+                    speechSlow = speechSlow,
+                    musicOn = musicOn,
+                    reciteFinished = vm.reciter.finished,
+                    noVoice = vm.reciter.noVoice,
+                    onListen = { vm.reciter.play(it) },
+                    onPause = vm.reciter::pause,
+                    onResume = vm.reciter::resume,
+                    onStopListening = vm.reciter::stop,
+                    onSpeechSlow = vm::setSpeechSlow,
+                    onMusic = vm::setMusic,
                 )
             }
         }

@@ -279,6 +279,33 @@ input[type="range"] { width: 100%; accent-color: var(--primary); margin: 10px 0;
 .progress i { display: block; height: 100%; background: var(--primary); border-radius: 2px; }
 .with-pager { padding-bottom: calc(76px + var(--safe-bottom)); }
 
+/* Read aloud */
+.ln.on { color: var(--primary); background: var(--secondary-c); border-radius: 6px; box-shadow: 0 0 0 3px var(--secondary-c); }
+.listen-fab {
+  position: fixed; z-index: 6; right: max(16px, calc(50% - 344px)); bottom: calc(16px + var(--safe-bottom));
+  display: inline-flex; align-items: center; gap: 8px; padding: 14px 20px; border-radius: 16px;
+  background: var(--primary); color: var(--on-primary); font-weight: 600; font-size: 17px;
+  box-shadow: 0 4px 14px rgba(0, 0, 0, .22);
+}
+.listen-fab.above-pager { bottom: calc(80px + var(--safe-bottom)); }
+.player {
+  position: fixed; left: 0; right: 0; z-index: 6; bottom: 0; background: var(--secondary-c); color: var(--on-secondary-c);
+  padding-bottom: var(--safe-bottom);
+}
+.player.above-pager { bottom: calc(64px + var(--safe-bottom)); padding-bottom: 0; }
+.player-progress { height: 3px; background: color-mix(in srgb, var(--primary) 20%, transparent); }
+.player-progress i { display: block; height: 100%; width: 0; background: var(--primary); transition: width .3s; }
+.player-row { max-width: 720px; margin: 0 auto; display: flex; align-items: center; gap: 6px; padding: 6px 4px 6px 12px; }
+.player-row .grow { flex: 1; min-width: 0; }
+.player-row b { display: block; font-weight: 600; font-size: 15px; }
+.player-row small { display: block; font-size: 12px; opacity: .8; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.play-btn { display: grid; place-items: center; width: 44px; height: 44px; border-radius: 50%; background: var(--primary); color: var(--on-primary); flex: none; }
+.player .icon-btn { color: var(--on-secondary-c); }
+.player .icon-btn.music.on { color: var(--primary); }
+.player .chip { border-color: var(--on-secondary-c); color: var(--on-secondary-c); }
+.player .chip.on { background: var(--primary); color: var(--on-primary); border-color: transparent; }
+.reader.with-player { padding-bottom: calc(150px + var(--safe-bottom)); }
+
 .sheet-backdrop { position: fixed; inset: 0; z-index: 20; background: rgba(0, 0, 0, .35); display: flex; align-items: flex-end; justify-content: center; }
 .sheet { width: 100%; max-width: 720px; background: var(--surface-low); border-radius: 28px 28px 0 0; padding: 12px 24px calc(28px + var(--safe-bottom)); }
 .sheet .handle { width: 32px; height: 4px; border-radius: 2px; background: var(--outline); margin: 0 auto 16px; opacity: .6; }

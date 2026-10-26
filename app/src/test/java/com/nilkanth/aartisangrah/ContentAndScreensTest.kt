@@ -10,7 +10,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
 import androidx.test.core.app.ApplicationProvider
+import com.nilkanth.aartisangrah.audio.Reciter
 import com.nilkanth.aartisangrah.data.AppLanguage
+import com.nilkanth.aartisangrah.data.Recitation
 import com.nilkanth.aartisangrah.data.Library
 import com.nilkanth.aartisangrah.data.LibraryParser
 import com.nilkanth.aartisangrah.data.ThemeMode
@@ -69,6 +71,25 @@ class ContentAndScreensTest {
     }
 
     @Test
+    fun readAloudScriptMatchesTheScreen() {
+        val sukhakarta = library.item("sukhakarta")!!
+        val script = Recitation.script(sukhakarta)
+        // 3 verses of 4 lines, each followed by the 2-line refrain.
+        assertEquals(18, script.size)
+        assertEquals("सुखकर्ता दुःखहर्ता वार्ता विघ्नाची", script[0].text)
+        assertEquals("कंठी झळके माळ मुक्ताफळांची", script[3].text)
+        assertEquals("r0", script[4].block)
+        assertEquals("mr-IN", Recitation.languageTag(sukhakarta))
+        assertEquals("hi-IN", Recitation.languageTag(library.item("hanuman-chalisa")!!))
+        assertTrue(library.item("jay-jayaji-ganpati") != null)
+        library.items.forEach { item ->
+            val lines = Recitation.script(item)
+            assertTrue("${item.id} has nothing to read", lines.isNotEmpty())
+            lines.forEach { assertTrue("${item.id}: '${it.text}' still has marks", it.text.none { c -> c in "।॥०१२३४५६७८९" }) }
+        }
+    }
+
+    @Test
     fun renderScreens() {
         shot("1-home") {
             HomeScreen(library, listOf("sukhakarta"), emptyList(), null, { _, _, _ -> }, { _, _ -> }, {}, {}, {}, {})
@@ -114,6 +135,12 @@ class ContentAndScreensTest {
         }
         shot("11-deity-english", language = AppLanguage.ENGLISH) {
             ListScreen(library, "deity", "ganpati", emptyList(), {}, { _, _, _ -> }, {})
+        }
+        shot("12-reader-listening") {
+            ReaderScreen(
+                library, listOf("sukhakarta"), 0, "", 22f, false, emptyList(), {}, {}, {}, {}, {},
+                recite = Reciter.State(Reciter.Status.PLAYING, "sukhakarta", index = 5, total = 18),
+            )
         }
     }
 
