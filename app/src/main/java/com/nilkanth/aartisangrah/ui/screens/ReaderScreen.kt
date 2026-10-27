@@ -406,14 +406,18 @@ private fun PlayerBar(
                 }
                 Column(Modifier.weight(1f)) {
                     Text(
-                        if (recite.status == Reciter.Status.PREPARING) strings.preparingVoice
-                        else strings.lineOf(recite.index + 1, recite.total),
+                        when {
+                            recite.downloading -> strings.downloadingVoice
+                            recite.status == Reciter.Status.PREPARING -> strings.preparingVoice
+                            else -> strings.lineOf(recite.index + 1, recite.total)
+                        },
                         style = MaterialTheme.typography.labelLarge,
                         color = MaterialTheme.colorScheme.onSecondaryContainer,
                     )
-                    if (recite.usingHindiVoice) {
+                    if (recite.status != Reciter.Status.PREPARING) {
                         Text(
-                            strings.hindiVoiceNote,
+                            if (recite.usingHindiVoice) strings.hindiVoiceNote
+                            else if (recite.natural) strings.naturalVoiceLabel else strings.phoneVoiceLabel,
                             style = MaterialTheme.typography.labelSmall,
                             color = MaterialTheme.colorScheme.onSecondaryContainer.copy(alpha = 0.75f),
                             maxLines = 1,

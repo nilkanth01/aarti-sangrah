@@ -68,6 +68,7 @@ android {
         unitTests.all {
             it.systemProperty("screenshotDir", rootProject.file("docs/screenshots").absolutePath)
             it.systemProperty("webIconDir", rootProject.file("web/icons").absolutePath)
+            it.systemProperty("voiceIndex", rootProject.file("voice/index.json").absolutePath)
         }
     }
     packaging {

@@ -1,5 +1,7 @@
 package com.nilkanth.aartisangrah.data
 
+import java.security.MessageDigest
+
 /** One line to be read aloud, and where it sits on the reader page (so it can be highlighted). */
 data class SpokenLine(
     /** "rt" = refrain shown at the top, "v3" = verse 3, "r3" = refrain after verse 3. */
@@ -34,6 +36,15 @@ object Recitation {
         }
         return out
     }
+
+    /**
+     * Fingerprint of what is read aloud. The natural-voice audio stores the same SHA-1, so audio made
+     * for an older wording of a text is never played over the new one (scripts/make_voice.py).
+     */
+    fun hash(lines: List<SpokenLine>): String =
+        MessageDigest.getInstance("SHA-1")
+            .digest(lines.joinToString("\n") { it.text }.toByteArray(Charsets.UTF_8))
+            .joinToString("") { "%02x".format(it) }
 
     /** Hindi and Awadhi texts sound right with a Hindi voice; everything else uses Marathi. */
     fun languageTag(item: Item): String = when (item.language) {

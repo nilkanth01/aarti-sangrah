@@ -97,6 +97,8 @@ fun AartiApp(vm: AppViewModel) {
     val recite by vm.reciter.state.collectAsStateWithLifecycle()
     val speechSlow by vm.prefs.speechSlow.collectAsStateWithLifecycle()
     val musicOn by vm.prefs.music.collectAsStateWithLifecycle()
+    val naturalVoice by vm.prefs.naturalVoice.collectAsStateWithLifecycle()
+    val voiceStatus by vm.voiceStatus.collectAsStateWithLifecycle()
 
     val nav = rememberNavController()
     val snackbar = remember { SnackbarHostState() }
@@ -191,6 +193,11 @@ fun AartiApp(vm: AppViewModel) {
                     onSpeechSlow = vm::setSpeechSlow,
                     onMusic = vm::setMusic,
                     onVoiceSettings = { openVoiceSettings(context) },
+                    naturalVoice = naturalVoice,
+                    voiceStatus = voiceStatus,
+                    onNaturalVoice = vm::setNaturalVoice,
+                    onDownloadVoices = vm::downloadAllVoices,
+                    onShowVoiceStatus = vm::refreshVoiceStatus,
                     onTheme = vm.prefs::setTheme,
                     onFontSize = vm.prefs::setFontSize,
                     onKeepScreenOn = vm.prefs::setKeepScreenOn,

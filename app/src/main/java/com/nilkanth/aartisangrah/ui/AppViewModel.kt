@@ -4,6 +4,7 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.nilkanth.aartisangrah.audio.Reciter
+import com.nilkanth.aartisangrah.audio.VoicePack
 import com.nilkanth.aartisangrah.data.AppRelease
 import com.nilkanth.aartisangrah.data.AppUpdates
 import com.nilkanth.aartisangrah.data.ContentRepository
@@ -14,6 +15,7 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharedFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 
 /** Short notices shown as snackbars; the UI turns them into text in the chosen language. */
@@ -31,10 +33,42 @@ class AppViewModel(app: Application) : AndroidViewModel(app) {
     val prefs = Prefs(app)
     val library: StateFlow<Library?> = repo.library
 
+    private val voicePack = VoicePack(app)
+
     /** Read-aloud player; the text-to-speech engine itself only starts on the first "Listen". */
-    val reciter = Reciter(app).apply {
+    val reciter = Reciter(app, voicePack).apply {
         setSlow(prefs.speechSlow.value)
         setMusic(prefs.music.value)
+        setNatural(prefs.naturalVoice.value)
+    }
+
+    /** How much of the natural voice is on the phone, and whether "download all" is running. */
+    data class VoiceStatus(val downloaded: Long = 0, val total: Long = 0, val downloading: Boolean = false, val failed: Boolean = false)
+
+    private val _voiceStatus = MutableStateFlow(VoiceStatus())
+    val voiceStatus: StateFlow<VoiceStatus> = _voiceStatus
+
+    fun refreshVoiceStatus() {
+        viewModelScope.launch {
+            voicePack.refresh()
+            _voiceStatus.update { it.copy(downloaded = voicePack.downloadedBytes, total = voicePack.totalBytes) }
+        }
+    }
+
+    fun downloadAllVoices() {
+        if (_voiceStatus.value.downloading) return
+        viewModelScope.launch {
+            _voiceStatus.update { it.copy(downloading = true, failed = false) }
+            val ok = runCatching {
+                voicePack.downloadAll { done, total -> _voiceStatus.update { it.copy(downloaded = done, total = total) } }
+            }.isSuccess
+            _voiceStatus.update { it.copy(downloading = false, failed = !ok, downloaded = voicePack.downloadedBytes) }
+        }
+    }
+
+    fun setNaturalVoice(on: Boolean) {
+        prefs.setNaturalVoice(on)
+        reciter.setNatural(on)
     }
 
     fun setSpeechSlow(on: Boolean) {

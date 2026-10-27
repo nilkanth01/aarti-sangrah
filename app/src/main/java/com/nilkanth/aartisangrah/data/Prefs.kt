@@ -35,6 +35,9 @@ class Prefs(context: Context) {
     private val _music = MutableStateFlow(sp.getBoolean("music", true))
     val music: StateFlow<Boolean> = _music
 
+    private val _naturalVoice = MutableStateFlow(sp.getBoolean("naturalVoice", true))
+    val naturalVoice: StateFlow<Boolean> = _naturalVoice
+
     private val _favorites = MutableStateFlow(sp.getString("favorites", "").orEmpty().toIdList())
     val favorites: StateFlow<List<String>> = _favorites
 
@@ -77,6 +80,11 @@ class Prefs(context: Context) {
     fun setMusic(on: Boolean) {
         _music.value = on
         sp.edit().putBoolean("music", on).apply()
+    }
+
+    fun setNaturalVoice(on: Boolean) {
+        _naturalVoice.value = on
+        sp.edit().putBoolean("naturalVoice", on).apply()
     }
 
     fun toggleFavorite(id: String) {

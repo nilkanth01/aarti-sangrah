@@ -89,6 +89,22 @@ class ContentAndScreensTest {
         }
     }
 
+    /** The app only plays a recording whose fingerprint matches; scripts/make_voice.py must agree. */
+    @Test
+    fun naturalVoiceFingerprintsMatchTheGenerator() {
+        // Reference value printed by scripts/make_voice.py's script_hash() for this aarti.
+        assertEquals("fe7fec5e69178d55a50a643023f1d3a4e0a8255f", Recitation.hash(Recitation.script(library.item("sukhakarta")!!)))
+        val index = File(System.getProperty("voiceIndex") ?: return)
+        if (!index.exists()) return
+        val items = org.json.JSONObject(index.readText()).getJSONObject("items")
+        items.keys().forEach { id ->
+            val item = library.item(id) ?: return@forEach
+            val entry = items.getJSONObject(id)
+            assertEquals("$id: recording made for different wording", Recitation.hash(Recitation.script(item)), entry.getString("hash"))
+            assertEquals("$id: line timings don't match the lines", Recitation.script(item).size, entry.getJSONArray("lines").length())
+        }
+    }
+
     @Test
     fun renderScreens() {
         shot("1-home") {

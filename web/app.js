@@ -25,6 +25,7 @@
     fontSize: store.get('fontSize', 22),
     keepAwake: store.get('keepAwake', true),
     speechSlow: store.get('speechSlow', false),
+    naturalVoice: store.get('naturalVoice', true),
     music: store.get('music', true),
     favorites: store.get('favorites', []),
     recents: store.get('recents', []),
@@ -80,7 +81,14 @@
       noVoice: 'या फोनवर मराठी किंवा हिंदी आवाज नाही.', noSpeech: 'हा ब्राउझर वाचून दाखवू शकत नाही.',
       listenGroup: 'ऐका', speechSpeed: 'वाचण्याचा वेग', musicSetting: 'सोबत तंबोरा वाजवा',
       listenNote: '“ऐका” दाबल्यावर आरती ओळ-ओळ वाचली जाते आणि चालू ओळ रंगीत दिसते — उच्चार शिकण्यासाठी. आवाज फोन/ब्राउझरचा स्वतःचा असतो.',
-      voiceStatus: v => (v === 'mr' ? 'आवाज: मराठी ✓' : v === 'hi' ? 'मराठी आवाज नाही — हिंदी आवाज वापरला जाईल' : 'या ब्राउझरमध्ये मराठी/हिंदी आवाज सापडला नाही'),
+      voiceStatus: v => (v === 'mr' ? 'फोनचा आवाज: मराठी ✓' : v === 'hi' ? 'फोनचा आवाज: मराठी नाही — हिंदी वापरला जाईल' : 'फोनचा आवाज: या ब्राउझरमध्ये मराठी/हिंदी आवाज सापडला नाही'),
+      preparingVoice: 'आवाज तयार होत आहे…', downloadingVoice: 'आवाज डाउनलोड होत आहे…',
+      naturalVoiceLabel: 'नैसर्गिक आवाज', phoneVoiceLabel: 'फोनचा आवाज',
+      naturalVoiceSetting: 'नैसर्गिक (AI) आवाज वापरा',
+      naturalVoiceNote: 'AI4Bharat च्या Indic Parler-TTS ने तयार केलेला स्पष्ट मराठी/हिंदी आवाज. प्रत्येक रचना पहिल्यांदा ऐकताना डाउनलोड होते आणि नंतर इंटरनेटशिवायही चालते. बंद केल्यास फोनचा आवाज वापरला जाईल.',
+      voiceOnPhone: (d, t) => `फोनवर: ${mrNum(mb(d))} / ${mrNum(mb(t))} MB`,
+      downloadAllVoices: t => `सर्व आवाज डाउनलोड करा (${mrNum(mb(t))} MB)`,
+      allVoicesDownloaded: 'सर्व आवाज फोनवर आहेत ✓', voiceDownloadFailed: 'डाउनलोड पूर्ण झाले नाही — इंटरनेट तपासा',
     },
     en: {
       tabHome: 'Home', tabSearch: 'Search', tabFav: 'Favourites', tabSettings: 'Settings', back: 'Back',
@@ -119,9 +127,17 @@
       noVoice: 'This device has no Marathi or Hindi voice.', noSpeech: "This browser can't read text aloud.",
       listenGroup: 'Listen', speechSpeed: 'Reading speed', musicSetting: 'Play tanpura in the background',
       listenNote: '“Listen” reads the text line by line and highlights the current line, to help with pronunciation. The voice is your phone’s or browser’s own.',
-      voiceStatus: v => (v === 'mr' ? 'Voice: Marathi ✓' : v === 'hi' ? 'No Marathi voice — the Hindi voice will be used' : 'No Marathi or Hindi voice found in this browser'),
+      voiceStatus: v => (v === 'mr' ? 'Phone voice: Marathi ✓' : v === 'hi' ? 'Phone voice: no Marathi — Hindi will be used' : 'Phone voice: no Marathi or Hindi voice in this browser'),
+      preparingVoice: 'Preparing the voice…', downloadingVoice: 'Downloading the voice…',
+      naturalVoiceLabel: 'Natural voice', phoneVoiceLabel: 'Phone voice',
+      naturalVoiceSetting: 'Use the natural (AI) voice',
+      naturalVoiceNote: "A clear Marathi/Hindi voice made with AI4Bharat's Indic Parler-TTS. Each text downloads the first time you play it, then works offline. Turn off to use the phone's voice.",
+      voiceOnPhone: (d, t) => `On this device: ${mb(d)} of ${mb(t)} MB`,
+      downloadAllVoices: t => `Download all voices (${mb(t)} MB)`,
+      allVoicesDownloaded: 'All voices are on this device ✓', voiceDownloadFailed: "Download didn't finish — check your internet",
     },
   };
+  function mb(bytes) { return (bytes / 1e6).toFixed(1); }
   const S = () => STR[state.lang];
   const en = () => state.lang === 'en';
   const num = n => (en() ? String(n) : mrNum(n));
@@ -461,7 +477,18 @@
 
     <div class="group-title">${esc(s.listenGroup)}</div>
     <div class="group"><p class="note">${esc(s.listenNote)}</p>
-      <h3 style="margin-top:14px">${esc(s.speechSpeed)}</h3>
+      <div class="row" style="margin-top:14px"><h3 class="grow">${esc(s.naturalVoiceSetting)}</h3>
+        <button type="button" class="switch ${state.naturalVoice ? 'on' : ''}" role="switch" aria-checked="${state.naturalVoice}"
+          aria-label="${esc(s.naturalVoiceSetting)}" data-action="natural-voice"></button></div>
+      <p class="note">${esc(s.naturalVoiceNote)}</p>
+      ${state.naturalVoice && voiceDownload.total ? `
+        <p id="voice-status" style="margin-top:8px;color:var(--primary);font-weight:600">${esc(s.voiceOnPhone(voiceDownload.done, voiceDownload.total))}</p>
+        ${voiceDownload.running ? '' : voiceDownload.done < voiceDownload.total
+          ? `<button type="button" class="btn-outline" style="margin-top:6px" data-action="download-voices">${esc(s.downloadAllVoices(voiceDownload.total - voiceDownload.done))}</button>`
+          : `<p class="note">${esc(s.allVoicesDownloaded)}</p>`}
+        ${voiceDownload.failed ? `<p class="note" style="color:#C62828">${esc(s.voiceDownloadFailed)}</p>` : ''}` : ''}
+      <div class="divider"></div>
+      <h3>${esc(s.speechSpeed)}</h3>
       ${seg('speech', state.speechSlow ? 'slow' : 'normal', [['slow', s.slow], ['normal', s.normalSpeed]])}
       <div class="divider"></div>
       <div class="row"><h3 class="grow">${esc(s.musicSetting)}</h3>
@@ -675,13 +702,142 @@
     return '';
   }
 
-  const speech = { status: 'idle', itemId: null, index: -1, script: [], gen: 0, hindi: false, autoNext: false };
+  const speech = {
+    status: 'idle', itemId: null, index: -1, script: [], gen: 0, hindi: false, autoNext: false,
+    natural: false, downloading: false, entry: null,
+  };
 
-  function listen(item, from = 0) {
-    if (!('speechSynthesis' in window)) { toast(S().noSpeech); return; }
+  // ---- Natural voice (AI4Bharat Indic Parler-TTS recordings in voice/, made by scripts/make_voice.py) ----
+  const VOICE_CACHE = 'aarti-voice';
+  const SILENT_WAV = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=';
+  const voiceEl = new Audio();
+  voiceEl.preload = 'auto';
+  let voiceIndex = null;
+  let voiceUrl = null;
+
+  async function loadVoiceIndex() {
+    try {
+      const res = await fetch('voice/index.json', { cache: 'no-cache' });
+      if (res.ok) voiceIndex = await res.json();
+    } catch { /* offline and never fetched: phone voice only */ }
+    return voiceIndex;
+  }
+
+  /** SHA-1 of the spoken lines; must match Recitation.hash() and scripts/make_voice.py. */
+  async function scriptHash(script) {
+    const data = new TextEncoder().encode(script.map(l => l.text).join('\n'));
+    const digest = await crypto.subtle.digest('SHA-1', data);
+    return [...new Uint8Array(digest)].map(b => b.toString(16).padStart(2, '0')).join('');
+  }
+
+  /** The recording for this item's current wording, or null. */
+  async function voiceEntryFor(item, script) {
+    if (!state.naturalVoice || !window.crypto?.subtle) return null;
+    if (!voiceIndex) await loadVoiceIndex();
+    const entry = voiceIndex?.items?.[item.id];
+    if (!entry) return null;
+    return (await scriptHash(script)) === entry.hash ? entry : null;
+  }
+
+  async function isVoiceCached(entry) {
+    try { return !!(await (await caches.open(VOICE_CACHE)).match(`voice/${entry.file}`)); } catch { return false; }
+  }
+
+  /** Downloads (once) and returns a blob URL, which seeks reliably in every browser. */
+  async function voiceBlobUrl(entry) {
+    const url = `voice/${entry.file}`;
+    let res = null;
+    let cache = null;
+    try { cache = await caches.open(VOICE_CACHE); res = await cache.match(url); } catch { cache = null; }
+    if (!res) {
+      res = await fetch(url);
+      if (!res.ok) throw new Error(`HTTP ${res.status}`);
+      if (cache) {
+        await cache.put(url, res.clone());
+        // Forget older recordings of the same text.
+        for (const req of await cache.keys()) {
+          const name = new URL(req.url).pathname.split('/').pop();
+          if (name.startsWith(`${entry.file.split('-').slice(0, -1).join('-')}-`) && name !== entry.file) cache.delete(req);
+        }
+      }
+    }
+    return URL.createObjectURL(await res.blob());
+  }
+
+  /** Called inside the tap: on iPhone, audio may only start from a tap, so unlock both outputs now. */
+  function unlockVoices() {
+    try {
+      if (voiceEl.paused) {
+        voiceEl.src = SILENT_WAV;
+        voiceEl.play().catch(() => {});
+      }
+    } catch { /* ignore */ }
+    try {
+      if ('speechSynthesis' in window && !speechSynthesis.speaking) speechSynthesis.speak(new SpeechSynthesisUtterance(''));
+    } catch { /* ignore */ }
+  }
+
+  async function playRecording(entry, from, gen) {
+    speech.downloading = !(await isVoiceCached(entry));
+    updatePlayer();
+    let url;
+    try { url = await voiceBlobUrl(entry); } catch { speech.downloading = false; return false; }
+    if (gen !== speech.gen) { URL.revokeObjectURL(url); return true; }
+    if (voiceUrl) URL.revokeObjectURL(voiceUrl);
+    voiceUrl = url;
+    voiceEl.src = url;
+    await new Promise(ok => {
+      voiceEl.addEventListener('loadedmetadata', ok, { once: true });
+      setTimeout(ok, 3000);
+    });
+    voiceEl.currentTime = entry.lines[from]?.[0] ?? 0;
+    voiceEl.playbackRate = state.speechSlow ? 0.8 : 1;
+    try { await voiceEl.play(); } catch { speech.downloading = false; return false; }
+    if (gen !== speech.gen) { voiceEl.pause(); return true; }
+    Object.assign(speech, { status: 'playing', natural: true, downloading: false, entry, index: from, hindi: false });
+    voiceEl.onended = () => {
+      if (gen !== speech.gen) return;
+      stopSpeech();
+      nextInSequence();
+    };
+    startMusic();
+    followRecording(gen);
+    updatePlayer();
+    return true;
+  }
+
+  /** Moves the highlight with the recording's line timings (a timer, so it also runs while hidden). */
+  function followRecording(gen) {
+    const timer = setInterval(() => {
+      if (gen !== speech.gen || speech.status !== 'playing' || !speech.natural) { clearInterval(timer); return; }
+      const t = voiceEl.currentTime + 0.08;
+      const lines = speech.entry.lines;
+      let k = Math.max(0, speech.index);
+      while (k + 1 < lines.length && lines[k + 1][0] <= t) k++;
+      while (k > 0 && lines[k][0] > t) k--;
+      if (k !== speech.index) { speech.index = k; updatePlayer(); }
+    }, 100);
+  }
+
+  /** Starts reading: the natural recording when there is one, otherwise the phone's voice. */
+  async function listen(item, from = 0) {
+    if (!item) return;
     const script = recitationScript(item);
     if (!script.length) return;
+    stopOutputs();
     const gen = ++speech.gen;
+    Object.assign(speech, {
+      status: 'preparing', itemId: item.id, index: from, script, natural: false, downloading: false, entry: null, hindi: false,
+    });
+    updatePlayer();
+    const entry = await voiceEntryFor(item, script);
+    if (gen !== speech.gen) return;
+    if (entry && await playRecording(entry, from, gen)) return;
+    if (gen === speech.gen) speakWithPhone(item, script, from, gen);
+  }
+
+  function speakWithPhone(item, script, from, gen) {
+    if (!('speechSynthesis' in window)) { stopSpeech(); toast(S().noSpeech); return; }
     speechSynthesis.cancel();
     const wanted = speechLang(item);
     // Marathi and Hindi voices can each read the other's Devanagari, so fall back either way.
@@ -692,7 +848,7 @@
       return;
     }
     Object.assign(speech, {
-      status: 'playing', itemId: item.id, index: from, script,
+      status: 'playing', natural: false,
       hindi: wanted === 'mr' && !!voice && voice.lang.toLowerCase().startsWith('hi'),
     });
     for (let k = from; k < script.length; k++) {
@@ -722,19 +878,42 @@
     updatePlayer();
   }
 
+  /** Silences whatever is playing without resetting the player state. */
+  function stopOutputs() {
+    if ('speechSynthesis' in window) speechSynthesis.cancel();
+    voiceEl.pause();
+    stopMusic();
+  }
+
   function pauseSpeech() {
     speech.gen++;
-    speechSynthesis.cancel();
+    if (speech.natural) voiceEl.pause(); else if ('speechSynthesis' in window) speechSynthesis.cancel();
     speech.status = 'paused';
     stopMusic();
     updatePlayer();
   }
 
+  function resumeSpeech() {
+    if (speech.natural && speech.entry) {
+      const gen = ++speech.gen;
+      voiceEl.playbackRate = state.speechSlow ? 0.8 : 1;
+      voiceEl.play().then(() => {
+        if (gen !== speech.gen) return;
+        speech.status = 'playing';
+        voiceEl.onended = () => { if (gen === speech.gen) { stopSpeech(); nextInSequence(); } };
+        startMusic();
+        followRecording(gen);
+        updatePlayer();
+      }).catch(() => listen(readerItem(), Math.max(0, speech.index)));
+      return;
+    }
+    listen(readerItem(), Math.max(0, speech.index));
+  }
+
   function stopSpeech() {
     speech.gen++;
-    if ('speechSynthesis' in window) speechSynthesis.cancel();
-    Object.assign(speech, { status: 'idle', itemId: null, index: -1, script: [] });
-    stopMusic();
+    stopOutputs();
+    Object.assign(speech, { status: 'idle', itemId: null, index: -1, script: [], natural: false, downloading: false, entry: null });
     updatePlayer();
   }
 
@@ -763,19 +942,60 @@
     reader.querySelectorAll('.ln.on').forEach(n => n.classList.remove('on'));
     if (!active) return;
     const s = S();
-    const playing = speech.status === 'playing';
+    const playing = speech.status === 'playing' || speech.status === 'preparing';
     const btn = player.querySelector('[data-action="play-pause"]');
     btn.innerHTML = icon(playing ? 'pause' : 'play');
     btn.setAttribute('aria-label', playing ? s.pause : s.resume);
-    $('#player-line').textContent = s.lineOf(speech.index + 1, speech.script.length);
-    $('#player-note').hidden = !speech.hindi;
+    $('#player-line').textContent = speech.downloading ? s.downloadingVoice
+      : speech.status === 'preparing' ? s.preparingVoice
+        : s.lineOf(speech.index + 1, speech.script.length);
+    const note = $('#player-note');
+    note.hidden = speech.status === 'preparing';
+    note.textContent = speech.hindi ? s.hindiVoiceNote : speech.natural ? s.naturalVoiceLabel : s.phoneVoiceLabel;
     player.querySelector('.player-progress i').style.width = `${((speech.index + 1) / speech.script.length) * 100}%`;
+    if (speech.status === 'preparing') return;
     const line = speech.script[speech.index];
     const node = line && reader.querySelector(`[data-b="${line.block}"] [data-l="${line.line}"]`);
     if (node) {
       node.classList.add('on');
       const r = node.getBoundingClientRect();
       if (r.top < 90 || r.bottom > window.innerHeight - 170) node.scrollIntoView({ block: 'center', behavior: 'smooth' });
+    }
+  }
+
+  /** Settings: download every recording for offline use. */
+  async function downloadAllVoices() {
+    if (voiceDownload.running) return;
+    voiceDownload.running = true;
+    voiceDownload.failed = false;
+    render(true);
+    try {
+      await loadVoiceIndex();
+      const entries = Object.values(voiceIndex?.items || {});
+      for (const entry of entries) {
+        if (!(await isVoiceCached(entry))) URL.revokeObjectURL(await voiceBlobUrl(entry));
+        await refreshVoiceStatus(false);
+      }
+    } catch { voiceDownload.failed = true; }
+    voiceDownload.running = false;
+    await refreshVoiceStatus(true);
+  }
+
+  const voiceDownload = { running: false, failed: false, done: 0, total: 0 };
+
+  async function refreshVoiceStatus(rerender = true) {
+    if (!voiceIndex) await loadVoiceIndex();
+    const entries = Object.values(voiceIndex?.items || {});
+    let done = 0;
+    for (const e of entries) if (await isVoiceCached(e)) done += e.bytes;
+    voiceDownload.done = done;
+    voiceDownload.total = entries.reduce((n, e) => n + e.bytes, 0);
+    if (route().name === 'settings') {
+      if (rerender) render(true);
+      else {
+        const label = $('#voice-status');
+        if (label) label.textContent = S().voiceOnPhone(voiceDownload.done, voiceDownload.total);
+      }
     }
   }
 
@@ -875,6 +1095,7 @@
     } else if (speech.status !== 'idle') {
       stopSpeech();
     }
+    if (r.name === 'settings' && !keepScroll) refreshVoiceStatus(true);
     if (r.name === 'search') {
       const input = $('#q');
       if (r.q.get('focus')) input.focus();
@@ -895,17 +1116,20 @@
     }
     else if (a === 'theme') { setState('theme', el.dataset.value); applyTheme(); render(true); }
     else if (a === 'awake') { setState('keepAwake', !state.keepAwake); render(true); }
-    else if (a === 'listen') { unlockAudio(); listen(readerItem()); }
+    else if (a === 'listen') { unlockAudio(); unlockVoices(); listen(readerItem()); }
     else if (a === 'play-pause') {
-      if (speech.status === 'playing') pauseSpeech();
-      else { unlockAudio(); listen(readerItem(), Math.max(0, speech.index)); }
+      if (speech.status === 'playing' || speech.status === 'preparing') pauseSpeech();
+      else { unlockAudio(); if (!speech.natural) unlockVoices(); resumeSpeech(); }
     }
     else if (a === 'speed') {
       setState('speechSlow', !state.speechSlow);
       el.classList.toggle('on', state.speechSlow);
       el.setAttribute('aria-pressed', state.speechSlow);
-      if (speech.status === 'playing') listen(readerItem(), Math.max(0, speech.index));
+      if (speech.natural) voiceEl.playbackRate = state.speechSlow ? 0.8 : 1;
+      else if (speech.status === 'playing') listen(readerItem(), Math.max(0, speech.index));
     }
+    else if (a === 'natural-voice') { setState('naturalVoice', !state.naturalVoice); render(true); }
+    else if (a === 'download-voices') downloadAllVoices();
     else if (a === 'music') {
       setState('music', !state.music);
       el.classList.toggle('on', state.music);
@@ -1005,6 +1229,7 @@
     applyFontSize();
     try {
       lib = await fetchContent(false);
+      loadVoiceIndex();
       inAppNavigations = 1;
       render();
     } catch {

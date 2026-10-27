@@ -31,6 +31,7 @@ import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
+import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.SegmentedButton
@@ -41,6 +42,7 @@ import androidx.compose.material3.Surface
 import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -52,6 +54,7 @@ import com.nilkanth.aartisangrah.data.AppRelease
 import com.nilkanth.aartisangrah.data.Library
 import com.nilkanth.aartisangrah.data.Prefs
 import com.nilkanth.aartisangrah.data.ThemeMode
+import com.nilkanth.aartisangrah.ui.AppViewModel
 import com.nilkanth.aartisangrah.ui.LocalStrings
 import com.nilkanth.aartisangrah.ui.components.Ornament
 import com.nilkanth.aartisangrah.ui.theme.verseStyle
@@ -80,8 +83,14 @@ fun SettingsScreen(
     onSpeechSlow: (Boolean) -> Unit = {},
     onMusic: (Boolean) -> Unit = {},
     onVoiceSettings: () -> Unit = {},
+    naturalVoice: Boolean = true,
+    voiceStatus: AppViewModel.VoiceStatus = AppViewModel.VoiceStatus(),
+    onNaturalVoice: (Boolean) -> Unit = {},
+    onDownloadVoices: () -> Unit = {},
+    onShowVoiceStatus: () -> Unit = {},
 ) {
     val strings = LocalStrings.current
+    LaunchedEffect(Unit) { onShowVoiceStatus() }
     LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 24.dp)) {
         item {
             Column(Modifier.statusBarsPadding().padding(start = 20.dp, end = 20.dp, top = 18.dp, bottom = 4.dp)) {
@@ -122,6 +131,35 @@ fun SettingsScreen(
             Group(strings.listenGroup) {
                 Text(strings.listenNote, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
                 Spacer(Modifier.height(14.dp))
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text(strings.naturalVoiceSetting, style = MaterialTheme.typography.titleSmall, modifier = Modifier.weight(1f))
+                    Switch(checked = naturalVoice, onCheckedChange = onNaturalVoice)
+                }
+                Text(strings.naturalVoiceNote, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.onSurfaceVariant)
+                if (naturalVoice && voiceStatus.total > 0) {
+                    Spacer(Modifier.height(8.dp))
+                    Text(
+                        strings.voiceOnPhone(voiceStatus.downloaded, voiceStatus.total),
+                        style = MaterialTheme.typography.labelLarge,
+                        color = MaterialTheme.colorScheme.primary,
+                    )
+                    if (voiceStatus.downloading) {
+                        LinearProgressIndicator(
+                            progress = { voiceStatus.downloaded.toFloat() / voiceStatus.total },
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp),
+                        )
+                    } else if (voiceStatus.downloaded < voiceStatus.total) {
+                        OutlinedButton(onClick = onDownloadVoices, modifier = Modifier.padding(top = 6.dp)) {
+                            Text(strings.downloadAllVoices(voiceStatus.total - voiceStatus.downloaded))
+                        }
+                    } else {
+                        Text(strings.allVoicesDownloaded, style = MaterialTheme.typography.bodySmall)
+                    }
+                    if (voiceStatus.failed) {
+                        Text(strings.voiceDownloadFailed, style = MaterialTheme.typography.bodySmall, color = MaterialTheme.colorScheme.error)
+                    }
+                }
+                HorizontalDivider(Modifier.padding(vertical = 14.dp), color = MaterialTheme.colorScheme.outlineVariant)
                 Text(strings.speechSpeed, style = MaterialTheme.typography.titleSmall)
                 Spacer(Modifier.height(8.dp))
                 val speeds = listOf(true to strings.slow, false to strings.normalSpeed)

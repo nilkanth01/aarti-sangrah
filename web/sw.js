@@ -40,20 +40,22 @@ self.addEventListener('activate', event => {
   );
 });
 
-/** content.json: always try the network first so new aartis show up, fall back to the saved copy offline. */
-async function contentFirstFromNetwork(request) {
+/** Always try the network first so new content shows up; fall back to the saved copy offline. */
+async function networkFirst(request, key) {
   const cache = await caches.open(DATA);
   try {
     const controller = new AbortController();
     const timer = setTimeout(() => controller.abort(), 5000);
     const response = await fetch(request, { cache: 'no-store', signal: controller.signal });
     clearTimeout(timer);
-    if (response.ok) await cache.put('content.json', response.clone());
+    if (response.ok) await cache.put(key, response.clone());
     return response;
   } catch {
-    return (await cache.match('content.json')) || Response.error();
+    return (await cache.match(key)) || Response.error();
   }
 }
+
+const contentFirstFromNetwork = request => networkFirst(request, 'content.json');
 
 self.addEventListener('fetch', event => {
   const url = new URL(event.request.url);
@@ -61,6 +63,15 @@ self.addEventListener('fetch', event => {
 
   if (url.pathname.endsWith('/content.json')) {
     event.respondWith(contentFirstFromNetwork(event.request));
+    return;
+  }
+  if (url.pathname.endsWith('/voice/index.json')) {
+    event.respondWith(networkFirst(event.request, 'voice/index.json'));
+    return;
+  }
+  // Natural-voice MP3s are cached by the page itself (Cache "aarti-voice"); just serve them if present.
+  if (url.pathname.includes('/voice/')) {
+    event.respondWith(caches.match(event.request).then(cached => cached || fetch(event.request)));
     return;
   }
   if (event.request.mode === 'navigate') {

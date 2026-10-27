@@ -33,6 +33,10 @@ audio = out / "audio"
 audio.mkdir()
 shutil.copy2(root / "app" / "src" / "main" / "res" / "raw" / "tanpura.wav", audio / "tanpura.wav")
 
+# Natural-voice recordings (scripts/make_voice.py), shared with the Android app.
+if (root / "voice").is_dir():
+    shutil.copytree(root / "voice", out / "voice")
+
 for name in ("index.html", "sw.js"):
     path = out / name
     path.write_text(path.read_text(encoding="utf-8").replace("__BUILD_ID__", build_id), encoding="utf-8", newline="\n")

@@ -80,6 +80,26 @@ class Strings private constructor(val language: AppLanguage) {
     )
     val openVoiceSettings = t("आवाज सेटिंग्ज उघडा", "Open voice settings")
     val cancel = t("रद्द", "Cancel")
+    val downloadingVoice = t("आवाज डाउनलोड होत आहे…", "Downloading the voice…")
+    val naturalVoiceLabel = t("नैसर्गिक आवाज", "Natural voice")
+    val phoneVoiceLabel = t("फोनचा आवाज", "Phone voice")
+    val naturalVoiceSetting = t("नैसर्गिक (AI) आवाज वापरा", "Use the natural (AI) voice")
+    val naturalVoiceNote = t(
+        "AI4Bharat च्या Indic Parler-TTS ने तयार केलेला स्पष्ट मराठी/हिंदी आवाज. प्रत्येक रचना पहिल्यांदा ऐकताना डाउनलोड होते आणि नंतर इंटरनेटशिवायही चालते. बंद केल्यास फोनचा आवाज वापरला जाईल.",
+        "A clear Marathi/Hindi voice made with AI4Bharat's Indic Parler-TTS. Each text downloads the first time you play it, then works offline. Turn off to use the phone's voice.",
+    )
+    fun voiceOnPhone(done: Long, total: Long) = t(
+        "फोनवर: ${mb(done)} / ${mb(total)} MB",
+        "On this phone: ${mb(done)} of ${mb(total)} MB",
+    )
+    fun downloadAllVoices(total: Long) = t("सर्व आवाज डाउनलोड करा (${mb(total)} MB)", "Download all voices (${mb(total)} MB)")
+    val allVoicesDownloaded = t("सर्व आवाज फोनवर आहेत ✓", "All voices are on this phone ✓")
+    val voiceDownloadFailed = t("डाउनलोड पूर्ण झाले नाही — इंटरनेट तपासा", "Download didn't finish — check your internet")
+    private fun mb(bytes: Long): String {
+        val tenths = ((bytes + 50_000) / 100_000).toInt()
+        val text = "${tenths / 10}.${tenths % 10}"
+        return if (english) text else text.map { c -> if (c in '0'..'9') "०१२३४५६७८९"[c - '0'] else c }.joinToString("")
+    }
     val listenGroup = t("ऐका", "Listen")
     val speechSpeed = t("वाचण्याचा वेग", "Reading speed")
     val musicSetting = t("सोबत तंबोरा वाजवा", "Play tanpura in the background")
