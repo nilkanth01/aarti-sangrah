@@ -85,8 +85,8 @@ class Strings private constructor(val language: AppLanguage) {
     val phoneVoiceLabel = t("फोनचा आवाज", "Phone voice")
     val naturalVoiceSetting = t("नैसर्गिक (AI) आवाज वापरा", "Use the natural (AI) voice")
     val naturalVoiceNote = t(
-        "AI4Bharat च्या Indic Parler-TTS ने तयार केलेला स्पष्ट मराठी/हिंदी आवाज. प्रत्येक रचना पहिल्यांदा ऐकताना डाउनलोड होते आणि नंतर इंटरनेटशिवायही चालते. बंद केल्यास फोनचा आवाज वापरला जाईल.",
-        "A clear Marathi/Hindi voice made with AI4Bharat's Indic Parler-TTS. Each text downloads the first time you play it, then works offline. Turn off to use the phone's voice.",
+        "संस्कृत श्लोक व स्तोत्रे IISc च्या वाग्धेनु मॉडेलने वृत्तानुसार सस्वर म्हटलेली आहेत; इतर रचनांसाठी AI4Bharat च्या Indic Parler-TTS चा स्पष्ट मराठी/हिंदी आवाज. प्रत्येक रचना पहिल्यांदा ऐकताना डाउनलोड होते आणि नंतर इंटरनेटशिवायही चालते. बंद केल्यास फोनचा आवाज वापरला जाईल.",
+        "Sanskrit shlokas and stotras are chanted in their metre by IISc's Vagdhenu; the other texts use a clear Marathi/Hindi voice made with AI4Bharat's Indic Parler-TTS. Each text downloads the first time you play it, then works offline. Turn off to use the phone's voice.",
     )
     fun voiceOnPhone(done: Long, total: Long) = t(
         "फोनवर: ${mb(done)} / ${mb(total)} MB",

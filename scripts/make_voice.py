@@ -12,6 +12,7 @@ Options:
     --samples                    write a few lines in each voice to build/voice-samples/ and stop
     --batch 6                    lines generated together on the GPU
 Generated lines are cached in build/voice-cache/, so re-runs only voice new or changed lines.
+The non-Vedic Sanskrit texts are chanted by scripts/make_chant.py instead; this script skips them.
 """
 import argparse
 import hashlib
@@ -247,7 +248,11 @@ def main():
         return samples(items, args.batch)
 
     only = {x for x in args.only.split(",") if x}
-    chosen = [it for it in items if not only or it["id"] in only]
+    # Items chanted by scripts/make_chant.py (Vāgdhenu) are left alone unless named in --only.
+    old_index = OUT / "index.json"
+    chant = {k for k, v in json.loads(old_index.read_text(encoding="utf-8"))["items"].items()
+             if v.get("voice")} if old_index.exists() else set()
+    chosen = [it for it in items if (it["id"] in only if only else it["id"] not in chant)]
     scripts = {it["id"]: script(it) for it in chosen}
     todo = {}
     for it in chosen:

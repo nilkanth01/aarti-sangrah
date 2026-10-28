@@ -85,7 +85,7 @@
       preparingVoice: 'आवाज तयार होत आहे…', downloadingVoice: 'आवाज डाउनलोड होत आहे…',
       naturalVoiceLabel: 'नैसर्गिक आवाज', phoneVoiceLabel: 'फोनचा आवाज',
       naturalVoiceSetting: 'नैसर्गिक (AI) आवाज वापरा',
-      naturalVoiceNote: 'AI4Bharat च्या Indic Parler-TTS ने तयार केलेला स्पष्ट मराठी/हिंदी आवाज. प्रत्येक रचना पहिल्यांदा ऐकताना डाउनलोड होते आणि नंतर इंटरनेटशिवायही चालते. बंद केल्यास फोनचा आवाज वापरला जाईल.',
+      naturalVoiceNote: 'संस्कृत श्लोक व स्तोत्रे IISc च्या वाग्धेनु मॉडेलने वृत्तानुसार सस्वर म्हटलेली आहेत; इतर रचनांसाठी AI4Bharat च्या Indic Parler-TTS चा स्पष्ट मराठी/हिंदी आवाज. प्रत्येक रचना पहिल्यांदा ऐकताना डाउनलोड होते आणि नंतर इंटरनेटशिवायही चालते. बंद केल्यास फोनचा आवाज वापरला जाईल.',
       voiceOnPhone: (d, t) => `फोनवर: ${mrNum(mb(d))} / ${mrNum(mb(t))} MB`,
       downloadAllVoices: t => `सर्व आवाज डाउनलोड करा (${mrNum(mb(t))} MB)`,
       allVoicesDownloaded: 'सर्व आवाज फोनवर आहेत ✓', voiceDownloadFailed: 'डाउनलोड पूर्ण झाले नाही — इंटरनेट तपासा',
@@ -131,7 +131,7 @@
       preparingVoice: 'Preparing the voice…', downloadingVoice: 'Downloading the voice…',
       naturalVoiceLabel: 'Natural voice', phoneVoiceLabel: 'Phone voice',
       naturalVoiceSetting: 'Use the natural (AI) voice',
-      naturalVoiceNote: "A clear Marathi/Hindi voice made with AI4Bharat's Indic Parler-TTS. Each text downloads the first time you play it, then works offline. Turn off to use the phone's voice.",
+      naturalVoiceNote: "Sanskrit shlokas and stotras are chanted in their metre by IISc's Vagdhenu; the other texts use a clear Marathi/Hindi voice made with AI4Bharat's Indic Parler-TTS. Each text downloads the first time you play it, then works offline. Turn off to use the phone's voice.",
       voiceOnPhone: (d, t) => `On this device: ${mb(d)} of ${mb(t)} MB`,
       downloadAllVoices: t => `Download all voices (${mb(t)} MB)`,
       allVoicesDownloaded: 'All voices are on this device ✓', voiceDownloadFailed: "Download didn't finish — check your internet",
@@ -707,7 +707,7 @@
     natural: false, downloading: false, entry: null,
   };
 
-  // ---- Natural voice (AI4Bharat Indic Parler-TTS recordings in voice/, made by scripts/make_voice.py) ----
+  // ---- Natural voice (recordings in voice/, made by scripts/make_voice.py and scripts/make_chant.py) ----
   const VOICE_CACHE = 'aarti-voice';
   const SILENT_WAV = 'data:audio/wav;base64,UklGRiQAAABXQVZFZm10IBAAAAABAAEAQB8AAIA+AAACABAAZGF0YQAAAAA=';
   const voiceEl = new Audio();

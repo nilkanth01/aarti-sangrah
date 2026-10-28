@@ -27,7 +27,7 @@ import java.util.Locale
 /**
  * Reads an aarti aloud line by line with a soft tanpura drone underneath.
  *
- * It prefers the natural AI4Bharat voice recorded by scripts/make_voice.py ([VoicePack]): the item's
+ * It prefers the natural voice recorded by scripts/make_voice.py and scripts/make_chant.py ([VoicePack]): the item's
  * MP3 is downloaded once and the highlight follows its line timings. When there is no recording for
  * the item's current wording, or it can't be downloaded, it uses the phone's own text-to-speech
  * voice (Marathi, or Hindi for Hindi texts).
