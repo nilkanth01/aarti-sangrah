@@ -18,6 +18,7 @@ always stay in Devanagari.
   <img src="docs/screenshots/8-home-english.png" width="230" alt="Home screen with English menus" />
   <img src="docs/screenshots/9-reader-english.png" width="230" alt="Reader with English menus, aarti in Devanagari" />
   <img src="docs/screenshots/7-home-dark.png" width="230" alt="Dark mode" />
+  <img src="docs/screenshots/14-home-gita.png" width="230" alt="The Bhagavad Gita's own section on the home screen" />
 </p>
 
 ## 📥 Download
@@ -55,10 +56,11 @@ switch. It can be kept on the home screen like a normal app and works offline af
 ## ✨ Features
 
 - **60 texts**: 20 aartis, 21 shlokas & mantras, 11 stotras, 8 abhangs (including the complete Haripath)
-- **The complete Bhagavad Gita 📖**: all 18 chapters and 700 verses, each with its **meaning in Marathi
-  and English** under the verse (choose both, one or none with the **अर्थ** switch at the top of a chapter),
-  and the Sanskrit chanted verse by verse. **Complete Bhagavad Gita** under pooja sequences plays all
-  18 chapters in order
+- **The complete Bhagavad Gita 📖**: all 18 chapters and 700 verses in a section of their own on the home
+  screen. Each shloka has its **meaning in Marathi and English** right under it (choose both, one or none
+  with the **अर्थ** switch at the top of a chapter), a divider sets each shloka apart, and the Sanskrit is
+  chanted verse by verse. **Complete Bhagavad Gita** reads all 18 chapters in order, or open any chapter
+  from the row below it
 - **Listen 🎧**: tap **Listen** on any aarti or shloka and it is read aloud line by line in a natural
   Marathi or Hindi voice, with a soft tanpura drone in the background. The line being read is highlighted, so you can follow along
   and learn the pronunciation. There is a **Slow** speed, the tanpura can be switched off, and in a

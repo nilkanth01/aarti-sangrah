@@ -51,6 +51,8 @@ class Strings private constructor(val language: AppLanguage) {
         else Marathi.date(date)
     fun parts(n: Int) = t("${num(n)} भाग", if (n == 1) "1 part" else "$n parts")
     fun texts(n: Int) = t("${num(n)} रचना", if (n == 1) "1 text" else "$n texts")
+    fun chapter(n: Int) = t("अध्याय ${num(n)}", "Chapter $n")
+    fun chapters(n: Int) = t("${num(n)} अध्याय", if (n == 1) "1 chapter" else "$n chapters")
 
     // Reader
     val textSize = t("अक्षरांचा आकार", "Text size")

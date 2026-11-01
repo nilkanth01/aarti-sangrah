@@ -342,6 +342,10 @@ private fun ItemPage(
         if (refrain != null && item.refrainFirst) item(key = "refrain-top") { RefrainBlock(refrain, style, "rt", highlight) }
         itemsIndexed(item.verses, key = { i, _ -> "verse-$i" }) { i, verse ->
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                // Shlokas with meanings (the Gita) get a divider between them, so each reads as its own unit.
+                if (hasMeanings && i > 0) {
+                    Ornament(Modifier.padding(top = 16.dp, bottom = 6.dp), color = deityTextColor(deity).copy(alpha = 0.5f))
+                }
                 LinesText(
                     text = verse,
                     block = "v$i",

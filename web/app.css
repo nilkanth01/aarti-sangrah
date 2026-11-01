@@ -138,7 +138,12 @@ h1, h2, h3, p { margin: 0; }
 .pl-count { font-weight: 600; opacity: .92; }
 
 .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px; }
-.cat-grid .cat:last-child:nth-child(odd) { grid-column: 1 / -1; } /* an odd last category (the Gita) spans the row */
+.cat-grid .cat:last-child:nth-child(odd) { grid-column: 1 / -1; } /* an odd last category spans the row */
+/* The Gita's own section: a full-width card, then a row of its chapters. */
+.gita-card { width: auto; margin: 0 16px 12px; background: linear-gradient(135deg, #0C8599, #364FC7); }
+.mini.chapter { width: 150px; }
+.mini.chapter small { display: block; color: var(--dt); font-weight: 600; font-size: 14px; }
+.mini.chapter b { margin-top: 4px; white-space: normal; line-height: 1.35; height: 2.7em; overflow: hidden; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; }
 .cat { display: block; padding: 16px; border-radius: 24px; min-width: 0; }
 .cat-0 { background: var(--primary-c); color: var(--on-primary-c); }
 .cat-1 { background: var(--secondary-c); color: var(--on-secondary-c); }
@@ -268,6 +273,9 @@ input[type="range"] { width: 100%; accent-color: var(--primary); margin: 10px 0;
 }
 .verse { padding: 12px 0; }
 .verse .speaker { font-size: .78em; color: var(--dt); font-weight: 700; }
+/* A divider between shlokas that have meanings (the Gita), so each reads as its own unit. */
+.shlok-sep { margin: 16px 0 6px; opacity: .5; }
+.shlok-sep .ornament { color: var(--dt); }
 /* Verse meanings (the Gita): follow the text size, stay readable as prose. */
 .meaning-switch { display: flex; align-items: center; gap: 10px; margin: 8px 0 4px; text-align: left; }
 .meaning-switch > span { font-weight: 700; color: var(--muted); }

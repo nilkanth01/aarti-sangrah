@@ -53,6 +53,7 @@ import com.nilkanth.aartisangrah.R
 import com.nilkanth.aartisangrah.data.AppRelease
 import com.nilkanth.aartisangrah.data.Library
 import com.nilkanth.aartisangrah.data.Marathi
+import com.nilkanth.aartisangrah.data.Playlist
 import com.nilkanth.aartisangrah.ui.LocalStrings
 import com.nilkanth.aartisangrah.ui.components.DeityAvatar
 import com.nilkanth.aartisangrah.ui.components.ItemCard
@@ -86,10 +87,12 @@ fun HomeScreen(
         item { Hero(onOpenSearch, onToggleLanguage) }
         if (appUpdate != null) item { UpdateBanner(appUpdate) { onDownloadUpdate(appUpdate) } }
         item { TodayCard(library, onOpenReader, onOpenList) }
-        if (library.playlists.isNotEmpty()) {
+        val sequences = library.playlists.filter { it.id != GITA }
+        if (sequences.isNotEmpty()) {
             item { SectionTitle(strings.poojaSequences) }
-            item { PlaylistRow(library, onOpenReader) }
+            item { PlaylistRow(sequences, onOpenReader) }
         }
+        item { GitaSection(library, onOpenReader) }
         item { SectionTitle(strings.categories) }
         item { CategoryGrid(library, onOpenList) }
         item { SectionTitle(strings.deities) }
@@ -301,10 +304,10 @@ private val playlistBrushes = listOf(
 )
 
 @Composable
-private fun PlaylistRow(library: Library, onOpenReader: (List<String>, Int, String) -> Unit) {
+private fun PlaylistRow(playlists: List<Playlist>, onOpenReader: (List<String>, Int, String) -> Unit) {
     val strings = LocalStrings.current
     LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-        itemsIndexed(library.playlists, key = { _, it -> it.id }) { index, playlist ->
+        itemsIndexed(playlists, key = { _, it -> it.id }) { index, playlist ->
             Box(
                 Modifier
                     .width(272.dp)
@@ -340,22 +343,96 @@ private fun PlaylistRow(library: Library, onOpenReader: (List<String>, Int, Stri
                         overflow = TextOverflow.Ellipsis,
                     )
                     Spacer(Modifier.height(12.dp))
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Row(
-                            Modifier
-                                .clip(RoundedCornerShape(50))
-                                .background(Color.White)
-                                .padding(start = 8.dp, end = 14.dp, top = 4.dp, bottom = 4.dp),
-                            verticalAlignment = Alignment.CenterVertically,
-                        ) {
-                            Icon(Icons.Rounded.PlayArrow, contentDescription = null, tint = Color(0xFF7A1F3D), modifier = Modifier.size(20.dp))
-                            Text(strings.start, style = MaterialTheme.typography.labelLarge, color = Color(0xFF7A1F3D))
-                        }
-                        Spacer(Modifier.weight(1f))
+                    StartRow(strings.parts(playlist.itemIds.size))
+                }
+            }
+        }
+    }
+}
+
+/** "▶ Start" on a white pill, with a count on the right; the foot of a gradient card. */
+@Composable
+private fun StartRow(count: String) {
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Row(
+            Modifier
+                .clip(RoundedCornerShape(50))
+                .background(Color.White)
+                .padding(start = 8.dp, end = 14.dp, top = 4.dp, bottom = 4.dp),
+            verticalAlignment = Alignment.CenterVertically,
+        ) {
+            Icon(Icons.Rounded.PlayArrow, contentDescription = null, tint = Color(0xFF7A1F3D), modifier = Modifier.size(20.dp))
+            Text(LocalStrings.current.start, style = MaterialTheme.typography.labelLarge, color = Color(0xFF7A1F3D))
+        }
+        Spacer(Modifier.weight(1f))
+        Text(count, style = MaterialTheme.typography.labelLarge, color = Color.White.copy(alpha = 0.9f))
+    }
+}
+
+private const val GITA = "gita"
+
+/** The Gita has a section of its own: the whole Gita in order, then each of its chapters. */
+@Composable
+private fun GitaSection(library: Library, onOpenReader: (List<String>, Int, String) -> Unit) {
+    val strings = LocalStrings.current
+    val category = library.category(GITA) ?: return
+    val playlist = library.playlist(GITA)
+    val chapters = playlist?.let { library.itemsOf(it) } ?: library.itemsInCategory(GITA)
+    if (chapters.isEmpty()) return
+    val ids = chapters.map { it.id }
+    val title = playlist?.let { strings.playlistName(it) } ?: strings.categoryName(category)
+    val deity = library.deity(chapters.first().deity)
+    Column {
+        SectionTitle(strings.categoryName(category))
+        Box(
+            Modifier
+                .padding(horizontal = 16.dp)
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(26.dp))
+                .background(Brush.linearGradient(listOf(Color(0xFF0C8599), Color(0xFF364FC7))))
+                .clickable { onOpenReader(ids, 0, title) },
+        ) {
+            Canvas(Modifier.matchParentSize()) {
+                drawCircle(Color.White.copy(alpha = 0.08f), radius = 70.dp.toPx(), center = Offset(size.width, 0f))
+                drawCircle(Color.White.copy(alpha = 0.06f), radius = 110.dp.toPx(), center = Offset(size.width, 0f))
+            }
+            Column(Modifier.padding(18.dp)) {
+                Box(
+                    Modifier.size(40.dp).clip(CircleShape).background(Color.White.copy(alpha = 0.2f)),
+                    contentAlignment = Alignment.Center,
+                ) {
+                    Icon(categoryIcon(GITA), contentDescription = null, tint = Color.White)
+                }
+                Spacer(Modifier.height(10.dp))
+                Text(title, style = MaterialTheme.typography.titleMedium, color = Color.White)
+                Text(
+                    strings.categoryDescription(category),
+                    style = MaterialTheme.typography.bodySmall,
+                    color = Color.White.copy(alpha = 0.85f),
+                )
+                Spacer(Modifier.height(12.dp))
+                StartRow(strings.chapters(chapters.size))
+            }
+        }
+        Spacer(Modifier.height(12.dp))
+        LazyRow(contentPadding = PaddingValues(horizontal = 16.dp), horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+            itemsIndexed(chapters, key = { _, it -> "gita-row-" + it.id }) { index, chapter ->
+                Surface(
+                    onClick = { onOpenReader(ids, index, title) },
+                    shape = RoundedCornerShape(18.dp),
+                    color = deityColor(deity).copy(alpha = if (LocalIsDark.current) 0.22f else 0.10f),
+                    modifier = Modifier.width(150.dp),
+                ) {
+                    Column(Modifier.padding(horizontal = 14.dp, vertical = 12.dp)) {
+                        Text(strings.chapter(index + 1), style = MaterialTheme.typography.labelLarge, color = deityTextColor(deity))
+                        Spacer(Modifier.height(4.dp))
                         Text(
-                            strings.parts(playlist.itemIds.size),
-                            style = MaterialTheme.typography.labelLarge,
-                            color = Color.White.copy(alpha = 0.9f),
+                            // "गीता अध्याय २ — सांख्ययोग" → "सांख्ययोग"
+                            (if (strings.english) chapter.titleEn.ifBlank { chapter.title } else chapter.title).substringAfter(" — "),
+                            style = MaterialTheme.typography.titleSmall,
+                            maxLines = 2,
+                            minLines = 2,
+                            overflow = TextOverflow.Ellipsis,
                         )
                     }
                 }
@@ -376,7 +453,8 @@ private fun CategoryGrid(library: Library, onOpenList: (String, String) -> Unit)
         (if (dark) Color(0xFF2B3270) else Color(0xFFE3E7FF)) to (if (dark) Color(0xFFDDE1FF) else Color(0xFF1E2A78)),
     )
     Column(Modifier.padding(horizontal = 16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-        library.categories.chunked(2).forEachIndexed { row, pair ->
+        // The Gita has its own section above.
+        library.categories.filter { it.id != GITA }.chunked(2).forEachIndexed { row, pair ->
             Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                 pair.forEachIndexed { col, category ->
                     val (bg, fg) = tints[(row * 2 + col) % tints.size]
@@ -410,7 +488,6 @@ private fun CategoryGrid(library: Library, onOpenList: (String, String) -> Unit)
                         }
                     }
                 }
-                // An odd last category (the Gita) spans the whole row.
             }
         }
     }

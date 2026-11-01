@@ -52,6 +52,7 @@
       start: 'सुरू करा', all: 'सर्व', footer: 'खाते नाही • जाहिराती नाहीत • इंटरनेटशिवायही चालते',
       today: d => `आज ${MR_DAYS[d.getDay()]}`, deityOfDay: n => `आजचे दैवत: ${n}`,
       parts: n => `${mrNum(n)} भाग`, texts: n => `${mrNum(n)} रचना`,
+      chapter: n => `अध्याय ${mrNum(n)}`, chapters: n => `${mrNum(n)} अध्याय`,
       textSize: 'अक्षरांचा आकार', share: 'शेअर करा', prev: 'मागील', next: 'पुढील',
       addFav: 'आवडत्यांत जोडा', removeFav: 'आवडत्यांतून काढा', shareFooter: '— देवघर', by: a => `रचना: ${a}`,
       searchSub: 'मराठी किंवा इंग्रजीत शोधा — उदा. सुखकर्ता, ganpati, ramraksha', searchPh: 'आरती, श्लोक, देव किंवा ओळ…',
@@ -99,6 +100,7 @@
       start: 'Start', all: 'All', footer: 'No account • No ads • Works offline',
       today: d => `Today is ${EN_DAYS[d.getDay()]}`, deityOfDay: n => `Deity of the day: ${n}`,
       parts: n => (n === 1 ? '1 part' : `${n} parts`), texts: n => (n === 1 ? '1 text' : `${n} texts`),
+      chapter: n => `Chapter ${n}`, chapters: n => (n === 1 ? '1 chapter' : `${n} chapters`),
       textSize: 'Text size', share: 'Share', prev: 'Previous', next: 'Next',
       addFav: 'Add to favourites', removeFav: 'Remove from favourites', shareFooter: '— Devghar', by: a => `By ${a}`,
       searchSub: 'Type in English or Marathi — e.g. ganpati, ramraksha, सुखकर्ता', searchPh: 'Aarti, shloka, deity or a line…',
@@ -197,6 +199,7 @@
     ? '<span class="glyph" aria-hidden="true">ॐ</span>'
     : icon({ aarti: 'flame', stotra: 'book', abhang: 'note' }[id] || 'book'));
 
+  const GITA = 'gita'; // category and playlist id; the Gita gets its own home section
   const ORNAMENT = '<svg class="ornament" viewBox="0 0 300 18" aria-hidden="true">'
     + '<rect x="66" y="8.4" width="68" height="1.2" fill="currentColor" opacity=".35"/>'
     + '<rect x="166" y="8.4" width="68" height="1.2" fill="currentColor" opacity=".35"/>'
@@ -376,6 +379,7 @@
     const todayIds = todayItems.map(i => i.id);
     const recents = state.recents.map(id => lib.byId.get(id)).filter(Boolean);
     const deities = lib.deities.filter(x => lib.items.some(i => i.deity === x.id));
+    const sequences = lib.playlists.filter(p => p.id !== GITA);
 
     return `
     <section class="hero">${RINGS}
@@ -399,14 +403,15 @@
           <b lang="mr">${esc(it.title)}</b><small>${esc(catName(lib.catMap.get(it.category) || {}))}</small></a>`).join('')}
       </div>
     </section>` : ''}
-    ${lib.playlists.length ? `<h2 class="section">${esc(s.sequences)}</h2>
-    <div class="hscroll">${lib.playlists.map((p, k) => `
+    ${sequences.length ? `<h2 class="section">${esc(s.sequences)}</h2>
+    <div class="hscroll">${sequences.map((p, k) => `
       <a class="playlist pl-${k % 4}" href="${readHref(p.items, 0, plName(p))}">
         <span class="pl-icon">${icon('queue')}</span><h3>${esc(plName(p))}</h3><p>${esc(plDesc(p))}</p>
         <span class="pl-foot"><span class="pl-start">${icon('play')}${esc(s.start)}</span><span class="pl-count">${esc(s.parts(p.items.length))}</span></span>
       </a>`).join('')}</div>` : ''}
+    ${gitaSection()}
     <h2 class="section">${esc(s.categories)}</h2>
-    <div class="cat-grid">${lib.categories.map((c, k) => `
+    <div class="cat-grid">${lib.categories.filter(c => c.id !== GITA).map((c, k) => `
       <a class="cat cat-${k % 4}" href="#/list/category/${esc(c.id)}"><span class="cat-icon">${catIcon(c.id)}</span>
         <b>${esc(catName(c))}</b><small>${esc(s.texts(lib.items.filter(i => i.category === c.id).length))}</small></a>`).join('')}
     </div>
@@ -416,6 +421,29 @@
     </div>
     ${recents.length ? `<h2 class="section">${esc(s.recent)}</h2>${itemList(recents, s.recent)}` : ''}
     <footer class="foot">${ORNAMENT}<div class="blessing" lang="mr">॥ शुभं भवतु ॥</div><small>${esc(s.footer)}</small></footer>`;
+  }
+
+  /** The Gita has a section of its own: the whole Gita in order, then each of its chapters. */
+  function gitaSection() {
+    const s = S();
+    const c = lib.catMap.get(GITA);
+    const p = lib.playlists.find(x => x.id === GITA);
+    const chapters = (p ? p.items.map(id => lib.byId.get(id)) : lib.items.filter(i => i.category === GITA)).filter(Boolean);
+    if (!c || !chapters.length) return '';
+    const ids = chapters.map(i => i.id);
+    const title = p ? plName(p) : catName(c);
+    const d = lib.deityMap.get(chapters[0].deity);
+    // "गीता अध्याय २ — सांख्ययोग" → "सांख्ययोग"
+    const name = it => (en() && it.titleEn ? it.titleEn : it.title).split(' — ').pop();
+    return `<h2 class="section">${esc(catName(c))}</h2>
+    <a class="playlist gita-card" href="${readHref(ids, 0, title)}">
+      <span class="pl-icon">${catIcon(GITA)}</span><h3>${esc(title)}</h3><p>${esc(catDesc(c))}</p>
+      <span class="pl-foot"><span class="pl-start">${icon('play')}${esc(s.start)}</span><span class="pl-count">${esc(s.chapters(chapters.length))}</span></span>
+    </a>
+    <div class="hscroll gita-chapters">${chapters.map((it, k) => `
+      <a class="mini chapter" style="${deityStyle(d)}" href="${readHref(ids, k, title)}">
+        <small>${esc(s.chapter(k + 1))}</small><b ${en() ? '' : 'lang="mr"'}>${esc(name(it))}</b></a>`).join('')}
+    </div>`;
   }
 
   function listView(r) {
@@ -571,7 +599,7 @@
       ${about ? `<div class="about">${icon('info')}<span>${esc(about)}</span></div>` : ''}
       ${meaningSwitch}
       ${item.refrainFirst ? refrain('rt') : ''}
-      ${item.verses.map((v, k) => `<div class="verse" lang="mr" data-b="v${k}">${linesHtml(v)}</div>${meaning(k)}${refrain(`r${k}`)}`).join('')}
+      ${item.verses.map((v, k) => `${k && item.meanings ? `<div class="shlok-sep">${ORNAMENT}</div>` : ''}<div class="verse" lang="mr" data-b="v${k}">${linesHtml(v)}</div>${meaning(k)}${refrain(`r${k}`)}`).join('')}
       ${ORNAMENT}
     </article>
     <button type="button" class="listen-fab ${pager ? 'above-pager' : ''}" data-action="listen">${icon('headphones')}${esc(s.listen)}</button>

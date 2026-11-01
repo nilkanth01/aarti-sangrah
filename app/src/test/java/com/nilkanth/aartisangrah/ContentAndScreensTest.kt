@@ -8,7 +8,11 @@ import androidx.activity.compose.setContent
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.ui.test.hasScrollToNodeAction
+import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.performScrollToNode
 import androidx.test.core.app.ApplicationProvider
 import com.nilkanth.aartisangrah.audio.Reciter
 import com.nilkanth.aartisangrah.data.AppLanguage
@@ -180,6 +184,12 @@ class ContentAndScreensTest {
                 22f, false, emptyList(), {}, {}, {}, {}, {},
             )
         }
+        // The Gita's own home section sits above "प्रकार"; scroll down to it.
+        shot("14-home-gita", prepare = {
+            compose.onAllNodes(hasScrollToNodeAction()).onFirst().performScrollToNode(hasText("प्रकार"))
+        }) {
+            HomeScreen(library, emptyList(), emptyList(), null, { _, _, _ -> }, { _, _ -> }, {}, {}, {}, {})
+        }
     }
 
     /** The web app (web/) reuses the launcher icon; iPhones need it as PNG. */
@@ -201,6 +211,7 @@ class ContentAndScreensTest {
         name: String,
         theme: ThemeMode = ThemeMode.LIGHT,
         language: AppLanguage = AppLanguage.MARATHI,
+        prepare: () -> Unit = {},
         content: @Composable () -> Unit,
     ) {
         compose.activity.setContent {
@@ -208,6 +219,8 @@ class ContentAndScreensTest {
                 CompositionLocalProvider(LocalStrings provides Strings.of(language)) { Surface { content() } }
             }
         }
+        compose.waitForIdle()
+        prepare()
         compose.waitForIdle()
         val view = compose.activity.window.decorView
         val bitmap = Bitmap.createBitmap(view.width, view.height, Bitmap.Config.ARGB_8888)
