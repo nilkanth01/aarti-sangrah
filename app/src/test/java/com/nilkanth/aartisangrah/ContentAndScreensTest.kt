@@ -11,8 +11,12 @@ import androidx.compose.runtime.CompositionLocalProvider
 import androidx.compose.ui.test.hasScrollToNodeAction
 import androidx.compose.ui.test.hasText
 import androidx.compose.ui.test.junit4.createAndroidComposeRule
+import androidx.compose.ui.geometry.Offset
+import androidx.compose.ui.test.click
 import androidx.compose.ui.test.onFirst
+import androidx.compose.ui.test.onNodeWithText
 import androidx.compose.ui.test.performScrollToNode
+import androidx.compose.ui.test.performTouchInput
 import androidx.test.core.app.ApplicationProvider
 import com.nilkanth.aartisangrah.audio.Reciter
 import com.nilkanth.aartisangrah.data.AppLanguage
@@ -123,6 +127,32 @@ class ContentAndScreensTest {
             assertEquals("$id: recording made for different wording", Recitation.hash(Recitation.script(item)), entry.getString("hash"))
             assertEquals("$id: line timings don't match the lines", Recitation.script(item).size, entry.getJSONArray("lines").length())
         }
+    }
+
+    /** While listening, tapping a line jumps the voice to that line. */
+    @Test
+    fun tappingALineWhileListeningJumpsThere() {
+        val sukhakarta = library.item("sukhakarta")!!
+        var jumped: Pair<String, Int>? = null
+        compose.activity.setContent {
+            AartiTheme(ThemeMode.LIGHT) {
+                CompositionLocalProvider(LocalStrings provides Strings.of(AppLanguage.MARATHI)) {
+                    Surface {
+                        ReaderScreen(
+                            library, listOf("sukhakarta"), 0, "", 22f, false, emptyList(), {}, {}, {}, {}, {},
+                            recite = Reciter.State(Reciter.Status.PLAYING, "sukhakarta", index = 0, total = 18),
+                            onListenFrom = { item, from -> jumped = item.id to from },
+                        )
+                    }
+                }
+            }
+        }
+        // The first verse's 4th line, "कंठी झळके माळ मुक्ताफळांची", is script line 3.
+        compose.onNodeWithText("वार्ता विघ्नाची", substring = true)
+            .performTouchInput { click(Offset(centerX, height * 0.9f)) }
+        compose.waitForIdle()
+        assertEquals("sukhakarta" to 3, jumped)
+        assertEquals("कंठी झळके माळ मुक्ताफळांची", Recitation.script(sukhakarta)[jumped!!.second].text)
     }
 
     @Test

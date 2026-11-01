@@ -87,6 +87,7 @@
       voiceStatus: v => (v === 'mr' ? 'फोनचा आवाज: मराठी ✓' : v === 'hi' ? 'फोनचा आवाज: मराठी नाही — हिंदी वापरला जाईल' : 'फोनचा आवाज: या ब्राउझरमध्ये मराठी/हिंदी आवाज सापडला नाही'),
       preparingVoice: 'आवाज तयार होत आहे…', downloadingVoice: 'आवाज डाउनलोड होत आहे…',
       naturalVoiceLabel: 'नैसर्गिक आवाज', phoneVoiceLabel: 'फोनचा आवाज',
+      tapLineHint: 'कोणत्याही ओळीवर टॅप करा, आवाज तिथून सुरू होईल',
       naturalVoiceSetting: 'नैसर्गिक (AI) आवाज वापरा',
       naturalVoiceNote: 'संस्कृत श्लोक व स्तोत्रे IISc च्या वाग्धेनु मॉडेलने वृत्तानुसार सस्वर म्हटलेली आहेत; इतर रचनांसाठी AI4Bharat च्या Indic Parler-TTS चा स्पष्ट मराठी/हिंदी आवाज. प्रत्येक रचना पहिल्यांदा ऐकताना डाउनलोड होते आणि नंतर इंटरनेटशिवायही चालते. बंद केल्यास फोनचा आवाज वापरला जाईल.',
       voiceOnPhone: (d, t) => `फोनवर: ${mrNum(mb(d))} / ${mrNum(mb(t))} MB`,
@@ -135,6 +136,7 @@
       voiceStatus: v => (v === 'mr' ? 'Phone voice: Marathi ✓' : v === 'hi' ? 'Phone voice: no Marathi — Hindi will be used' : 'Phone voice: no Marathi or Hindi voice in this browser'),
       preparingVoice: 'Preparing the voice…', downloadingVoice: 'Downloading the voice…',
       naturalVoiceLabel: 'Natural voice', phoneVoiceLabel: 'Phone voice',
+      tapLineHint: 'Tap any line to jump the voice there',
       naturalVoiceSetting: 'Use the natural (AI) voice',
       naturalVoiceNote: "Sanskrit shlokas and stotras are chanted in their metre by IISc's Vagdhenu; the other texts use a clear Marathi/Hindi voice made with AI4Bharat's Indic Parler-TTS. Each text downloads the first time you play it, then works offline. Turn off to use the phone's voice.",
       voiceOnPhone: (d, t) => `On this device: ${mb(d)} of ${mb(t)} MB`,
@@ -1151,6 +1153,14 @@
 
   // ---------- Events ----------
   document.addEventListener('click', e => {
+    // While listening, tapping a line jumps the voice to it (not when the tap selected text).
+    const ln = speech.status !== 'idle' && !String(getSelection()).trim() && e.target.closest('.reader [data-b] [data-l]');
+    if (ln && speech.itemId === readerItem()?.id) {
+      const b = ln.closest('[data-b]').dataset.b, l = Number(ln.dataset.l);
+      const k = speech.script.findIndex(x => x.block === b && x.line === l);
+      if (k >= 0) { unlockAudio(); if (!speech.natural) unlockVoices(); listen(readerItem(), k); }
+      return;
+    }
     const el = e.target.closest('[data-action]');
     if (!el) return;
     const a = el.dataset.action;
@@ -1163,7 +1173,10 @@
     }
     else if (a === 'theme') { setState('theme', el.dataset.value); applyTheme(); render(true); }
     else if (a === 'awake') { setState('keepAwake', !state.keepAwake); render(true); }
-    else if (a === 'listen') { unlockAudio(); unlockVoices(); listen(readerItem()); }
+    else if (a === 'listen') {
+      unlockAudio(); unlockVoices(); listen(readerItem());
+      if (!store.get('tapLineHinted', false)) { store.set('tapLineHinted', true); toast(S().tapLineHint); }
+    }
     else if (a === 'play-pause') {
       if (speech.status === 'playing' || speech.status === 'preparing') pauseSpeech();
       else { unlockAudio(); if (!speech.natural) unlockVoices(); resumeSpeech(); }

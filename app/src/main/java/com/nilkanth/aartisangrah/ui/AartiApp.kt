@@ -253,6 +253,7 @@ fun AartiApp(vm: AppViewModel) {
                     reciteFinished = vm.reciter.finished,
                     noVoice = vm.reciter.noVoice,
                     onListen = { vm.reciter.play(it) },
+                    onListenFrom = { item, from -> vm.reciter.play(item, from) },
                     onPause = vm.reciter::pause,
                     onResume = vm.reciter::resume,
                     onStopListening = vm.reciter::stop,

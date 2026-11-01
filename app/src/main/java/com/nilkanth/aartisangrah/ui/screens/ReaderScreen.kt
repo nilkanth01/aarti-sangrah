@@ -70,7 +70,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.LocalView
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.SpanStyle
+import androidx.compose.ui.text.TextLayoutResult
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
 import androidx.compose.ui.text.font.FontWeight
@@ -118,6 +121,8 @@ fun ReaderScreen(
     reciteFinished: Flow<String> = emptyFlow(),
     noVoice: Flow<Unit> = emptyFlow(),
     onListen: (Item) -> Unit = {},
+    /** Plays from a given line of the script; tapping a line while listening jumps the voice there. */
+    onListenFrom: (Item, Int) -> Unit = { item, _ -> onListen(item) },
     onPause: () -> Unit = {},
     onResume: () -> Unit = {},
     onStopListening: () -> Unit = {},
@@ -240,8 +245,13 @@ fun ReaderScreen(
         ) { page ->
             val item = items[page]
             val script = remember(item) { Recitation.script(item) }
-            val highlight = if (recite.itemId == item.id && recite.status != Reciter.Status.IDLE) script.getOrNull(recite.index) else null
-            ItemPage(item, library, fontSize, highlight, meanings, onMeanings)
+            val listening = recite.itemId == item.id && recite.status != Reciter.Status.IDLE
+            val highlight = if (listening) script.getOrNull(recite.index) else null
+            val onLineTap: ((String, Int) -> Unit)? = if (!listening) null else { block, line ->
+                val k = script.indexOfFirst { it.block == block && it.line == line }
+                if (k >= 0) onListenFrom(item, k)
+            }
+            ItemPage(item, library, fontSize, highlight, meanings, onMeanings, onLineTap)
         }
     }
 
@@ -259,6 +269,7 @@ private fun ItemPage(
     highlight: SpokenLine?,
     meanings: MeaningMode = MeaningMode.BOTH,
     onMeanings: (MeaningMode) -> Unit = {},
+    onLineTap: ((block: String, line: Int) -> Unit)? = null,
 ) {
     val strings = LocalStrings.current
     val deity = library.deity(item.deity)
@@ -339,7 +350,7 @@ private fun ItemPage(
             }
         }
         if (hasMeanings) item(key = "meanings") { MeaningSwitch(meanings, onMeanings) }
-        if (refrain != null && item.refrainFirst) item(key = "refrain-top") { RefrainBlock(refrain, style, "rt", highlight) }
+        if (refrain != null && item.refrainFirst) item(key = "refrain-top") { RefrainBlock(refrain, style, "rt", highlight, onLineTap) }
         itemsIndexed(item.verses, key = { i, _ -> "verse-$i" }) { i, verse ->
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
                 // Shlokas with meanings (the Gita) get a divider between them, so each reads as its own unit.
@@ -354,9 +365,10 @@ private fun ItemPage(
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
                     speakerColor = deityTextColor(deity),
+                    onLineTap = onLineTap,
                 )
                 item.meanings.getOrNull(i)?.let { if (meanings != MeaningMode.OFF) MeaningCard(it, meanings, fontSize) }
-                if (refrain != null) RefrainBlock(refrain, style, "r$i", highlight)
+                if (refrain != null) RefrainBlock(refrain, style, "r$i", highlight, onLineTap)
             }
         }
         item(key = "end") { Ornament(Modifier.padding(top = 22.dp)) }
@@ -379,6 +391,7 @@ private fun LinesText(
     color: Color,
     modifier: Modifier,
     speakerColor: Color = MaterialTheme.colorScheme.primary,
+    onLineTap: ((block: String, line: Int) -> Unit)? = null,
 ) {
     val activeColor = MaterialTheme.colorScheme.primary
     val activeBackground = MaterialTheme.colorScheme.secondaryContainer
@@ -399,7 +412,14 @@ private fun LinesText(
             }
         }
     }
-    Text(annotated, style = style, color = color, textAlign = TextAlign.Center, modifier = modifier)
+    var layout by remember { mutableStateOf<TextLayoutResult?>(null) }
+    val tappable = if (onLineTap == null) modifier else modifier.pointerInput(text, block, onLineTap) {
+        detectTapGestures { position ->
+            val offset = layout?.getOffsetForPosition(position) ?: return@detectTapGestures
+            onLineTap(block, text.take(offset).count { it == '\n' })
+        }
+    }
+    Text(annotated, style = style, color = color, textAlign = TextAlign.Center, modifier = tappable, onTextLayout = { layout = it })
 }
 
 /** Chooses which verse meanings show: both, Marathi, English or none. */
@@ -464,7 +484,13 @@ private fun MeaningCard(meaning: Meaning, mode: MeaningMode, fontSize: Float) {
 }
 
 @Composable
-private fun RefrainBlock(text: String, style: TextStyle, block: String, highlight: SpokenLine?) {
+private fun RefrainBlock(
+    text: String,
+    style: TextStyle,
+    block: String,
+    highlight: SpokenLine?,
+    onLineTap: ((String, Int) -> Unit)? = null,
+) {
     Surface(
         color = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.55f),
         shape = RoundedCornerShape(18.dp),
@@ -477,6 +503,7 @@ private fun RefrainBlock(text: String, style: TextStyle, block: String, highligh
             style = style.copy(fontSize = style.fontSize * 0.92f, lineHeight = style.lineHeight * 0.92f),
             color = MaterialTheme.colorScheme.onPrimaryContainer,
             modifier = Modifier.padding(horizontal = 14.dp, vertical = 10.dp),
+            onLineTap = onLineTap,
         )
     }
 }

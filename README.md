@@ -63,7 +63,7 @@ switch. It can be kept on the home screen like a normal app and works offline af
   from the row below it
 - **Listen 🎧**: tap **Listen** on any aarti or shloka and it is read aloud line by line in a natural
   Marathi or Hindi voice, with a soft tanpura drone in the background. The line being read is highlighted, so you can follow along
-  and learn the pronunciation. There is a **Slow** speed, the tanpura can be switched off, and in a
+  and learn the pronunciation. While listening, **tap any line to jump the voice there**. There is a **Slow** speed, the tanpura can be switched off, and in a
   pooja sequence it moves on to the next aarti by itself ([how the voice works](#-listen-read-aloud))
 - **Marathi or English menus**: use the **English / मराठी** button on the home screen or
   **Settings → Language**. Aartis and shlokas always stay in Devanagari; in English mode each title

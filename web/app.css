@@ -308,6 +308,7 @@ input[type="range"] { width: 100%; accent-color: var(--primary); margin: 10px 0;
 .with-pager { padding-bottom: calc(76px + var(--safe-bottom)); }
 
 /* Read aloud */
+body:has(#player:not([hidden])) .reader .ln { cursor: pointer; } /* tap a line to jump the voice there */
 .ln.on { color: var(--primary); background: var(--secondary-c); border-radius: 6px; box-shadow: 0 0 0 3px var(--secondary-c); }
 .listen-fab {
   position: fixed; z-index: 6; right: max(16px, calc(50% - 344px)); bottom: calc(16px + var(--safe-bottom));
