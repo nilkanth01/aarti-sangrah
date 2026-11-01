@@ -9,6 +9,9 @@ enum class ThemeMode { SYSTEM, LIGHT, DARK }
 /** Language of the app's menus and labels. Aartis and shlokas always stay in Devanagari. */
 enum class AppLanguage { MARATHI, ENGLISH }
 
+/** Which verse meanings the reader shows (for texts that have them, i.e. the Gita). */
+enum class MeaningMode { BOTH, MARATHI, ENGLISH, OFF }
+
 /** Small on-device settings store. Nothing here ever leaves the phone. */
 class Prefs(context: Context) {
     private val sp = context.getSharedPreferences("aarti_prefs", Context.MODE_PRIVATE)
@@ -37,6 +40,11 @@ class Prefs(context: Context) {
 
     private val _naturalVoice = MutableStateFlow(sp.getBoolean("naturalVoice", true))
     val naturalVoice: StateFlow<Boolean> = _naturalVoice
+
+    private val _meanings = MutableStateFlow(
+        runCatching { MeaningMode.valueOf(sp.getString("meanings", null) ?: "BOTH") }.getOrDefault(MeaningMode.BOTH),
+    )
+    val meanings: StateFlow<MeaningMode> = _meanings
 
     private val _favorites = MutableStateFlow(sp.getString("favorites", "").orEmpty().toIdList())
     val favorites: StateFlow<List<String>> = _favorites
@@ -85,6 +93,11 @@ class Prefs(context: Context) {
     fun setNaturalVoice(on: Boolean) {
         _naturalVoice.value = on
         sp.edit().putBoolean("naturalVoice", on).apply()
+    }
+
+    fun setMeanings(mode: MeaningMode) {
+        _meanings.value = mode
+        sp.edit().putString("meanings", mode.name).apply()
     }
 
     fun toggleFavorite(id: String) {

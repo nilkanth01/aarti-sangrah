@@ -71,6 +71,22 @@ class ContentAndScreensTest {
     }
 
     @Test
+    fun gitaHasEveryVerseWithMeanings() {
+        val chapters = library.itemsInCategory("gita")
+        assertEquals(18, chapters.size)
+        // 700 verses plus each chapter's closing line, every one with a Marathi and an English meaning.
+        assertEquals(718, chapters.sumOf { it.verses.size })
+        chapters.forEach { ch ->
+            assertEquals("${ch.id} meanings", ch.verses.size, ch.meanings.size)
+            ch.meanings.forEach { assertTrue("${ch.id} has an empty meaning", it.mr.isNotBlank() && it.en.isNotBlank()) }
+        }
+        assertEquals(chapters.map { it.id }, library.playlist("gita")!!.itemIds)
+        // The speaker line is read too, and English meanings are searchable.
+        assertEquals("धृतराष्ट्र उवाच", Recitation.script(library.item("gita-1")!!)[0].text)
+        assertTrue(library.search("steady wisdom").any { it.id == "gita-2" })
+    }
+
+    @Test
     fun readAloudScriptMatchesTheScreen() {
         val sukhakarta = library.item("sukhakarta")!!
         val script = Recitation.script(sukhakarta)
@@ -156,6 +172,12 @@ class ContentAndScreensTest {
             ReaderScreen(
                 library, listOf("sukhakarta"), 0, "", 22f, false, emptyList(), {}, {}, {}, {}, {},
                 recite = Reciter.State(Reciter.Status.PLAYING, "sukhakarta", index = 5, total = 18),
+            )
+        }
+        shot("13-gita-meanings") {
+            ReaderScreen(
+                library, library.playlist("gita")!!.itemIds, 1, "संपूर्ण भगवद्गीता",
+                22f, false, emptyList(), {}, {}, {}, {}, {},
             )
         }
     }

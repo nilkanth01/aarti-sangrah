@@ -138,6 +138,7 @@ h1, h2, h3, p { margin: 0; }
 .pl-count { font-weight: 600; opacity: .92; }
 
 .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; padding: 0 16px; }
+.cat-grid .cat:last-child:nth-child(odd) { grid-column: 1 / -1; } /* an odd last category (the Gita) spans the row */
 .cat { display: block; padding: 16px; border-radius: 24px; min-width: 0; }
 .cat-0 { background: var(--primary-c); color: var(--on-primary-c); }
 .cat-1 { background: var(--secondary-c); color: var(--on-secondary-c); }
@@ -266,6 +267,25 @@ input[type="range"] { width: 100%; accent-color: var(--primary); margin: 10px 0;
   font-size: var(--verse); line-height: 1.75;
 }
 .verse { padding: 12px 0; }
+.verse .speaker { font-size: .78em; color: var(--dt); font-weight: 700; }
+/* Verse meanings (the Gita): follow the text size, stay readable as prose. */
+.meaning-switch { display: flex; align-items: center; gap: 10px; margin: 8px 0 4px; text-align: left; }
+.meaning-switch > span { font-weight: 700; color: var(--muted); }
+.meaning-switch .segmented { flex: 1; margin-top: 0; }
+.meaning-switch .segmented button { padding: 7px 2px; font-size: 14px; }
+.meaning {
+  margin: 0 0 10px; padding: 12px 14px; border-radius: 16px; text-align: left;
+  background: var(--surface-low); border: 1px solid var(--outline-v);
+  font-size: calc(var(--verse) * .72); line-height: 1.6;
+}
+.meaning p + p { margin-top: 8px; padding-top: 8px; border-top: 1px dashed var(--outline-v); }
+.meaning [lang="mr"] { font-family: "Mukta", sans-serif; }
+.meaning [lang="en"] { color: var(--muted); }
+.reader[data-meanings="off"] .meaning,
+.reader[data-meanings="mr"] .meaning [lang="en"],
+.reader[data-meanings="en"] .meaning [lang="mr"] { display: none; }
+.reader[data-meanings="mr"] .meaning p + p,
+.reader[data-meanings="en"] .meaning p + p { margin-top: 0; padding-top: 0; border-top: 0; }
 .refrain { margin: 4px 0; padding: 10px 14px; border-radius: 18px; background: var(--refrain); color: var(--on-primary-c); font-size: calc(var(--verse) * .92); }
 .pager {
   position: fixed; left: 0; right: 0; bottom: 0; z-index: 5; background: var(--surface);

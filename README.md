@@ -12,6 +12,7 @@ always stay in Devanagari.
   <img src="docs/screenshots/1-home.png" width="230" alt="Home screen" />
   <img src="docs/screenshots/2-reader.png" width="230" alt="Reading an aarti" />
   <img src="docs/screenshots/12-reader-listening.png" width="230" alt="Listening: the line being read is highlighted" />
+  <img src="docs/screenshots/13-gita-meanings.png" width="230" alt="Bhagavad Gita with Marathi and English meanings" />
 </p>
 <p align="center">
   <img src="docs/screenshots/8-home-english.png" width="230" alt="Home screen with English menus" />
@@ -54,6 +55,10 @@ switch. It can be kept on the home screen like a normal app and works offline af
 ## ✨ Features
 
 - **60 texts**: 20 aartis, 21 shlokas & mantras, 11 stotras, 8 abhangs (including the complete Haripath)
+- **The complete Bhagavad Gita 📖**: all 18 chapters and 700 verses, each with its **meaning in Marathi
+  and English** under the verse (choose both, one or none with the **अर्थ** switch at the top of a chapter),
+  and the Sanskrit chanted verse by verse. **Complete Bhagavad Gita** under pooja sequences plays all
+  18 chapters in order
 - **Listen 🎧**: tap **Listen** on any aarti or shloka and it is read aloud line by line in a natural
   Marathi or Hindi voice, with a soft tanpura drone in the background. The line being read is highlighted, so you can follow along
   and learn the pronunciation. There is a **Slow** speed, the tanpura can be switched off, and in a
@@ -80,7 +85,14 @@ switch. It can be kept on the home screen like a normal app and works offline af
 | **Aartis** | सुखकर्ता दुःखहर्ता, शेंदुर लाल चढायो, जय गणेश जय गणेश देवा, दुर्गे दुर्घट भारी, लवथवती विक्राळा, युगे अठ्ठावीस विटेवरी उभा, येई हो विठ्ठले, त्रिगुणात्मक त्रैमूर्ती, ऐसा येई बा दत्ता दिगंबरा, आरती ज्ञानराजा, आरती तुकारामा, उत्कट साधुनि शिळा, सत्राणें उड्डाणें, ओवाळूं आरती मदनगोपाळा, आरती साईबाबा, शिर्डी माझें पंढरपूर, जय जय सत्चित्स्वरूपा, ॐ जय जगदीश हरे, ॐ जय लक्ष्मीरमणा (सत्यनारायण), घालीन लोटांगण |
 | **Shlokas & mantras** | मंत्रपुष्पांजली, सदा सर्वदा योग तुझा घडावा, मोरया मोरया मी बाळ तान्हे, वक्रतुंड महाकाय, गुरुर्ब्रह्मा गुरुर्विष्णुः, कराग्रे वसते लक्ष्मीः, समुद्रवसने देवि, अहल्या द्रौपदी सीता (पंचकन्या), शुभं करोति कल्याणम्, गायत्री मंत्र, महामृत्युंजय मंत्र, कर्पूरगौरं करुणावतारं, सर्वमंगलमांगल्ये, या कुन्देन्दुतुषारहारधवला, शान्ताकारं भुजगशयनं, वसुदेवसुतं देवं, मनोजवं मारुततुल्यवेगं, दत्त नामस्मरण, सूर्यनमस्कार मंत्र, भोजन मंत्र, शांति मंत्र |
 | **Stotras** | श्री गणपती अथर्वशीर्ष, संकटनाशन गणपती स्तोत्र, जय जयाजी गणपती, श्रीगणेशवरद स्तोत्र, श्री रामरक्षा स्तोत्र, भीमरूपी महारुद्रा, श्री हनुमान चालीसा, शिव पंचाक्षर स्तोत्र, श्रीरामचंद्र कृपालु भजु मन, नवग्रह स्तोत्र, श्री यमाई देवी स्तोत्र |
+| **श्रीमद्भगवद्गीता** | All 18 chapters (700 verses, Gita Press verse count), each verse with its Marathi and English meaning. Speaker lines (श्रीभगवानुवाच, अर्जुन उवाच…) and each chapter's closing line are included. |
 | **Abhangs** | पसायदान, मनाचे श्लोक (1–13), सुंदर तें ध्यान उभें विटेवरी, रूप पाहतां लोचनीं, माझें माहेर पंढरी, अवघा रंग एक झाला, वृक्षवल्ली आम्हां सोयरीं वनचरें, संपूर्ण हरिपाठ (28 abhangs) |
+
+> **About the Gita:** the Sanskrit follows the Gita Press reading. It was compared word by word between
+> [sanskritdocuments.org](https://sanskritdocuments.org/doc_giitaa/bhagvadnew.html) and the open
+> [gita/gita](https://github.com/gita/gita) dataset. The Marathi and English meanings were written for this
+> app as plain, verse-by-verse renderings. They are not a commentary, and they are not copied from any
+> published translation.
 
 > **Variations in wording:** these traditional texts are sung with small differences from family to family
 > and village to village. If you spot a mistake or want an aarti added, use **Settings → Report a mistake**
@@ -94,7 +106,8 @@ switch. It can be kept on the home screen like a normal app and works offline af
 - **Sanskrit shlokas and stotras are chanted** with [Vāgdhenu](https://github.com/prathoshap/vagdhenu)
   (Prof. Prathosh A P, IISc; Apache-2.0), a Sanskrit chant model that follows each verse's metre
   (anuṣṭubh, upajāti, śārdūlavikrīḍita…). That covers 16 texts, including Ramraksha, Sankatnashan and the
-  Navagraha stotra.
+  Navagraha stotra, and all 700 verses of the **Bhagavad Gita** (the Gita's irregular triṣṭubh verses are
+  chanted to upajāti, the nearest regular metre).
 - **The Vedic mantras** (Gayatri, Mahamrityunjay, Mantrapushpanjali, the Shanti mantras and the
   Atharvashirsha) are not chanted by Vāgdhenu, because its author asks for it to be used only for
   non-Vedic chants. They and all **Marathi and Hindi** texts are read with

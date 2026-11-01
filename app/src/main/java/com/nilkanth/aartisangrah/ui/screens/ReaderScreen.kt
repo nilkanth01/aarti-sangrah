@@ -47,6 +47,9 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SegmentedButton
+import androidx.compose.material3.SegmentedButtonDefaults
+import androidx.compose.material3.SingleChoiceSegmentedButtonRow
 import androidx.compose.material3.Slider
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -70,6 +73,7 @@ import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.text.SpanStyle
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.buildAnnotatedString
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.text.withStyle
@@ -78,6 +82,8 @@ import androidx.compose.ui.unit.sp
 import com.nilkanth.aartisangrah.audio.Reciter
 import com.nilkanth.aartisangrah.data.Item
 import com.nilkanth.aartisangrah.data.Library
+import com.nilkanth.aartisangrah.data.Meaning
+import com.nilkanth.aartisangrah.data.MeaningMode
 import com.nilkanth.aartisangrah.data.Prefs
 import com.nilkanth.aartisangrah.data.Recitation
 import com.nilkanth.aartisangrah.data.SpokenLine
@@ -86,6 +92,7 @@ import com.nilkanth.aartisangrah.ui.components.DeityAvatar
 import com.nilkanth.aartisangrah.ui.components.FavoriteButton
 import com.nilkanth.aartisangrah.ui.components.Ornament
 import com.nilkanth.aartisangrah.ui.components.deityTextColor
+import com.nilkanth.aartisangrah.ui.theme.Mukta
 import com.nilkanth.aartisangrah.ui.theme.verseStyle
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.emptyFlow
@@ -116,6 +123,8 @@ fun ReaderScreen(
     onStopListening: () -> Unit = {},
     onSpeechSlow: (Boolean) -> Unit = {},
     onMusic: (Boolean) -> Unit = {},
+    meanings: MeaningMode = MeaningMode.BOTH,
+    onMeanings: (MeaningMode) -> Unit = {},
 ) {
     val items = remember(ids, library) { ids.mapNotNull { library.item(it) } }
     if (items.isEmpty()) {
@@ -232,7 +241,7 @@ fun ReaderScreen(
             val item = items[page]
             val script = remember(item) { Recitation.script(item) }
             val highlight = if (recite.itemId == item.id && recite.status != Reciter.Status.IDLE) script.getOrNull(recite.index) else null
-            ItemPage(item, library, fontSize, highlight)
+            ItemPage(item, library, fontSize, highlight, meanings, onMeanings)
         }
     }
 
@@ -243,17 +252,26 @@ fun ReaderScreen(
 }
 
 @Composable
-private fun ItemPage(item: Item, library: Library, fontSize: Float, highlight: SpokenLine?) {
+private fun ItemPage(
+    item: Item,
+    library: Library,
+    fontSize: Float,
+    highlight: SpokenLine?,
+    meanings: MeaningMode = MeaningMode.BOTH,
+    onMeanings: (MeaningMode) -> Unit = {},
+) {
     val strings = LocalStrings.current
     val deity = library.deity(item.deity)
     val category = library.category(item.category)
     val style = verseStyle(fontSize)
     val about = strings.about(item)
     val refrain = item.refrain
+    val hasMeanings = item.meanings.isNotEmpty()
     val listState = rememberLazyListState()
 
     // Keep the line being read in view.
-    val firstVerseIndex = 1 + (if (about != null) 1 else 0) + (if (refrain != null && item.refrainFirst) 1 else 0)
+    val firstVerseIndex = 1 + (if (about != null) 1 else 0) + (if (hasMeanings) 1 else 0) +
+        (if (refrain != null && item.refrainFirst) 1 else 0)
     LaunchedEffect(highlight?.block) {
         val block = highlight?.block ?: return@LaunchedEffect
         val index = if (block == "rt") firstVerseIndex - 1 else firstVerseIndex + block.drop(1).toInt()
@@ -320,6 +338,7 @@ private fun ItemPage(item: Item, library: Library, fontSize: Float, highlight: S
                 }
             }
         }
+        if (hasMeanings) item(key = "meanings") { MeaningSwitch(meanings, onMeanings) }
         if (refrain != null && item.refrainFirst) item(key = "refrain-top") { RefrainBlock(refrain, style, "rt", highlight) }
         itemsIndexed(item.verses, key = { i, _ -> "verse-$i" }) { i, verse ->
             Column(horizontalAlignment = Alignment.CenterHorizontally) {
@@ -330,7 +349,9 @@ private fun ItemPage(item: Item, library: Library, fontSize: Float, highlight: S
                     style = style,
                     color = MaterialTheme.colorScheme.onBackground,
                     modifier = Modifier.fillMaxWidth().padding(vertical = 12.dp),
+                    speakerColor = deityTextColor(deity),
                 )
+                item.meanings.getOrNull(i)?.let { if (meanings != MeaningMode.OFF) MeaningCard(it, meanings, fontSize) }
                 if (refrain != null) RefrainBlock(refrain, style, "r$i", highlight)
             }
         }
@@ -338,22 +359,104 @@ private fun ItemPage(item: Item, library: Library, fontSize: Float, highlight: S
     }
 }
 
+/** "श्रीभगवानुवाच", "अर्जुन उवाच": who speaks the next Gita verse. Must match isSpeaker() in web/app.js. */
+private fun isSpeakerLine(line: String): Boolean {
+    val words = line.trim().split(Regex("\\s+"))
+    return words.size <= 2 && words.last().endsWith("वाच")
+}
+
 /** Shows a block of text and colours the line that is being read aloud. */
 @Composable
-private fun LinesText(text: String, block: String, highlight: SpokenLine?, style: TextStyle, color: Color, modifier: Modifier) {
+private fun LinesText(
+    text: String,
+    block: String,
+    highlight: SpokenLine?,
+    style: TextStyle,
+    color: Color,
+    modifier: Modifier,
+    speakerColor: Color = MaterialTheme.colorScheme.primary,
+) {
     val activeColor = MaterialTheme.colorScheme.primary
     val activeBackground = MaterialTheme.colorScheme.secondaryContainer
     val activeLine = if (highlight?.block == block) highlight.line else -1
-    val annotated = remember(text, activeLine, activeColor, activeBackground) {
+    val annotated = remember(text, activeLine, activeColor, activeBackground, speakerColor, style.fontSize) {
         buildAnnotatedString {
             text.lines().forEachIndexed { i, line ->
                 if (i > 0) append('\n')
-                if (i == activeLine) withStyle(SpanStyle(color = activeColor, background = activeBackground)) { append(line) }
-                else append(line)
+                val speaker = if (isSpeakerLine(line)) {
+                    SpanStyle(fontSize = style.fontSize * 0.78f, color = speakerColor, fontWeight = FontWeight.Bold)
+                } else {
+                    SpanStyle()
+                }
+                withStyle(speaker) {
+                    if (i == activeLine) withStyle(SpanStyle(color = activeColor, background = activeBackground)) { append(line) }
+                    else append(line)
+                }
             }
         }
     }
     Text(annotated, style = style, color = color, textAlign = TextAlign.Center, modifier = modifier)
+}
+
+/** Chooses which verse meanings show: both, Marathi, English or none. */
+@Composable
+private fun MeaningSwitch(mode: MeaningMode, onChange: (MeaningMode) -> Unit) {
+    val strings = LocalStrings.current
+    Row(Modifier.fillMaxWidth().padding(vertical = 6.dp), verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            strings.meanings,
+            style = MaterialTheme.typography.titleSmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant,
+            modifier = Modifier.padding(end = 10.dp),
+        )
+        val options = listOf(
+            MeaningMode.BOTH to strings.meaningBoth,
+            MeaningMode.MARATHI to "मराठी",
+            MeaningMode.ENGLISH to "English",
+            MeaningMode.OFF to strings.meaningOff,
+        )
+        SingleChoiceSegmentedButtonRow(Modifier.weight(1f)) {
+            options.forEachIndexed { i, (option, label) ->
+                SegmentedButton(
+                    selected = mode == option,
+                    onClick = { onChange(option) },
+                    shape = SegmentedButtonDefaults.itemShape(i, options.size),
+                    icon = {},
+                ) { Text(label, maxLines = 1, style = MaterialTheme.typography.labelMedium) }
+            }
+        }
+    }
+}
+
+/** A verse's meaning under the verse, in the chosen language(s). */
+@Composable
+private fun MeaningCard(meaning: Meaning, mode: MeaningMode, fontSize: Float) {
+    val size = fontSize * 0.72f
+    Surface(
+        color = MaterialTheme.colorScheme.surfaceContainerLow,
+        shape = RoundedCornerShape(16.dp),
+        modifier = Modifier.fillMaxWidth().padding(bottom = 10.dp),
+    ) {
+        Column(Modifier.padding(horizontal = 14.dp, vertical = 12.dp)) {
+            if (mode != MeaningMode.ENGLISH && meaning.mr.isNotBlank()) {
+                Text(
+                    meaning.mr,
+                    style = TextStyle(fontFamily = Mukta, fontSize = size.sp, lineHeight = (size * 1.6f).sp),
+                    color = MaterialTheme.colorScheme.onSurface,
+                )
+            }
+            if (mode == MeaningMode.BOTH && meaning.mr.isNotBlank() && meaning.en.isNotBlank()) {
+                Spacer(Modifier.height(8.dp))
+            }
+            if (mode != MeaningMode.MARATHI && meaning.en.isNotBlank()) {
+                Text(
+                    meaning.en,
+                    style = TextStyle(fontSize = size.sp, lineHeight = (size * 1.55f).sp),
+                    color = MaterialTheme.colorScheme.onSurfaceVariant,
+                )
+            }
+        }
+    }
 }
 
 @Composable

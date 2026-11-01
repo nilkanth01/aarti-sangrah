@@ -31,6 +31,9 @@ data class Playlist(
     val itemIds: List<String>,
 )
 
+/** What a verse means, in Marathi and English (given for the Gita). */
+data class Meaning(val mr: String, val en: String)
+
 data class Item(
     val id: String,
     val title: String,
@@ -47,6 +50,8 @@ data class Item(
     val refrainFirst: Boolean,
     val verses: List<String>,
     val keywords: String,
+    /** One per verse, or empty when the text has no meanings. */
+    val meanings: List<Meaning> = emptyList(),
 ) {
     /** A line for list previews that doesn't just repeat the title. */
     val preview: String by lazy {
@@ -84,6 +89,7 @@ class Library(
                 category(item.category)?.let { append(it.name).append(' ').append(it.nameEn).append(' ') }
                 item.refrain?.let { append(it).append(' ') }
                 item.verses.forEach { append(it).append(' ') }
+                item.meanings.forEach { append(it.mr).append(' ').append(it.en).append(' ') }
             }.lowercase()
         }
     }
@@ -130,6 +136,12 @@ object LibraryParser {
             )
         }
         val items = root.getJSONArray("items").objects().map {
+            val verses = it.getJSONArray("verses").strings()
+            // Meanings line up one-to-one with the verses; a list that doesn't is ignored, not fatal.
+            val meanings = it.optJSONArray("meanings")?.objects()
+                ?.map { m -> Meaning(m.optString("mr"), m.optString("en")) }
+                ?.takeIf { m -> m.size == verses.size }
+            val kept = verses.indices.filter { i -> verses[i].isNotBlank() }
             Item(
                 id = it.getString("id"),
                 title = it.getString("title"),
@@ -142,8 +154,9 @@ object LibraryParser {
                 aboutEn = it.optStringOrNull("aboutEn"),
                 refrain = it.optStringOrNull("refrain"),
                 refrainFirst = it.optBoolean("refrainFirst", false),
-                verses = it.getJSONArray("verses").strings().filter { v -> v.isNotBlank() },
+                verses = kept.map { i -> verses[i] },
                 keywords = it.optString("keywords"),
+                meanings = meanings?.let { m -> kept.map { i -> m[i] } }.orEmpty(),
             )
         }
         require(items.isNotEmpty()) { "content has no items" }

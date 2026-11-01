@@ -410,7 +410,7 @@ private fun CategoryGrid(library: Library, onOpenList: (String, String) -> Unit)
                         }
                     }
                 }
-                if (pair.size == 1) Spacer(Modifier.weight(1f))
+                // An odd last category (the Gita) spans the whole row.
             }
         }
     }

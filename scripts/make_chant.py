@@ -41,10 +41,26 @@ def chanted(item):
     return item.get("language") == "संस्कृत" and item["id"] not in VEDIC
 
 
-def meter_of(rc, verse):
+def is_speaker(line):
+    """"श्रीभगवानुवाच", "अर्जुन उवाच": the Gita's speaker lines, which are said, not sung to the metre."""
+    words = line.strip().rstrip("।").split()
+    return 0 < len(words) <= 2 and words[-1].endswith("वाच")
+
+
+def meter_of(rc, verse, gita=False):
     """The verse's vṛtta, or the prose template for lines that are not a recognised metre."""
-    name = rc.detect_meter_key(verse)
-    return name or "gadya"
+    lines = [MV.clean(l) for l in verse.split("\n") if not is_speaker(l)]
+    name = rc.detect_meter_key("\n".join(l for l in verse.split("\n") if not is_speaker(l)))
+    if name or not gita:
+        return name or "gadya"
+    # The Gita's triṣṭubh verses are often irregular (a syllable short or long), and a few anuṣṭubh
+    # verses have a vipulā pāda; chant them to the nearest regular metre rather than as prose.
+    sizes = [rc.n_aksharas(l) for l in lines if l]
+    if len(sizes) == 4 and all(10 <= s <= 13 for s in sizes):
+        return "upajati"
+    if len(sizes) == 2 and all(15 <= s <= 18 for s in sizes):
+        return "anushtubh"
+    return "gadya"
 
 
 def cache_path(meter, text, seed):
@@ -76,18 +92,19 @@ def main():
         lines = MV.script(it)
         meters = {}
         for k, verse in enumerate(it["verses"]):
-            meters[f"v{k}"] = meter_of(rc, verse)
+            meters[f"v{k}"] = meter_of(rc, verse, gita=it.get("category") == "gita")
         if it.get("refrain"):
             m = meter_of(rc, it["refrain"])
             meters.update({b: m for b, *_ in lines if b.startswith("r")})
-        jobs[it["id"]] = [(b, i, text, meters[b]) for b, i, text, _ in lines]
+        jobs[it["id"]] = [(b, i, text, "gadya" if is_speaker(text) else meters[b]) for b, i, text, _ in lines]
         if args.list:
             print(it["id"], sorted(set(meters.values())))
     if args.list:
         return
 
     CACHE.mkdir(parents=True, exist_ok=True)
-    todo = {(m, t) for lines in jobs.values() for _, _, t, m in lines if not cache_path(m, t, SEED).exists()}
+    # In reading order, so a long run finishes whole texts one after another.
+    todo = list(dict.fromkeys((m, t) for lines in jobs.values() for _, _, t, m in lines if not cache_path(m, t, SEED).exists()))
     log = []
     if todo:
         print(f"{len(todo)} lines to chant", flush=True)
@@ -95,10 +112,11 @@ def main():
                         str(VAGDHENU / "models" / "voc_bigvgan_EMA_2026-06-11.pth"),
                         str(VAGDHENU / "src" / "reference_bank" / "bank.json"), device="cuda")
         started = time.time()
-        for n, (meter, text) in enumerate(sorted(todo), 1):
+        for n, (meter, text) in enumerate(todo, 1):
             best = None
             for seed in (SEED, SEED + 7, SEED + 19):
-                sr, a = r.render_one([text], meter, seed=seed)
+                # A trailing "-" marks a word split across two padas (जिजीविषाम-/स्तेऽवस्थिताः); not spoken.
+                sr, a = r.render_one([text.replace("-", "")], meter, seed=seed)
                 a = MV.trim(np.asarray(a, np.float32), sr)
                 if best is None or plausible(rc, text, len(a) / sr):
                     best = a

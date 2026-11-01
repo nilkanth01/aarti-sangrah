@@ -98,6 +98,7 @@ fun AartiApp(vm: AppViewModel) {
     val speechSlow by vm.prefs.speechSlow.collectAsStateWithLifecycle()
     val musicOn by vm.prefs.music.collectAsStateWithLifecycle()
     val naturalVoice by vm.prefs.naturalVoice.collectAsStateWithLifecycle()
+    val meanings by vm.prefs.meanings.collectAsStateWithLifecycle()
     val voiceStatus by vm.voiceStatus.collectAsStateWithLifecycle()
 
     val nav = rememberNavController()
@@ -257,6 +258,8 @@ fun AartiApp(vm: AppViewModel) {
                     onStopListening = vm.reciter::stop,
                     onSpeechSlow = vm::setSpeechSlow,
                     onMusic = vm::setMusic,
+                    meanings = meanings,
+                    onMeanings = vm.prefs::setMeanings,
                 )
             }
         }

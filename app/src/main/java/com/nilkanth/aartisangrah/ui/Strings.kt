@@ -63,6 +63,9 @@ class Strings private constructor(val language: AppLanguage) {
     fun composedBy(author: String) = t("रचना: $author", "By $author")
 
     // Read aloud
+    val meanings = t("अर्थ", "Meaning")
+    val meaningBoth = t("दोन्ही", "Both")
+    val meaningOff = t("नको", "Off")
     val listen = t("ऐका", "Listen")
     val pause = t("थांबवा", "Pause")
     val resume = t("पुढे ऐका", "Resume")

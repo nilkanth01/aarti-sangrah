@@ -27,6 +27,7 @@
     speechSlow: store.get('speechSlow', false),
     naturalVoice: store.get('naturalVoice', true),
     music: store.get('music', true),
+    meanings: store.get('meanings', 'both'),
     favorites: store.get('favorites', []),
     recents: store.get('recents', []),
   };
@@ -75,6 +76,7 @@
       upToDate: 'सर्व आरत्या अद्ययावत आहेत 🙏', offline: 'इंटरनेट जोडणी तपासा आणि पुन्हा प्रयत्न करा',
       contentUpdated: n => n > 0 ? `${mrNum(n)} नवीन आरत्या/श्लोक जोडले गेले 🌼` : 'आरत्या व श्लोक अद्ययावत झाले 🌼',
       loadError: 'आरत्या लोड झाल्या नाहीत. इंटरनेट तपासून पुन्हा प्रयत्न करा.', retry: 'पुन्हा प्रयत्न करा',
+      meanings: 'अर्थ', meaningBoth: 'दोन्ही', meaningOff: 'नको',
       listen: 'ऐका', pause: 'थांबवा', resume: 'पुढे ऐका', stopListening: 'बंद करा', slow: 'हळू', normalSpeed: 'सामान्य',
       music: 'तंबोरा', lineOf: (i, n) => `ओळ ${mrNum(i)} / ${mrNum(n)}`,
       hindiVoiceNote: 'मराठी आवाज नाही — हिंदी आवाज वापरत आहे',
@@ -121,6 +123,7 @@
       upToDate: 'All aartis are up to date 🙏', offline: 'Check your internet connection and try again',
       contentUpdated: n => (n > 0 ? `${n} new aartis/shlokas added 🌼` : 'Aartis & shlokas updated 🌼'),
       loadError: "Couldn't load the aartis. Check your internet and try again.", retry: 'Try again',
+      meanings: 'Meaning', meaningBoth: 'Both', meaningOff: 'Off',
       listen: 'Listen', pause: 'Pause', resume: 'Resume', stopListening: 'Stop', slow: 'Slow', normalSpeed: 'Normal',
       music: 'Tanpura', lineOf: (i, n) => `Line ${i} of ${n}`,
       hindiVoiceNote: 'No Marathi voice — using the Hindi voice',
@@ -242,7 +245,10 @@
     for (const i of items) {
       const d = deityMap.get(i.deity);
       const c = catMap.get(i.category);
-      i._search = [i.title, i.titleEn, i.keywords, i.author, d?.name, d?.nameEn, d?.keywords, c?.name, c?.nameEn, i.refrain, ...i.verses]
+      // Verse meanings (the Gita) line up one-to-one with the verses; ignore them if they don't.
+      if (!Array.isArray(i.meanings) || i.meanings.length !== i.verses.length) delete i.meanings;
+      const meanings = (i.meanings || []).flatMap(m => [m.mr, m.en]);
+      i._search = [i.title, i.titleEn, i.keywords, i.author, d?.name, d?.nameEn, d?.keywords, c?.name, c?.nameEn, i.refrain, ...i.verses, ...meanings]
         .filter(Boolean).join(' ').toLowerCase();
       i._preview = preview(i);
     }
@@ -538,6 +544,15 @@
     const refrain = block => (item.refrain ? `<div class="refrain" lang="mr" data-b="${block}">${linesHtml(item.refrain)}</div>` : '');
     const meta = [d && deityName(d), c && catName(c), langName(item.language)].filter(Boolean).join(' • ');
     const pager = ids.length > 1;
+    // Both languages are always in the page; the reader's data-meanings attribute picks what shows,
+    // so switching never re-renders (and never interrupts listening).
+    const meaning = k => {
+      const m = item.meanings?.[k];
+      return m ? `<div class="meaning"><p lang="mr">${esc(m.mr)}</p><p lang="en">${esc(m.en)}</p></div>` : '';
+    };
+    const meaningSwitch = item.meanings ? `<div class="meaning-switch"><span>${esc(s.meanings)}</span>
+      <div class="segmented" role="group">${[['both', s.meaningBoth], ['mr', 'मराठी'], ['en', 'English'], ['off', s.meaningOff]].map(([value, label]) => `
+        <button type="button" class="${state.meanings === value ? 'on' : ''}" data-action="meanings" data-value="${value}" aria-pressed="${state.meanings === value}">${esc(label)}</button>`).join('')}</div></div>` : '';
     markRead(item.id);
     return `
     <header class="appbar"><button type="button" class="icon-btn" data-action="back" aria-label="${esc(s.back)}">${icon('back')}</button>
@@ -546,7 +561,7 @@
       ${favButton(item.id)}
       <button type="button" class="icon-btn" data-action="share" data-id="${esc(item.id)}" aria-label="${esc(s.share)}">${icon('share')}</button>
     </header>
-    <article class="reader ${ids.length > 1 ? 'with-pager' : ''}" style="${deityStyle(d)}" data-ids="${esc(ids.join(','))}" data-i="${i}" data-t="${esc(title)}">
+    <article class="reader ${ids.length > 1 ? 'with-pager' : ''}" style="${deityStyle(d)}" data-meanings="${esc(state.meanings)}" data-ids="${esc(ids.join(','))}" data-i="${i}" data-t="${esc(title)}">
       <div class="reader-head">${avatar(d, 60)}
         <h1 lang="mr">${esc(item.title)}</h1>
         ${en() && item.titleEn ? `<div class="tr">${esc(item.titleEn)}</div>` : ''}
@@ -554,8 +569,9 @@
         ${item.author ? `<div class="by">${esc(s.by(item.author))}</div>` : ''}
         ${ORNAMENT}</div>
       ${about ? `<div class="about">${icon('info')}<span>${esc(about)}</span></div>` : ''}
+      ${meaningSwitch}
       ${item.refrainFirst ? refrain('rt') : ''}
-      ${item.verses.map((v, k) => `<div class="verse" lang="mr" data-b="v${k}">${linesHtml(v)}</div>${refrain(`r${k}`)}`).join('')}
+      ${item.verses.map((v, k) => `<div class="verse" lang="mr" data-b="v${k}">${linesHtml(v)}</div>${meaning(k)}${refrain(`r${k}`)}`).join('')}
       ${ORNAMENT}
     </article>
     <button type="button" class="listen-fab ${pager ? 'above-pager' : ''}" data-action="listen">${icon('headphones')}${esc(s.listen)}</button>
@@ -660,8 +676,11 @@
 
   // ---------- Read aloud (speech + tanpura) ----------
   /** Each line in its own span so the line being read can be highlighted. */
+  /** "श्रीभगवानुवाच", "अर्जुन उवाच": who speaks the next Gita verse. Must match Android's isSpeakerLine(). */
+  const isSpeaker = line => /^\S*\s?\S*वाच$/.test(line.trim()) && line.trim().split(/\s+/).length <= 2;
+
   function linesHtml(text) {
-    return text.split('\n').map((line, k) => `<span class="ln" data-l="${k}">${esc(line)}</span>`).join('\n');
+    return text.split('\n').map((line, k) => `<span class="ln${isSpeaker(line) ? ' speaker' : ''}" data-l="${k}">${esc(line)}</span>`).join('\n');
   }
 
   const cleanLine = line => line
@@ -1139,6 +1158,15 @@
     }
     else if (a === 'stop-listen') stopSpeech();
     else if (a === 'speech') { setState('speechSlow', el.dataset.value === 'slow'); render(true); }
+    else if (a === 'meanings') {
+      setState('meanings', el.dataset.value);
+      const reader = $('.reader');
+      if (reader) reader.dataset.meanings = state.meanings;
+      el.parentElement.querySelectorAll('button').forEach(b => {
+        b.classList.toggle('on', b === el);
+        b.setAttribute('aria-pressed', b === el);
+      });
+    }
     else if (a === 'music-setting') { setState('music', !state.music); render(true); }
     else if (a === 'size') openSizeSheet();
     else if (a === 'share') share(lib.byId.get(el.dataset.id));

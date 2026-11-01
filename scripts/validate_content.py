@@ -41,6 +41,12 @@ for n, item in enumerate(data.get("items", []), 1):
         errors.append(f"{where}: unknown deity '{item['deity']}'")
     if not isinstance(item.get("verses", []), list) or not all(isinstance(v, str) and v.strip() for v in item.get("verses", [])):
         errors.append(f"{where}: 'verses' must be a list of non-empty strings")
+    if "meanings" in item:
+        m = item["meanings"]
+        if not isinstance(m, list) or len(m) != len(item.get("verses", [])):
+            errors.append(f"{where}: 'meanings' must have one entry per verse")
+        elif not all(isinstance(x, dict) and str(x.get("mr", "")).strip() and str(x.get("en", "")).strip() for x in m):
+            errors.append(f"{where}: every meaning needs both 'mr' and 'en'")
 
 for p in data.get("playlists", []):
     for i in p.get("items", []):
